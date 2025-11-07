@@ -102,10 +102,10 @@ If the `contentHref` field is present, then an HTTP GET request issued against t
 
 ## Authors
 
-Rowan Cockett - Curvenote
-Franklin Koch - Curvenote
-Carlos Scheidegger - Posit, PBC
-Nokome Bentley - Stencilla
+- Rowan Cockett - Curvenote
+- Franklin Koch - Curvenote
+- Carlos Scheidegger - Posit, PBC
+- Nokome Bentley - Stencilla
 
 ## versions
 
