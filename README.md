@@ -170,6 +170,7 @@ children:
 | System            | Relationship                                                                                                 |
 | ----------------- | ------------------------------------------------------------------------------------------------------------ |
 | **JATS**          | Conceptual ancestor, simplified and modernized for web-native use.                                           |
+| **Schema.org**    | Conceptual ancestor, for naming the concepts, attributes, and descriptions.                                  |
 | **Pandoc AST**    | Conceptual ancestor, simplified and modernized for web-native use.                                           |
 | **Stencila**      | Functional and conceptual ancestor for many typing Schema-aligned for computational notebooks and documents. |
 | **MyST Markdown** | Conceptual ancestor, round-trippable via AST representation.                                                 |
