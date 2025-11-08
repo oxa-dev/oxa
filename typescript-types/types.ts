@@ -140,17 +140,17 @@ export type Person = Record<string, unknown> & {
 }
 export type Affiliation = Record<string, unknown> & {
   affiliate: Organization | Person;
-  dateStart: string; // date or date-time
-  dateEnd?: string;  // date or date-time
-  affiliationType: string;
+  dateStart: string; // in JSON-schema this should be format date or date-time
+  dateEnd?: string;  // in JSON-schema this should be format date or date-time
+  affiliationType: string; // in JSON-schema this should have the description, "Describe the relationship to the item."
 }
 
 export type PersonName = Record<string, unknown> & {
-  familyNames?: string[];
+  familyNames: string[];
   givenNames?: string[];
   honorificPrefixes?: string[];
   honorificSuffixes?: string[];
-  order?: number;
+  order: number;
 }
 
 /** =====================
@@ -173,7 +173,7 @@ export type Grant = Record<string, unknown> & {
   funding: MonetaryAmount | Product | Service;
 
   /** Description of what the funding contributed towards. */
-  description?: Text;
+  description?: string;
 }
 
 /** =====================
