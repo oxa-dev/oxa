@@ -148,7 +148,7 @@ export type PersonName = Record<string, unknown> & {
   type: "PersonName"
 
   /** Family name. In the U.S., the last name of a Person. */
-  familyNames: string[];
+  familyNames?: string[];
 
   /** Given name. In the U.S., the first name of a Person. */
   givenNames?: string[];
