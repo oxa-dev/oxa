@@ -24,7 +24,7 @@ An HTML document that wants to declare an OXA representation can do one of the f
 
 A PNG image that wants to declare an OXA representation can do one of the following:
 
-- include an `iTXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-document-link` and UTF-8 text with the URI of an HTTP resource representing the OXA document
-- include an `iTXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-reference` and UTF-8 text with the URI of an HTTP resource representing the [OXA reference](./oxa-references.md).
-- include an `iTXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-document` and UTF-8 text containing the JSON representation of the OXA document.
-- include an `iTXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-reference` and UTF-8 text containing the JSON representation of the [OXA reference](./oxa-references.md).
+- include an `tEXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-document-link` and UTF-8 text with the URI of an HTTP resource representing the OXA document
+- include an `tEXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-reference` and UTF-8 text with the URI of an HTTP resource representing the [OXA reference](./oxa-references.md).
+- include an `tEXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-document` and UTF-8 text containing the JSON representation of the OXA document.
+- include an `tEXt` ancillary chunk with keyword `JSON:dev.oxa:oxa-reference` and UTF-8 text containing the JSON representation of the [OXA reference](./oxa-references.md).
