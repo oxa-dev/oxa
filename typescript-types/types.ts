@@ -6,9 +6,218 @@
  * LICENSE: MIT
  */
 
-export type Author = Record<string, unknown> & {};
+/** =====================
+ *  Common Primitive Aliases
+ *  ===================== */
 
 export type URI = string; // in JSON schema this should be a validated string
+
+/**
+ * An item which allows flexible and descriptive values.
+ */
+export interface PropertyValue {
+  type: "PropertyValue";
+
+  propertyId: string;
+
+  value: any;
+}
+
+/** =====================
+ *  MediaObject
+ *  ===================== */
+export type MediaObject = Record<string, unknown> & {
+  type: "MediaObject"
+
+  /** Actual bytes of the media object, e.g., the image or video file. */
+  contentUri: URI;
+}
+
+/** =====================
+ *  Organization
+ *  ===================== */
+export type Organization = Record<string, unknown> & {
+  type: "Organization"
+
+  /** Physical address of the item. */
+  address?: PostalAddress;
+
+  /** The URI(s) associated with this organization. */
+  uris?: URI[]
+
+  /** The name of the organization. */
+  name: string;
+
+  /** Contact emails. */
+  emails?: string[]; // In JSON-schema this should be of format "email".
+
+  /** Identifiers for the organization. */
+  identifiers: PropertyValue[];
+
+  /** Parent organizations (supersedes branchOf). */
+  parentOrganizations?: Organization[];
+
+  /** An Organization to which this Organization belongs. */
+  memberOf?: Organization[];
+
+  /** Members (Persons or Organizations). */
+  members?: (Person | Organization)[];
+
+  /** Sub-organizations (inverse of parentOrganizations). */
+  subOrganization?: Organization[];
+}
+
+/** =====================
+ *  Author and AuthorCRediT
+ *  ===================== */
+export type Author = Record<string, unknown> & {
+  type: "Author"
+
+  /** The creator of an item. */
+  author: Organization | Person;
+
+  /** Description of how a user contributed. */
+  contributorRoles: (PropertyValue | AuthorCRediT)[];
+
+  /** Order of appearance (tie-break by family name). */
+  order?: number; // In JSON-schema this should have a minimum of 0.
+}
+
+export enum AuthorCRediT {
+  Conceptualization = "Conceptualization",
+  Methodology = "Methodology",
+  Software = "Software",
+  Validation = "Validation",
+  FormalAnalysis = "Formal analysis",
+  Investigation = "Investigation",
+  Resources = "Resources",
+  DataCuration = "Data Curation",
+  WritingOriginalDraft = "Writing - Original Draft",
+  WritingReviewEditing = "Writing - Review & Editing",
+  Visualization = "Visualization",
+  Supervision = "Supervision",
+  ProjectAdministration = "Project administration",
+  FundingAcquisition = "Funding acquisition",
+}
+
+/** =====================
+ *  Person
+ *  ===================== */
+export type Person = Record<string, unknown> & {
+  type: "Person"
+
+  /** Identifiers for a person. */
+  identifiers?: PropertyValue[];
+
+  /** Affiliations. */
+  affiliations?: Affiliation[];
+
+  /** Emails. */
+  emails?: string[]; // In JSON-schema this should have a format of email.
+
+  /** Names the author is known by. */
+  names: PersonName[];
+
+  /** Physical address. */
+  address?: PostalAddress;
+}
+
+/**
+ * The affiliation between people and organziations.
+ */
+export type Affiliation = Record<string, unknown> & {
+  type: "Affiliation"
+
+  /** The Organization or Person itself. */
+  affiliate: Organization | Person;
+
+  /** The date the affiliation to this item began. */
+  dateStart?: string; // in JSON-schema this should be format date or date-time
+
+  /** The date the affiliation to this item ended. Leave blank to indicate the affiliation is current. */
+  dateEnd?: string;  // in JSON-schema this should be format date or date-time
+
+  /** Describe the relationship to the item. */
+  affiliationType: string; // in JSON-schema this should have the description, "Describe the relationship to the item."
+}
+
+/**
+ * The name of a Person object.
+ */
+export type PersonName = Record<string, unknown> & {
+  type: "PersonName"
+
+  /** Family name. In the U.S., the last name of a Person. */
+  familyNames?: string[];
+
+  /** Given name. In the U.S., the first name of a Person. */
+  givenNames?: string[];
+
+  /** An honorific prefix preceding a Person's name such as Dr/Mrs/Mr. */
+  honorificPrefixes?: string[];
+
+  /** An honorific suffix following a Person's name such as M.D./PhD/MSCSW. */
+  honorificSuffixes?: string[];
+}
+
+/** =====================
+ *  Funding information block.
+ *  ===================== */
+/**
+ * The source of funding for a scholarly work.
+ */
+export type FundingSource = Record<string, unknown> & {
+  type: "FundingSource"
+
+  /** Ways to identify the grant. */
+  identifiers?: PropertyValue[];
+
+  /** The person or organization funding. */
+  funder: Person | Organization;
+
+  /** The monetary or non-monetary contribution. */
+  funding: MonetaryAmount | Product | Service;
+
+  /** Description of what the funding contributed towards. */
+  description?: string;
+}
+
+/**
+ * The way to connect a funding source to its funded item.
+ */
+export type Grant = FundingSource & {
+  type: "Grant";
+
+  /**
+   * Something funded or sponsored through a Grant.
+   */
+  fundedItem: ScholarlyWork | Person | Organization | Event | Product;
+}
+
+/** =====================
+ *  MonetaryAmount
+ *  ===================== */
+export type MonetaryAmount = Record<string, unknown> & {
+  type: "MonetaryAmount";
+
+  /** Currency, e.g., USD, BTC, etc. */
+  currency: string;
+
+  /** The value of the monetary amount. */
+  value: number;
+}
+
+/** =====================
+ *  Placeholder Types (referenced but not defined in YAML)
+ *  ===================== */
+
+
+export interface PostalAddress { [key: string]: any; }
+export interface ScholarlyWork { [key: string]: any; }
+export interface Event { [key: string]: any; }
+export interface Product { [key: string]: any; }
+export interface Service { [key: string]: any; }
+
 
 export type License = {
   uri?: URI; // link to full version of license if short name provided
