@@ -2,9 +2,15 @@
  * Validate that the schema files are valid JSON Schema.
  */
 
-import Ajv from "ajv";
-import addFormats from "ajv-formats";
+import AjvDefault from "ajv";
+import addFormatsDefault from "ajv-formats";
 import { loadMergedSchema, loadSchemaFiles } from "./schema.js";
+
+// Handle CJS/ESM interop - these packages don't have proper ESM types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Ajv = AjvDefault as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const addFormats = addFormatsDefault as any;
 
 /**
  * Validate that all schema files are valid JSON Schema draft-07.
