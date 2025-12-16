@@ -6,8 +6,8 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "declaration": true,
-    "outDir": "dist",
-    "rootDir": "src"
-  }
+    "allowJs": true,
+    "noEmit": true
+  },
+  "include": ["eslint.config.js"]
 }
