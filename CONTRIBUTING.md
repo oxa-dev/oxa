@@ -35,6 +35,13 @@ pnpm lint
 pnpm lint:fix
 ```
 
+### Type Checking
+
+```bash
+# Run TypeScript type checking
+pnpm typecheck
+```
+
 ### Code Generation
 
 ```bash
