@@ -1,0 +1,14 @@
+{
+  "name": "oxa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "codegen": "tsx scripts/codegen.ts",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
