@@ -1,0 +1,40 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: Document
+title: Document
+description: A document with metadata, title, and block content.
+type: object
+properties:
+  type:
+    description: The type discriminator for Document nodes.
+    const: Document
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+  metadata:
+    description: Arbitrary document metadata.
+    type: object
+    additionalProperties: true
+  title:
+    description: The document title as inline content.
+    type: array
+    items:
+      $ref: "./Inline.yaml"
+  children:
+    description: The block content of the document.
+    type: array
+    items:
+      $ref: "./Block.yaml"
+required:
+  - type
+  - metadata
+  - title
+  - children

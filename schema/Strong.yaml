@@ -1,0 +1,31 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: Strong
+title: Strong
+description: Strongly emphasized content (typically bold).
+type: object
+properties:
+  type:
+    description: The type discriminator for Strong nodes.
+    const: Strong
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+  children:
+    description: The inline content to emphasize.
+    type: array
+    items:
+      $ref: "./Inline.yaml"
+required:
+  - type
+  - children
+  - classes
+  - data
