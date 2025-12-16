@@ -4,10 +4,13 @@
   "type": "module",
   "scripts": {
     "codegen": "tsx scripts/codegen.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "build": "pnpm -r build",
     "test": "pnpm -r test"
   },
   "devDependencies": {
+    "prettier": "^3.7.4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
