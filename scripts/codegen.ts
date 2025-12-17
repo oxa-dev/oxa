@@ -6,6 +6,7 @@
  */
 
 import { program } from "commander";
+import { generateJson } from "./lib/generate-json.js";
 import { validateSchemas } from "./lib/validate.js";
 
 interface Generator {
@@ -15,11 +16,7 @@ interface Generator {
 }
 
 const generators: Generator[] = [
-  // TODO: Add generators as they are implemented
-  // { name: "ts", label: "TypeScript", fn: generateTypeScript },
-  // { name: "py", label: "Python", fn: generatePython },
-  // { name: "rs", label: "Rust", fn: generateRust },
-  // { name: "docs", label: "Documentation", fn: generateDocs },
+  { name: "json", label: "JSON Schema", fn: generateJson },
 ];
 
 async function validate(): Promise<void> {
