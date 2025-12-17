@@ -5,6 +5,7 @@
 import { readFileSync, readdirSync } from "fs";
 import { join, basename } from "path";
 import yaml from "js-yaml";
+import { getVersion } from "./version.js";
 
 const SCHEMA_DIR = join(import.meta.dirname, "../../schema");
 
@@ -86,11 +87,14 @@ export function mergeSchemas(files: SchemaFile[]): Record<string, unknown> {
     unknown
   >;
 
+  const version = getVersion();
+
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
-    $id: "https://oxa.dev/schema.json",
+    $id: `https://oxa.dev/v${version}/schema.json`,
     title: "OXA Schema",
     description: "JSON Schema for OXA document types",
+    version,
     definitions: rewrittenDefinitions,
     $ref: "#/definitions/Document",
   };
