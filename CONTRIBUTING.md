@@ -13,6 +13,16 @@
 pnpm install
 ```
 
+## Schema Development
+
+The OXA schema is defined as individual YAML files in the `schema/` directory. YAML was chosen for schema definitions because it is more human-readable and easier to edit than JSON.
+
+The `schema/schema.json` file is **auto-generated** from the YAML sources and should not be edited directly. Any schema changes should be made to the `.yaml` files, then regenerated:
+
+```bash
+pnpm codegen json
+```
+
 ## Development Scripts
 
 ### Formatting
