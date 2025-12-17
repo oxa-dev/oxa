@@ -48,14 +48,18 @@ jobs:
       - name: Commit changes
         if: github.event_name == 'push'
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to commit"
             exit 0
           fi
 
+          # Author is the person who pushed
+          AUTHOR=$(git log -1 --format='%an <%ae>')
+
+          # Committer is the bot
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
           git add -A
-          git commit -m "chore(*): update generated files [skip ci]"
+          git commit --author="$AUTHOR" -m "chore(*): update formatted/generated files [skip ci]"
           git push
