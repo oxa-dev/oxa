@@ -26,13 +26,26 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm format:check
-      - run: pnpm lint
+
+      # Typecheck first (before format/lint possibly change line numbers)
       - run: pnpm typecheck
+
+      # On push: auto-fix formatting and linting (will be committed)
+      - run: pnpm format
+        if: github.event_name == 'push'
+      - run: pnpm lint:fix
+        if: github.event_name == 'push'
+
+      # On PRs: check only (can't commit to forks)
+      - run: pnpm format:check
+        if: github.event_name == 'pull_request'
+      - run: pnpm lint
+        if: github.event_name == 'pull_request'
+
       - run: pnpm codegen all
       - run: pnpm test
 
-      - name: Commit generated files
+      - name: Commit changes
         if: github.event_name == 'push'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
