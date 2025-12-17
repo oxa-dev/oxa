@@ -20,19 +20,19 @@ In this document, the "canonical hash" of a JSON object, given a hashing functio
 
 ```json
 {
-    "type": "object",
-    "required": ["function", "hash"],
-    "properties": {
+  "type": "object",
+  "required": ["function", "hash"],
+  "properties": {
     "function": {
-        "type": "string",
-        "enum": ["SHA-256", "SHA-512", "SHA3-256", "SHA3-512"]
+      "type": "string",
+      "enum": ["SHA-256", "SHA-512", "SHA3-256", "SHA3-512"]
     },
     "hash": {
-        "type": "string",
-        "pattern": "^[a-fA-F0-9]+$"
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]+$"
     }
-    },
-    "additionalProperties": false
+  },
+  "additionalProperties": false
 }
 ```
 

@@ -35,7 +35,7 @@ export async function validateSchemas(): Promise<{
   try {
     merged = loadMergedSchema();
     console.log(
-      `Merged schema has ${Object.keys(merged.definitions as object).length} definitions`
+      `Merged schema has ${Object.keys(merged.definitions as object).length} definitions`,
     );
   } catch (error) {
     errors.push(`Failed to merge schemas: ${error}`);
