@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v20+)
+- [Node.js](https://nodejs.org/) (v22+)
 - [pnpm](https://pnpm.io/) (v9+)
 - [uv](https://docs.astral.sh/uv/) (for Python package management)
 
