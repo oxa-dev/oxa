@@ -78,7 +78,7 @@ export type Link = Attr & {
 };
 
 export type Citation = Attr & {
-  mode: "AuthorInText" | "SupressAuthor" | "NormalCitation";
+  mode: "AuthorInText" | "SuppressAuthor" | "NormalCitation";
   prefix: Inline[];
   suffix: Inline[];
 };
