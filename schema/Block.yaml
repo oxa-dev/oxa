@@ -2,6 +2,6 @@ $schema: "http://json-schema.org/draft-07/schema#"
 $id: Block
 title: Block
 description: Union of all block content types.
-oneOf:
+anyOf:
   - $ref: "./Heading.yaml"
   - $ref: "./Paragraph.yaml"

@@ -8,7 +8,7 @@
     "Block": {
       "title": "Block",
       "description": "Union of all block content types.",
-      "oneOf": [
+      "anyOf": [
         {
           "$ref": "#/definitions/Heading"
         },
@@ -119,7 +119,7 @@
     "Inline": {
       "title": "Inline",
       "description": "Union of all inline content types.",
-      "oneOf": [
+      "anyOf": [
         {
           "$ref": "#/definitions/Text"
         },
