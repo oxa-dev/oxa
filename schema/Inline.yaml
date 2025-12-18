@@ -2,6 +2,6 @@ $schema: "http://json-schema.org/draft-07/schema#"
 $id: Inline
 title: Inline
 description: Union of all inline content types.
-oneOf:
+anyOf:
   - $ref: "./Text.yaml"
   - $ref: "./Strong.yaml"
