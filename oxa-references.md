@@ -12,7 +12,7 @@ In this document, uppercase phrases are used according to [RFC 2119](https://dat
 
 ### JSON object equality
 
-When comparingn two JSON objects, this spec uses the word "equals" to mean two objects that are the same according to the [SameValueZero algorithm in the ECMA 262 spec](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero).
+When comparing two JSON objects, this spec uses the word "equals" to mean two objects that are the same according to the [SameValueZero algorithm in the ECMA 262 spec](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero).
 
 ### Canonical Hashes
 
@@ -105,7 +105,7 @@ If the `contentHref` field is present, then an HTTP GET request issued against t
 - Rowan Cockett - Curvenote
 - Franklin Koch - Curvenote
 - Carlos Scheidegger - Posit, PBC
-- Nokome Bentley - Stencilla
+- Nokome Bentley - Stencila
 
 ## versions
 
