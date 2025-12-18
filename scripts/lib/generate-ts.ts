@@ -23,6 +23,8 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
 
+import prettier from "prettier";
+
 import { loadMergedSchema } from "./schema.js";
 
 const OUTPUT_PATH = join(
@@ -80,7 +82,13 @@ export async function generateTs(): Promise<void> {
     }
   }
 
-  writeFileSync(OUTPUT_PATH, lines.join("\n"));
+  const code = lines.join("\n");
+  const formatted = await prettier.format(code, {
+    parser: "typescript",
+    filepath: OUTPUT_PATH,
+  });
+
+  writeFileSync(OUTPUT_PATH, formatted);
   console.log(`Generated ${OUTPUT_PATH}`);
 }
 
