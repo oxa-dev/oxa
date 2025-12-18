@@ -1,0 +1,16 @@
+{
+  "name": "@oxa/scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "commander": "^14.0.2",
+    "js-yaml": "^4.1.1",
+    "json-schema-to-typescript": "^15.0.4"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.0.2"
+  }
+}
