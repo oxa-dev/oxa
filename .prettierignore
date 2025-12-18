@@ -2,3 +2,4 @@ dist/
 node_modules/
 target/
 pnpm-lock.yaml
+schema/schema.json
