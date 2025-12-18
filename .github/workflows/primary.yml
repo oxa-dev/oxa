@@ -1,0 +1,65 @@
+name: Primary
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      # Typecheck first (before format/lint possibly change line numbers)
+      - run: pnpm typecheck
+
+      # On push: auto-fix formatting and linting (will be committed)
+      - run: pnpm format
+        if: github.event_name == 'push'
+      - run: pnpm lint:fix
+        if: github.event_name == 'push'
+
+      # On PRs: check only (can't commit to forks)
+      - run: pnpm format:check
+        if: github.event_name == 'pull_request'
+      - run: pnpm lint
+        if: github.event_name == 'pull_request'
+
+      - run: pnpm codegen all
+      - run: pnpm test
+
+      - name: Commit changes
+        if: github.event_name == 'push'
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Author is the person who pushed
+          AUTHOR=$(git log -1 --format='%an <%ae>')
+
+          # Committer is the bot
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add -A
+          git commit --author="$AUTHOR" -m "chore(*): update formatted/generated files [skip ci]"
+          git push

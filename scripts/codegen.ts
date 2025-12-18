@@ -45,10 +45,7 @@ program
   .action(validate);
 
 for (const gen of generators) {
-  program
-    .command(gen.name)
-    .description(`Generate ${gen.label}`)
-    .action(gen.fn);
+  program.command(gen.name).description(`Generate ${gen.label}`).action(gen.fn);
 }
 
 program

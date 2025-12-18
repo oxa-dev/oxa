@@ -2,7 +2,7 @@
  * types.ts
  *
  * Copyright (C) 2025 Carlos Scheidegger
- * 
+ *
  * LICENSE: MIT
  */
 

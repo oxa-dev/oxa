@@ -22,7 +22,6 @@ export function loadMergedSchema(): Record<string, unknown> {
   return mergeSchemas(files);
 }
 
-
 /**
  * Load all YAML schema files from the schema directory.
  */

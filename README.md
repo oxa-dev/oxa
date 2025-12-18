@@ -88,19 +88,19 @@ children: []
 - `Span`
 
 ```yaml
-type: 'Emphasis'
-id: 'i-am-an-emphasis'
+type: "Emphasis"
+id: "i-am-an-emphasis"
 classes:
   - emphasized
 data:
-  note: 'example'
+  note: "example"
 children:
-  - type: 'Text'
-    value: 'Hello world'
-  - type: 'Strong'
+  - type: "Text"
+    value: "Hello world"
+  - type: "Strong"
     children:
-      - type: 'Text'
-        value: 'This is strong text.'
+      - type: "Text"
+        value: "This is strong text."
 ```
 
 ### Block Nodes
@@ -113,13 +113,13 @@ children:
 - `Div`
 
 ```yaml
-type: 'Heading'
-id: 'intro'
+type: "Heading"
+id: "intro"
 level: 2
 classes: [highlighted]
 children:
-  - type: 'Text'
-    value: 'Introduction'
+  - type: "Text"
+    value: "Introduction"
 ```
 
 ## The Document Node
@@ -130,29 +130,29 @@ All OXA documents are valid JSON structures that conform to the root `OXA` schem
 type: OXA
 version: 0.0.1
 metadata:
-  license: 'CC-BY-4.0'
-  author: 'Jane Doe'
+  license: "CC-BY-4.0"
+  author: "Jane Doe"
   title:
     - type: Text
-      value: 'Hello, World'
+      value: "Hello, World"
 children:
   - type: Heading
     level: 1
     children:
       - type: Text
-        value: 'Heading One'
+        value: "Heading One"
   - type: Paragraph
     children:
       - type: Text
-        value: 'Hello world with the '
+        value: "Hello world with the "
       - type: InlineMath
         value: '\pi'
       - type: Text
-        value: ' and '
+        value: " and "
       - type: InlineCode
-        value: '1 + 2'
+        value: "1 + 2"
       - type: Text
-        value: ' and foo.'
+        value: " and foo."
   - type: CodeBlock
     data:
       executable: true
@@ -202,12 +202,12 @@ Each document can include licensing and rights metadata:
 
 ```yaml
 license:
-  name: 'CC-BY-SA-4.0'
+  name: "CC-BY-SA-4.0"
   text: |
     Licensed under Creative Commons Attribution-ShareAlike 4.0.
   attribution: |
     Please credit the University of California, Davis.
-  source: 'https://creativecommons.org/licenses/by-sa/4.0/'
+  source: "https://creativecommons.org/licenses/by-sa/4.0/"
 ```
 
 OXA can generate:
