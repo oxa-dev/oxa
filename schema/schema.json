@@ -62,7 +62,12 @@
           }
         }
       },
-      "required": ["type", "metadata", "title", "children"]
+      "required": [
+        "type",
+        "metadata",
+        "title",
+        "children"
+      ]
     },
     "Heading": {
       "title": "Heading",
@@ -103,7 +108,13 @@
           }
         }
       },
-      "required": ["type", "level", "children", "classes", "data"]
+      "required": [
+        "type",
+        "level",
+        "children",
+        "classes",
+        "data"
+      ]
     },
     "Inline": {
       "title": "Inline",
@@ -150,7 +161,12 @@
           }
         }
       },
-      "required": ["type", "children", "classes", "data"]
+      "required": [
+        "type",
+        "children",
+        "classes",
+        "data"
+      ]
     },
     "Strong": {
       "title": "Strong",
@@ -185,7 +201,12 @@
           }
         }
       },
-      "required": ["type", "children", "classes", "data"]
+      "required": [
+        "type",
+        "children",
+        "classes",
+        "data"
+      ]
     },
     "Text": {
       "title": "Text",
@@ -217,7 +238,12 @@
           "type": "string"
         }
       },
-      "required": ["type", "value", "classes", "data"]
+      "required": [
+        "type",
+        "value",
+        "classes",
+        "data"
+      ]
     }
   },
   "$ref": "#/definitions/Document"
