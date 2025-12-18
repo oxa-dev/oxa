@@ -4,6 +4,15 @@ import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
+  {
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/docs/_build/**",
+      "**/.git/**",
+      "**/pnpm-lock.yaml",
+    ],
+  },
   eslint.configs.recommended,
   tseslint.configs.recommended,
 );

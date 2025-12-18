@@ -8,6 +8,7 @@
 import { program } from "commander";
 import { generateJson } from "./lib/generate-json.js";
 import { generateTs } from "./lib/generate-ts.js";
+import { generateDocs } from "./lib/generate-docs.js";
 import { validateSchemas } from "./lib/validate.js";
 
 interface Generator {
@@ -19,6 +20,7 @@ interface Generator {
 const generators: Generator[] = [
   { name: "json", label: "JSON Schema", fn: generateJson },
   { name: "ts", label: "TypeScript types", fn: generateTs },
+  { name: "docs", label: "Schema documentation", fn: generateDocs },
 ];
 
 async function validate(): Promise<void> {
