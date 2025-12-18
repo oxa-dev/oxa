@@ -9,6 +9,7 @@
 
 import { writeFileSync } from "fs";
 import { join } from "path";
+import prettier from "prettier";
 import { loadMergedSchema } from "./schema.js";
 
 const OUTPUT_PATH = join(import.meta.dirname, "../../schema/schema.json");
@@ -16,6 +17,10 @@ const OUTPUT_PATH = join(import.meta.dirname, "../../schema/schema.json");
 export async function generateJson(): Promise<void> {
   const schema = loadMergedSchema();
   const json = JSON.stringify(schema, null, 2);
-  writeFileSync(OUTPUT_PATH, json + "\n");
+  const formatted = await prettier.format(json, {
+    parser: "json",
+    filepath: OUTPUT_PATH,
+  });
+  writeFileSync(OUTPUT_PATH, formatted);
   console.log(`Generated ${OUTPUT_PATH}`);
 }
