@@ -49,6 +49,9 @@ export async function validateSchemas(): Promise<{
   });
   addFormats(ajv);
 
+  // Allow custom 'version' keyword in strict mode
+  ajv.addKeyword("version");
+
   try {
     ajv.compile(merged);
     console.log("Schema is valid JSON Schema");

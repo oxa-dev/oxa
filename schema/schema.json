@@ -1,0 +1,250 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://oxa.dev/v0.1.0/schema.json",
+  "title": "OXA Schema",
+  "description": "JSON Schema for OXA document types",
+  "version": "0.1.0",
+  "definitions": {
+    "Block": {
+      "title": "Block",
+      "description": "Union of all block content types.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/Heading"
+        },
+        {
+          "$ref": "#/definitions/Paragraph"
+        }
+      ]
+    },
+    "Document": {
+      "title": "Document",
+      "description": "A document with metadata, title, and block content.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Document nodes.",
+          "const": "Document"
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "metadata": {
+          "description": "Arbitrary document metadata.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "title": {
+          "description": "The document title as inline content.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        },
+        "children": {
+          "description": "The block content of the document.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Block"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "metadata",
+        "title",
+        "children"
+      ]
+    },
+    "Heading": {
+      "title": "Heading",
+      "description": "A heading with a level and inline content.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Heading nodes.",
+          "const": "Heading"
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "level": {
+          "description": "The heading level (1-6).",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "children": {
+          "description": "The inline content of the heading.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "level",
+        "children",
+        "classes",
+        "data"
+      ]
+    },
+    "Inline": {
+      "title": "Inline",
+      "description": "Union of all inline content types.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/Text"
+        },
+        {
+          "$ref": "#/definitions/Strong"
+        }
+      ]
+    },
+    "Paragraph": {
+      "title": "Paragraph",
+      "description": "A paragraph of inline content.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Paragraph nodes.",
+          "const": "Paragraph"
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "children": {
+          "description": "The inline content of the paragraph.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "children",
+        "classes",
+        "data"
+      ]
+    },
+    "Strong": {
+      "title": "Strong",
+      "description": "Strongly emphasized content (typically bold).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Strong nodes.",
+          "const": "Strong"
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "children": {
+          "description": "The inline content to emphasize.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "children",
+        "classes",
+        "data"
+      ]
+    },
+    "Text": {
+      "title": "Text",
+      "description": "A text node containing a string value.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Text nodes.",
+          "const": "Text"
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "value": {
+          "description": "The text content.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value",
+        "classes",
+        "data"
+      ]
+    }
+  },
+  "$ref": "#/definitions/Document"
+}
