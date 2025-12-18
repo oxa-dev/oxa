@@ -35,4 +35,5 @@ packages = ["src/oxa_types"]
 [tool.uv]
 dev-dependencies = [
     "ruff>=0.14",
+    "ty>=0.0.1a13",
 ]

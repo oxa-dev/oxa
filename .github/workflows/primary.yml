@@ -29,7 +29,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Typecheck first (before format/lint possibly change line numbers)
+      # Typecheck generation code in scripts/ (before format/lint possibly change line numbers)
       - run: pnpm typecheck
 
       # On push: auto-fix formatting and linting (will be committed)
@@ -44,7 +44,12 @@ jobs:
       - run: pnpm lint
         if: github.event_name == 'pull_request'
 
-      - run: pnpm codegen all
+      - name: Generate types
+        run: pnpm codegen all
+
+      # Typecheck generated code (Python via ty, TypeScript via tsc)
+      - run: uv run ty check src/
+        working-directory: packages/oxa-types-py
       - run: pnpm test
 
       - name: Commit changes
