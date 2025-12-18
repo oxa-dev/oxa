@@ -25,6 +25,8 @@ jobs:
           node-version: 22
           cache: "pnpm"
 
+      - uses: astral-sh/setup-uv@v5
+
       - run: pnpm install --frozen-lockfile
 
       # Typecheck first (before format/lint possibly change line numbers)
