@@ -1,0 +1,31 @@
+{
+  "name": "oxa-types",
+  "version": "0.1.0",
+  "description": "TypeScript type definitions generated from the OXA schema",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc --noEmit"
+  },
+  "keywords": [
+    "oxa",
+    "types",
+    "typescript",
+    "schema"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oxa-dev/oxa.git",
+    "directory": "packages/oxa-types-ts"
+  }
+}
