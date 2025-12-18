@@ -7,6 +7,7 @@
 
 import { program } from "commander";
 import { generateJson } from "./lib/generate-json.js";
+import { generatePy } from "./lib/generate-py.js";
 import { generateTs } from "./lib/generate-ts.js";
 import { generateDocs } from "./lib/generate-docs.js";
 import { validateSchemas } from "./lib/validate.js";
@@ -19,6 +20,7 @@ interface Generator {
 
 const generators: Generator[] = [
   { name: "json", label: "JSON Schema", fn: generateJson },
+  { name: "py", label: "Python Pydantic models", fn: generatePy },
   { name: "ts", label: "TypeScript types", fn: generateTs },
   { name: "docs", label: "Schema documentation", fn: generateDocs },
 ];

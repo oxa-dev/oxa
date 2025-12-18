@@ -1,0 +1,39 @@
+[project]
+name = "oxa-types"
+version = "0.1.0"
+description = "Pydantic models generated from the OXA schema"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+keywords = ["oxa", "types", "pydantic", "schema"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/oxa-dev/oxa"
+Repository = "https://github.com/oxa-dev/oxa.git"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/oxa_types"]
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.14",
+    "ty>=0.0.1a13",
+]
