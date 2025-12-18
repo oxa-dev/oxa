@@ -5,7 +5,7 @@
  * directory, formatted for use in documentation sites.
  */
 
-import { mkdirSync, rmSync, writeFileSync } from "fs";
+import { mkdirSync, rmSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 
 import { loadMergedSchema } from "./schema.js";
@@ -34,10 +34,8 @@ interface SchemaDefinition {
 
 export async function generateDocs(): Promise<void> {
   // Delete and recreate output directory
-  try {
+  if (existsSync(OUTPUT_DIR)) {
     rmSync(OUTPUT_DIR, { recursive: true, force: true });
-  } catch (error) {
-    // Directory might not exist, which is fine
   }
   mkdirSync(OUTPUT_DIR, { recursive: true });
 
@@ -83,8 +81,6 @@ function generateDocContent(name: string, def: SchemaDefinition): string {
     lines.push("");
     lines.push("");
   }
-
-  const required = new Set(def.required || []);
 
   // Properties
   for (const [propName, prop] of Object.entries(def.properties || {})) {
