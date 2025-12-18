@@ -8,3 +8,7 @@ __pycache__
 .venv
 .mypy_cache
 *.egg-info
+
+# Documentation
+docs/_build
+docs/schema
