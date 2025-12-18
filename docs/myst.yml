@@ -1,0 +1,20 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: oxa-docs
+  title: Open Exchange Architecture
+  description: A specification for representing scientific documents and their components as structured objects.
+  license: CC-BY-4.0
+  github: https://github.com/oxa-dev/oxa
+  abbreviations:
+    OXA: Open Exchange Architecture
+    AST: Abstract Syntax Tree
+    JATS: Journal Article Tag Suite
+    JSON: JavaScript Object Notation
+  toc:
+    - file: index.md
+    - title: Schema Reference
+      children:
+        - pattern: schema/*.md
+site:
+  template: book-theme
