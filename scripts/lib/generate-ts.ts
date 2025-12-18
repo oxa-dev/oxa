@@ -29,7 +29,7 @@ import { loadMergedSchema } from "./schema.js";
 
 const OUTPUT_PATH = join(
   import.meta.dirname,
-  "../../packages/oxa-types-ts/src/index.ts"
+  "../../packages/oxa-types-ts/src/index.ts",
 );
 
 interface SchemaProperty {
