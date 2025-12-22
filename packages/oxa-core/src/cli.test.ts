@@ -8,21 +8,13 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CLI_PATH = join(__dirname, "..", "dist", "cli.js");
 
-// Valid minimal document
+// Valid minimal document (only required fields)
 const validDocument = {
   type: "Document",
-  metadata: {},
-  title: [{ type: "Text", value: "Hello", classes: [], data: {} }],
   children: [],
 };
 
 const validYaml = `type: Document
-metadata: {}
-title:
-  - type: Text
-    value: Hello
-    classes: []
-    data: {}
 children: []
 `;
 
@@ -148,9 +140,7 @@ describe("oxa validate", () => {
       const heading = {
         type: "Heading",
         level: 1,
-        classes: [],
-        data: {},
-        children: [{ type: "Text", value: "Title", classes: [], data: {} }],
+        children: [{ type: "Text", value: "Title" }],
       };
       const { exitCode } = await execa(
         "node",

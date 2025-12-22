@@ -11,25 +11,21 @@ import {
   getTypeNames,
 } from "./validate.js";
 
-// Valid minimal document
+// Valid minimal document (only required fields)
 const validDocument = {
   type: "Document",
-  metadata: {},
-  title: [{ type: "Text", value: "Hello", classes: [], data: {} }],
   children: [],
 };
 
-// Valid document with content
+// Valid document with content (using minimal nested objects)
 const validDocumentWithContent = {
   type: "Document",
   metadata: { author: "Test" },
-  title: [{ type: "Text", value: "Test Document", classes: [], data: {} }],
+  title: [{ type: "Text", value: "Test Document" }],
   children: [
     {
       type: "Paragraph",
-      classes: [],
-      data: {},
-      children: [{ type: "Text", value: "Hello world", classes: [], data: {} }],
+      children: [{ type: "Text", value: "Hello world" }],
     },
   ],
 };
@@ -51,7 +47,6 @@ describe("validate", () => {
     const result = validate({ type: "Document" });
     expect(result.valid).toBe(false);
     expect(result.errors.length).toBeGreaterThan(0);
-    expect(result.errors.some((e) => e.message.includes("title"))).toBe(true);
     expect(result.errors.some((e) => e.message.includes("children"))).toBe(
       true,
     );
@@ -74,9 +69,7 @@ describe("validate", () => {
     const heading = {
       type: "Heading",
       level: 1,
-      classes: [],
-      data: {},
-      children: [{ type: "Text", value: "Title", classes: [], data: {} }],
+      children: [{ type: "Text", value: "Title" }],
     };
     const result = validate(heading, { type: "Heading" });
     expect(result.valid).toBe(true);
@@ -122,12 +115,6 @@ describe("validateYaml", () => {
   it("returns valid for correct YAML", () => {
     const yaml = `
 type: Document
-metadata: {}
-title:
-  - type: Text
-    value: Hello
-    classes: []
-    data: {}
 children: []
 `;
     const result = validateYaml(yaml);
@@ -163,12 +150,6 @@ describe("validateFile", () => {
     writeFileSync(
       yamlFile,
       `type: Document
-metadata: {}
-title:
-  - type: Text
-    value: Hello
-    classes: []
-    data: {}
 children: []
 `,
     );
