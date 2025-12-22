@@ -27,6 +27,8 @@ jobs:
 
       - uses: astral-sh/setup-uv@v5
 
+      - uses: dtolnay/rust-toolchain@stable
+
       - run: pnpm install --frozen-lockfile
 
       # Typecheck generation code in scripts/ (before format/lint possibly change line numbers)
@@ -47,10 +49,13 @@ jobs:
       - name: Generate types
         run: pnpm codegen all
 
-      # Typecheck generated code (Python via ty, TypeScript via tsc)
+      # Typecheck generated code (TypeScript via tsc, Python via ty, Rust via cargo)
+      - run: pnpm test
+        working-directory: packages/oxa-types-ts
       - run: uv run ty check src/
         working-directory: packages/oxa-types-py
-      - run: pnpm test
+      - run: cargo check
+        working-directory: packages/oxa-types-rs
 
       - name: Commit changes
         if: github.event_name == 'push'
