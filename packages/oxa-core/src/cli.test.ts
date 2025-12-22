@@ -187,14 +187,10 @@ describe("oxa validate", () => {
     });
 
     it("--quiet still shows errors", async () => {
-      const result = await execa(
-        "node",
-        [CLI_PATH, "validate", "-q", "-"],
-        {
-          input: '{"type": "Document"}',
-          reject: false,
-        },
-      );
+      const result = await execa("node", [CLI_PATH, "validate", "-q", "-"], {
+        input: '{"type": "Document"}',
+        reject: false,
+      });
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain("invalid");
     });

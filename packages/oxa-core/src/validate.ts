@@ -32,7 +32,14 @@ function findSchemaPath(): string {
     return bundledPath;
   }
   // When running from src/ (e.g., during tests), use source schema
-  const sourcePath = join(currentDir, "..", "..", "..", "schema", "schema.json");
+  const sourcePath = join(
+    currentDir,
+    "..",
+    "..",
+    "..",
+    "schema",
+    "schema.json",
+  );
   if (existsSync(sourcePath)) {
     return sourcePath;
   }
