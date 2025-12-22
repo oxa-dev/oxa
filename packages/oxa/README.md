@@ -8,7 +8,7 @@ CLI for validating OXA documents.
 npm install -g oxa
 ```
 
-For programmatic usage (validation functions and types), see [`oxa-core`](https://www.npmjs.com/package/oxa-core).
+For programmatic usage (validation functions and types), see [`@oxa/core`](https://www.npmjs.com/package/@oxa/core).
 
 ## Usage
 
@@ -39,5 +39,5 @@ oxa validate -q *.json
 
 ## Related Packages
 
-- [`oxa-core`](https://www.npmjs.com/package/oxa-core) - Validation library with programmatic API
+- [`@oxa/core`](https://www.npmjs.com/package/@oxa/core) - Validation library with programmatic API
 - [`oxa-types`](https://www.npmjs.com/package/oxa-types) - TypeScript type definitions

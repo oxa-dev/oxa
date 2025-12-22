@@ -3,7 +3,7 @@
  *
  * @example
  * ```typescript
- * import { validate, validateFile, Document } from "oxa-core";
+ * import { validate, validateFile, Document } from "@oxa/core";
  *
  * // Validate a document object
  * const result = validate(myDocument);

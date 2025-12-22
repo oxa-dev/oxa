@@ -50,7 +50,7 @@ jobs:
         run: pnpm codegen all
 
       # Typecheck generated code (TypeScript via tsc, Python via ty, Rust via cargo)
-      # Note: oxa-types-ts uses build (not typecheck) to produce dist/*.d.ts for oxa-core
+      # Note: oxa-types-ts uses build (not typecheck) to produce dist/*.d.ts for @oxa/core
       - run: pnpm build
         working-directory: packages/oxa-types-ts
       - run: uv run ty check src/
@@ -58,10 +58,10 @@ jobs:
       - run: cargo check
         working-directory: packages/oxa-types-rs
 
-      # Build and test oxa-core (includes CLI)
-      - run: pnpm --filter oxa-core typecheck
-      - run: pnpm --filter oxa-core build
-      - run: pnpm --filter oxa-core test
+      # Build and test @oxa/core
+      - run: pnpm --filter @oxa/core typecheck
+      - run: pnpm --filter @oxa/core build
+      - run: pnpm --filter @oxa/core test
 
       # Build oxa (copy bundled CLI)
       - run: pnpm --filter oxa build

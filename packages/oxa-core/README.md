@@ -1,11 +1,11 @@
-# oxa-core
+# @oxa/core
 
 Validation library for OXA documents.
 
 ## Installation
 
 ```bash
-npm install oxa-core
+npm install @oxa/core
 ```
 
 For CLI usage, see [`oxa`](https://www.npmjs.com/package/oxa).
@@ -13,8 +13,8 @@ For CLI usage, see [`oxa`](https://www.npmjs.com/package/oxa).
 ## Usage
 
 ```typescript
-import { validate, validateFile, validateJson, validateYaml } from "oxa-core";
-import type { Document } from "oxa-core";
+import { validate, validateFile, validateJson, validateYaml } from "@oxa/core";
+import type { Document } from "@oxa/core";
 
 // Validate a document object
 const doc: Document = {
