@@ -1,0 +1,53 @@
+{
+  "name": "@oxa/core",
+  "version": "0.1.0",
+  "description": "Validation library for OXA documents",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schema.json": "./dist/schema.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && cp ../../schema/schema.json dist/ && pnpm run build:bundle",
+    "build:bundle": "esbuild src/cli.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/cli.bundle.cjs --banner:js='#!/usr/bin/env node' --log-override:empty-import-meta=silent",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "oxa-types": "workspace:*",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "commander": "^14.0.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "execa": "^9.5.0"
+  },
+  "keywords": [
+    "oxa",
+    "validate",
+    "schema",
+    "json",
+    "yaml"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxa-dev/oxa.git",
+    "directory": "packages/oxa-core"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

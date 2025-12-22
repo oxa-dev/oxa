@@ -1,0 +1,30 @@
+{
+  "name": "oxa",
+  "version": "0.1.0",
+  "description": "CLI for OXA documents",
+  "type": "module",
+  "bin": {
+    "oxa": "./dist/cli.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp ../oxa-core/dist/cli.bundle.cjs dist/cli.cjs && cp ../oxa-core/dist/schema.json dist/"
+  },
+  "keywords": [
+    "oxa",
+    "cli",
+    "validate",
+    "schema"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxa-dev/oxa.git",
+    "directory": "packages/oxa"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

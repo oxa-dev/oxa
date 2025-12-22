@@ -13,8 +13,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
   },
   "keywords": [
     "oxa",

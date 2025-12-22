@@ -1,5 +1,5 @@
 {
-  "name": "oxa",
+  "name": "oxa-monorepo",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,7 +12,6 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "typecheck": "tsc -p scripts/tsconfig.json",
     "build": "pnpm -r build",
     "test": "pnpm -r test"
   },
@@ -22,6 +21,7 @@
     "prettier": "^3.7.4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.50.0"
+    "typescript-eslint": "^8.50.0",
+    "vitest": "^4.0.16"
   }
 }
