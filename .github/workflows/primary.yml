@@ -50,7 +50,7 @@ jobs:
         run: pnpm codegen all
 
       # Typecheck generated code (TypeScript via tsc, Python via ty, Rust via cargo)
-      - run: pnpm --filter oxa-types-ts --filter oxa-core typecheck
+      - run: pnpm --filter oxa-types --filter oxa-core typecheck
       - run: uv run ty check src/
         working-directory: packages/oxa-types-py
       - run: cargo check
