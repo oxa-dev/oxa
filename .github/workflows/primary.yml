@@ -17,8 +17,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/setup-node@v4
         with:
@@ -32,7 +30,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       # Typecheck codegen scripts (before format/lint possibly change line numbers)
-      - run: pnpm --filter scripts typecheck
+      - run: pnpm --filter @oxa/scripts typecheck
 
       # On push: auto-fix formatting and linting (will be committed)
       - run: pnpm format
@@ -49,22 +47,13 @@ jobs:
       - name: Generate types
         run: pnpm codegen all
 
-      # Typecheck generated code (TypeScript via tsc, Python via ty, Rust via cargo)
-      # Note: oxa-types-ts uses build (not typecheck) to produce dist/*.d.ts for @oxa/core
-      - run: pnpm build
-        working-directory: packages/oxa-types-ts
+      # Typecheck generated code (Python and Rust - TypeScript handled by turbo build)
       - run: uv run ty check src/
         working-directory: packages/oxa-types-py
       - run: cargo check
         working-directory: packages/oxa-types-rs
 
-      # Build and test @oxa/core
-      - run: pnpm --filter @oxa/core typecheck
-      - run: pnpm --filter @oxa/core build
-      - run: pnpm --filter @oxa/core test
-
-      # Build oxa (copy bundled CLI)
-      - run: pnpm --filter oxa build
+      - run: pnpm test
 
       - name: Commit changes
         if: github.event_name == 'push'

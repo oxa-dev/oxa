@@ -3,7 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm run typecheck",
+    "format": "prettier --write \"*.ts\" \"lib/**/*.ts\"",
+    "format:check": "prettier --check \"*.ts\" \"lib/**/*.ts\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "ajv": "^8.17.1",

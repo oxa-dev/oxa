@@ -19,7 +19,12 @@
     "build": "tsc && cp ../../schema/schema.json dist/ && pnpm run build:bundle",
     "build:bundle": "esbuild src/cli.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/cli.bundle.cjs --banner:js='#!/usr/bin/env node' --log-override:empty-import-meta=silent",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "oxa-types": "workspace:*",
