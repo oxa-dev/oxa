@@ -35,6 +35,4 @@ properties:
       $ref: "./Block.yaml"
 required:
   - type
-  - metadata
-  - title
   - children

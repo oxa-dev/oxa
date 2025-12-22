@@ -27,5 +27,3 @@ properties:
 required:
   - type
   - children
-  - classes
-  - data

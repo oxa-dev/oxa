@@ -28,11 +28,11 @@ export interface Document {
   /**
    * Arbitrary document metadata.
    */
-  metadata: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
   /**
    * The document title as inline content.
    */
-  title: Inline[];
+  title?: Inline[];
   /**
    * The block content of the document.
    */
@@ -54,11 +54,11 @@ export interface Heading {
   /**
    * A list of class names for styling or semantics.
    */
-  classes: string[];
+  classes?: string[];
   /**
    * Arbitrary key-value data attached to the node.
    */
-  data: Record<string, unknown>;
+  data?: Record<string, unknown>;
   /**
    * The heading level (1-6).
    */
@@ -84,11 +84,11 @@ export interface Paragraph {
   /**
    * A list of class names for styling or semantics.
    */
-  classes: string[];
+  classes?: string[];
   /**
    * Arbitrary key-value data attached to the node.
    */
-  data: Record<string, unknown>;
+  data?: Record<string, unknown>;
   /**
    * The inline content of the paragraph.
    */
@@ -110,11 +110,11 @@ export interface Strong {
   /**
    * A list of class names for styling or semantics.
    */
-  classes: string[];
+  classes?: string[];
   /**
    * Arbitrary key-value data attached to the node.
    */
-  data: Record<string, unknown>;
+  data?: Record<string, unknown>;
   /**
    * The inline content to emphasize.
    */
@@ -136,11 +136,11 @@ export interface Text {
   /**
    * A list of class names for styling or semantics.
    */
-  classes: string[];
+  classes?: string[];
   /**
    * Arbitrary key-value data attached to the node.
    */
-  data: Record<string, unknown>;
+  data?: Record<string, unknown>;
   /**
    * The text content.
    */

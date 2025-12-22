@@ -25,5 +25,3 @@ properties:
 required:
   - type
   - value
-  - classes
-  - data
