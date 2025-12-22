@@ -31,8 +31,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Typecheck generation code in scripts/ (before format/lint possibly change line numbers)
-      - run: pnpm typecheck
+      # Typecheck codegen and CLI code (before format/lint possibly change line numbers)
+      - run: pnpm --filter scripts --filter oxa-core typecheck
 
       # On push: auto-fix formatting and linting (will be committed)
       - run: pnpm format
@@ -50,12 +50,19 @@ jobs:
         run: pnpm codegen all
 
       # Typecheck generated code (TypeScript via tsc, Python via ty, Rust via cargo)
-      - run: pnpm test
+      - run: pnpm typecheck
         working-directory: packages/oxa-types-ts
       - run: uv run ty check src/
         working-directory: packages/oxa-types-py
       - run: cargo check
         working-directory: packages/oxa-types-rs
+
+      # Build and test oxa-core (includes CLI)
+      - run: pnpm --filter oxa-core build
+      - run: pnpm --filter oxa-core test
+
+      # Build oxa (copy bundled CLI)
+      - run: pnpm --filter oxa build
 
       - name: Commit changes
         if: github.event_name == 'push'
