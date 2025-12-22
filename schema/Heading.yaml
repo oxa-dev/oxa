@@ -33,5 +33,3 @@ required:
   - type
   - level
   - children
-  - classes
-  - data

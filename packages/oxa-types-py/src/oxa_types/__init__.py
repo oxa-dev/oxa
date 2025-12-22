@@ -27,8 +27,12 @@ class Document(BaseModel):
     data: dict[str, Any] | None = Field(
         default=None, description="Arbitrary key-value data attached to the node."
     )
-    metadata: dict[str, Any] = Field(description="Arbitrary document metadata.")
-    title: list["Inline"] = Field(description="The document title as inline content.")
+    metadata: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary document metadata."
+    )
+    title: list["Inline"] | None = Field(
+        default=None, description="The document title as inline content."
+    )
     children: list["Block"] = Field(description="The block content of the document.")
 
 
@@ -41,11 +45,11 @@ class Heading(BaseModel):
     id: str | None = Field(
         default=None, description="A unique identifier for the node."
     )
-    classes: list[str] = Field(
-        description="A list of class names for styling or semantics."
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
     )
-    data: dict[str, Any] = Field(
-        description="Arbitrary key-value data attached to the node."
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
     )
     level: int = Field(description="The heading level (1-6).")
     children: list["Inline"] = Field(description="The inline content of the heading.")
@@ -60,11 +64,11 @@ class Paragraph(BaseModel):
     id: str | None = Field(
         default=None, description="A unique identifier for the node."
     )
-    classes: list[str] = Field(
-        description="A list of class names for styling or semantics."
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
     )
-    data: dict[str, Any] = Field(
-        description="Arbitrary key-value data attached to the node."
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
     )
     children: list["Inline"] = Field(description="The inline content of the paragraph.")
 
@@ -78,11 +82,11 @@ class Strong(BaseModel):
     id: str | None = Field(
         default=None, description="A unique identifier for the node."
     )
-    classes: list[str] = Field(
-        description="A list of class names for styling or semantics."
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
     )
-    data: dict[str, Any] = Field(
-        description="Arbitrary key-value data attached to the node."
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
     )
     children: list["Inline"] = Field(description="The inline content to emphasize.")
 
@@ -96,11 +100,11 @@ class Text(BaseModel):
     id: str | None = Field(
         default=None, description="A unique identifier for the node."
     )
-    classes: list[str] = Field(
-        description="A list of class names for styling or semantics."
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
     )
-    data: dict[str, Any] = Field(
-        description="Arbitrary key-value data attached to the node."
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
     )
     value: str = Field(description="The text content.")
 

@@ -24,9 +24,11 @@ pub struct Document {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<serde_json::Value>,
     /// Arbitrary document metadata.
-    pub metadata: serde_json::Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<serde_json::Value>,
     /// The document title as inline content.
-    pub title: Vec<Inline>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<Vec<Inline>>,
     /// The block content of the document.
     pub children: Vec<Block>,
 }
@@ -40,9 +42,11 @@ pub struct Heading {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// A list of class names for styling or semantics.
-    pub classes: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
     /// Arbitrary key-value data attached to the node.
-    pub data: serde_json::Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
     /// The heading level (1-6).
     pub level: i64,
     /// The inline content of the heading.
@@ -58,9 +62,11 @@ pub struct Paragraph {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// A list of class names for styling or semantics.
-    pub classes: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
     /// Arbitrary key-value data attached to the node.
-    pub data: serde_json::Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
     /// The inline content of the paragraph.
     pub children: Vec<Inline>,
 }
@@ -74,9 +80,11 @@ pub struct Strong {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// A list of class names for styling or semantics.
-    pub classes: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
     /// Arbitrary key-value data attached to the node.
-    pub data: serde_json::Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
     /// The inline content to emphasize.
     pub children: Vec<Inline>,
 }
@@ -90,9 +98,11 @@ pub struct Text {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// A list of class names for styling or semantics.
-    pub classes: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
     /// Arbitrary key-value data attached to the node.
-    pub data: serde_json::Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
     /// The text content.
     pub value: String,
 }
