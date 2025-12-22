@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "mkdir -p dist && cp ../oxa-core/dist/cli.bundle.cjs dist/cli.cjs"
+    "build": "rm -rf dist && mkdir -p dist && cp ../oxa-core/dist/cli.bundle.cjs dist/cli.cjs && cp ../oxa-core/dist/schema.json dist/"
   },
   "keywords": [
     "oxa",
