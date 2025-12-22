@@ -130,8 +130,7 @@ function generateStruct(name: string, def: SchemaDefinition): string[] {
 
     // Add serde rename if field name differs from JSON
     const jsonName = propName;
-    const needsRename =
-      fieldName !== jsonName && fieldName !== `r#${jsonName}`;
+    const needsRename = fieldName !== jsonName && fieldName !== `r#${jsonName}`;
 
     if (isRequired) {
       if (needsRename) {
@@ -225,5 +224,8 @@ function getRustType(prop: SchemaProperty): string {
 }
 
 function toSnakeCase(s: string): string {
-  return s.replace(/([A-Z])/g, "_$1").toLowerCase().replace(/^_/, "");
+  return s
+    .replace(/([A-Z])/g, "_$1")
+    .toLowerCase()
+    .replace(/^_/, "");
 }
