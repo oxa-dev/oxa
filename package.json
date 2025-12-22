@@ -6,14 +6,19 @@
   "engines": {
     "node": ">=22"
   },
+  "workspaces": [
+    "packages/*",
+    "scripts"
+  ],
   "scripts": {
     "codegen": "tsx scripts/codegen.ts",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "format": "turbo format",
+    "format:check": "turbo format:check",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
     "build": "turbo build",
-    "test": "turbo test"
+    "test": "turbo test",
+    "clean": "turbo clean"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

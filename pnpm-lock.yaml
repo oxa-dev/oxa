@@ -33,7 +33,11 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@types/node@25.0.2)(tsx@4.21.0)
 
-  packages/oxa: {}
+  packages/oxa:
+    devDependencies:
+      '@oxa/core':
+        specifier: workspace:*
+        version: link:../oxa-core
 
   packages/oxa-core:
     dependencies:

@@ -8,10 +8,16 @@
     "clean": {
       "outputs": []
     },
+    "format": {
+      "outputs": []
+    },
+    "format:check": {
+      "outputs": []
+    },
     "lint": {
       "outputs": []
     },
-    "lint:format": {
+    "lint:fix": {
       "outputs": []
     },
     "test": {
@@ -20,4 +26,3 @@
     }
   }
 }
-

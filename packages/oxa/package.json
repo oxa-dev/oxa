@@ -10,7 +10,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp ../oxa-core/dist/cli.bundle.cjs dist/cli.cjs && cp ../oxa-core/dist/schema.json dist/"
+    "build": "rm -rf dist && mkdir -p dist && cp ../oxa-core/dist/cli.bundle.cjs dist/cli.cjs && cp ../oxa-core/dist/schema.json dist/",
+    "clean": "rm -rf dist"
   },
   "keywords": [
     "oxa",
@@ -23,6 +24,9 @@
     "type": "git",
     "url": "git+https://github.com/oxa-dev/oxa.git",
     "directory": "packages/oxa"
+  },
+  "devDependencies": {
+    "@oxa/core": "workspace:*"
   },
   "engines": {
     "node": ">=22"
