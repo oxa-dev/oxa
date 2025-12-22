@@ -1,6 +1,7 @@
 # Node.js
 node_modules
 dist
+.turbo
 
 # Python
 __pycache__
