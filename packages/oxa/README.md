@@ -5,20 +5,12 @@ CLI for validating OXA documents.
 ## Installation
 
 ```bash
-# Global CLI installation
 npm install -g oxa
-
-# Local development dependency
-npm install oxa
 ```
 
-For programmatic usage (validation functions and types), install `oxa-core`:
+For programmatic usage (validation functions and types), see [`oxa-core`](https://www.npmjs.com/package/oxa-core).
 
-```bash
-npm install oxa-core
-```
-
-## CLI Usage
+## Usage
 
 ```bash
 # Validate files
@@ -44,35 +36,6 @@ oxa validate -q *.json
 - `0`: All files are valid
 - `1`: One or more validation failures
 - `2`: Execution error (file not found, parse error, etc.)
-
-## Programmatic Usage
-
-For programmatic usage, use the `oxa-core` package:
-
-```typescript
-import { validate, validateFile, validateJson, Document } from "oxa-core";
-
-// Validate a document object
-const doc: Document = {
-  type: "Document",
-  metadata: {},
-  title: [{ type: "Text", value: "Hello", classes: [], data: {} }],
-  children: [],
-};
-
-const result = validate(doc);
-if (result.valid) {
-  console.log("Document is valid!");
-} else {
-  console.error("Validation errors:", result.errors);
-}
-
-// Validate a file
-const fileResult = validateFile("./document.json");
-
-// Validate JSON string
-const jsonResult = validateJson('{"type": "Document", ...}');
-```
 
 ## Related Packages
 
