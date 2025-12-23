@@ -20,6 +20,7 @@
     "clean": "turbo clean",
     "changeset": "changeset",
     "version": "changeset version && pnpm codegen all",
+    "release": "pnpm build && pnpm changeset publish",
     "publish:pypi": "cd packages/oxa-types-py && uv build && uv publish",
     "publish:crates": "cd packages/oxa-types-rs && cargo publish"
   },

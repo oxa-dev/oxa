@@ -68,7 +68,7 @@ jobs:
         with:
           version: pnpm run version
           # Use changeset publish to only publish packages that were actually bumped
-          publish: ${{ (inputs.dry-run == true || inputs.publish-npm == false) && 'echo Skipping npm publish' || 'sh -c "pnpm build && pnpm changeset publish"' }}
+          publish: ${{ (inputs.dry-run == true || inputs.publish-npm == false) && 'echo Skipping npm publish' || 'pnpm run release' }}
           createGithubReleases: ${{ inputs.create-release != false }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
