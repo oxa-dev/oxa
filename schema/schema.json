@@ -24,7 +24,7 @@
       "properties": {
         "type": {
           "description": "The type discriminator for Document nodes.",
-          "const": "Document"
+          "enum": ["Document"]
         },
         "id": {
           "description": "A unique identifier for the node.",
@@ -71,7 +71,7 @@
       "properties": {
         "type": {
           "description": "The type discriminator for Heading nodes.",
-          "const": "Heading"
+          "enum": ["Heading"]
         },
         "id": {
           "description": "A unique identifier for the node.",
@@ -124,7 +124,7 @@
       "properties": {
         "type": {
           "description": "The type discriminator for Paragraph nodes.",
-          "const": "Paragraph"
+          "enum": ["Paragraph"]
         },
         "id": {
           "description": "A unique identifier for the node.",
@@ -159,7 +159,7 @@
       "properties": {
         "type": {
           "description": "The type discriminator for Strong nodes.",
-          "const": "Strong"
+          "enum": ["Strong"]
         },
         "id": {
           "description": "A unique identifier for the node.",
@@ -194,7 +194,7 @@
       "properties": {
         "type": {
           "description": "The type discriminator for Text nodes.",
-          "const": "Text"
+          "enum": ["Text"]
         },
         "id": {
           "description": "A unique identifier for the node.",

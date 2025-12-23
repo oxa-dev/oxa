@@ -25,6 +25,7 @@ const PYPROJECT_PATH = join(PACKAGE_DIR, "pyproject.toml");
 interface SchemaProperty {
   type?: string;
   const?: string;
+  enum?: string[];
   description?: string;
   items?: { $ref?: string; type?: string };
   $ref?: string;
@@ -170,6 +171,9 @@ function generateModel(
     if (prop.const) {
       // Const fields are Literal types with default values
       fieldDef = `    ${propName}: ${pyType} = "${prop.const}"`;
+    } else if (prop.enum && prop.enum.length === 1) {
+      // Single-element enum fields are Literal types with default values (same as const)
+      fieldDef = `    ${propName}: ${pyType} = "${prop.enum[0]}"`;
     } else if (isRequired) {
       if (prop.description) {
         fieldDef = `    ${propName}: ${pyType} = Field(description="${escapeString(prop.description)}")`;
@@ -225,6 +229,11 @@ function getPythonType(
   // Handle const values (type discriminator)
   if (prop.const) {
     return `Literal["${prop.const}"]`;
+  }
+
+  // Handle single-element enum as a Literal type (same as const)
+  if (prop.enum && prop.enum.length === 1) {
+    return `Literal["${prop.enum[0]}"]`;
   }
 
   // Handle $ref

@@ -6,7 +6,7 @@ type: object
 properties:
   type:
     description: The type discriminator for Strong nodes.
-    const: Strong
+    enum: [Strong]
   id:
     description: A unique identifier for the node.
     type: string

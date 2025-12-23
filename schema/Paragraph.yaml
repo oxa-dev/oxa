@@ -6,7 +6,7 @@ type: object
 properties:
   type:
     description: The type discriminator for Paragraph nodes.
-    const: Paragraph
+    enum: [Paragraph]
   id:
     description: A unique identifier for the node.
     type: string

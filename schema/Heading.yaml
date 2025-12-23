@@ -6,7 +6,7 @@ type: object
 properties:
   type:
     description: The type discriminator for Heading nodes.
-    const: Heading
+    enum: [Heading]
   id:
     description: A unique identifier for the node.
     type: string
