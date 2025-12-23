@@ -146,7 +146,10 @@ program
         } else {
           // Validate each file
           for (const filePath of files) {
-            const result = validateFile(filePath, { type: options.type, format });
+            const result = validateFile(filePath, {
+              type: options.type,
+              format,
+            });
 
             if (!result.valid) {
               hasFailures = true;
