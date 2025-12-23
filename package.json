@@ -1,6 +1,5 @@
 {
   "name": "oxa-monorepo",
-  "version": "0.1.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -18,9 +17,15 @@
     "lint:fix": "turbo lint:fix",
     "build": "turbo build",
     "test": "turbo test",
-    "clean": "turbo clean"
+    "clean": "turbo clean",
+    "changeset": "changeset",
+    "version": "changeset version && pnpm codegen all",
+    "publish:pypi": "cd packages/oxa-types-py && uv build && uv publish",
+    "publish:crates": "cd packages/oxa-types-rs && cargo publish"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.2",
+    "@changesets/cli": "^2.29.8",
     "@eslint/js": "^9.39.2",
     "eslint": "^9.39.2",
     "prettier": "^3.7.4",

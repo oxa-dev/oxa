@@ -20,22 +20,16 @@
  * - Handle all property types (primitives, arrays, refs) correctly
  */
 
-import { readFileSync, writeFileSync } from "fs";
+import { writeFileSync } from "fs";
 import { join } from "path";
 
 import prettier from "prettier";
 
 import { loadMergedSchema } from "./schema.js";
-import { getVersion } from "./version.js";
 
 const OUTPUT_PATH = join(
   import.meta.dirname,
   "../../packages/oxa-types-ts/src/index.ts",
-);
-
-const PACKAGE_JSON_PATH = join(
-  import.meta.dirname,
-  "../../packages/oxa-types-ts/package.json",
 );
 
 interface SchemaProperty {
@@ -60,15 +54,6 @@ interface SchemaDefinition {
 }
 
 export async function generateTs(): Promise<void> {
-  // Sync version from root package.json to oxa-types-ts package.json
-  const version = getVersion();
-  const pkg = JSON.parse(readFileSync(PACKAGE_JSON_PATH, "utf-8"));
-  if (pkg.version !== version) {
-    pkg.version = version;
-    writeFileSync(PACKAGE_JSON_PATH, JSON.stringify(pkg, null, 2) + "\n");
-    console.log(`Synced version to ${version} in ${PACKAGE_JSON_PATH}`);
-  }
-
   const schema = loadMergedSchema();
   const definitions = schema.definitions as Record<string, SchemaDefinition>;
 
