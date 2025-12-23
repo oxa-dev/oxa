@@ -60,7 +60,8 @@ describe("oxa validate", () => {
         reject: false,
       });
       expect(result.exitCode).toBe(1);
-      expect(result.stderr).toContain("invalid");
+      // Non-TTY outputs JSON with valid:false
+      expect(result.stderr).toContain('"valid":false');
     });
 
     it("exits 1 for malformed JSON from stdin", async () => {
@@ -182,7 +183,8 @@ describe("oxa validate", () => {
         reject: false,
       });
       expect(result.exitCode).toBe(1);
-      expect(result.stderr).toContain("invalid");
+      // Non-TTY outputs JSON with valid:false
+      expect(result.stderr).toContain('"valid":false');
     });
   });
 

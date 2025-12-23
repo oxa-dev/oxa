@@ -27,11 +27,12 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "oxa-types": "workspace:*",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "better-ajv-errors": "^2.0.2",
     "commander": "^14.0.0",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "oxa-types": "workspace:*"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",

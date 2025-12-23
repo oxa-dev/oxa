@@ -84,7 +84,6 @@ describe("validate", () => {
     const result = validate(validDocument, { type: "UnknownType" });
     expect(result.valid).toBe(false);
     expect(result.errors).toHaveLength(1);
-    expect(result.errors[0].keyword).toBe("type");
     expect(result.errors[0].message).toContain("Unknown type");
     expect(result.errors[0].message).toContain("UnknownType");
     expect(result.errors[0].message).toContain("Available types");
@@ -100,14 +99,13 @@ describe("validateJson", () => {
   it("returns errors for invalid JSON syntax", () => {
     const result = validateJson("{ invalid json }");
     expect(result.valid).toBe(false);
-    expect(result.errors[0].keyword).toBe("parse");
     expect(result.errors[0].message).toContain("Invalid JSON");
   });
 
   it("returns errors for valid JSON but invalid document", () => {
     const result = validateJson('{"type": "Document"}');
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) => e.keyword === "required")).toBe(true);
+    expect(result.errors.length).toBeGreaterThan(0);
   });
 });
 
@@ -124,7 +122,6 @@ children: []
   it("returns errors for invalid YAML syntax", () => {
     const result = validateYaml("invalid: yaml: syntax:");
     expect(result.valid).toBe(false);
-    expect(result.errors[0].keyword).toBe("parse");
     expect(result.errors[0].message).toContain("Invalid YAML");
   });
 
@@ -180,7 +177,6 @@ children: []
   it("returns error for non-existent file", () => {
     const result = validateFile("/nonexistent/file.json");
     expect(result.valid).toBe(false);
-    expect(result.errors[0].keyword).toBe("file");
     expect(result.errors[0].message).toContain("Failed to read file");
   });
 });

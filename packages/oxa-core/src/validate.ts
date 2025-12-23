@@ -5,6 +5,8 @@
 import AjvDefault from "ajv";
 import addFormatsDefault from "ajv-formats";
 import type { ValidateFunction, ErrorObject } from "ajv";
+// @ts-expect-error - better-ajv-errors has broken TypeScript exports
+import betterAjvErrors from "better-ajv-errors";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -67,6 +69,17 @@ function loadSchema(): Record<string, unknown> {
 export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
+  /** Pretty-printed output for terminal display (only present with format: 'cli') */
+  prettyOutput?: string;
+}
+
+/**
+ * Location in source file.
+ */
+export interface SourceLocation {
+  line: number;
+  column: number;
+  offset: number;
 }
 
 /**
@@ -75,8 +88,9 @@ export interface ValidationResult {
 export interface ValidationError {
   path: string;
   message: string;
-  keyword: string;
-  params: Record<string, unknown>;
+  suggestion?: string;
+  start?: SourceLocation;
+  end?: SourceLocation;
 }
 
 /**
@@ -85,6 +99,10 @@ export interface ValidationError {
 export interface ValidateOptions {
   /** Validate against a specific definition instead of Document */
   type?: string;
+  /** Raw JSON string for accurate line/column positions in errors */
+  json?: string;
+  /** Output format: 'js' for structured errors, 'cli' for pretty terminal output */
+  format?: "js" | "cli";
 }
 
 // Cached validator instances
@@ -139,20 +157,53 @@ function getValidator(type?: string): ValidateFunction | null {
   return validator;
 }
 
-/**
- * Convert AJV errors to ValidationError format.
- */
-function toValidationErrors(
-  errors: ErrorObject[] | null | undefined,
-): ValidationError[] {
-  if (!errors) return [];
+interface BetterError {
+  path?: string;
+  error?: string;
+  suggestion?: string;
+  start?: SourceLocation;
+  end?: SourceLocation;
+}
 
-  return errors.map((err) => ({
-    path: err.instancePath || "/",
-    message: err.message || "Unknown error",
-    keyword: err.keyword,
-    params: err.params as Record<string, unknown>,
+/**
+ * Convert AJV errors to ValidationError format using better-ajv-errors.
+ * Returns both structured errors and optionally pretty CLI output.
+ */
+function formatErrors(
+  errors: ErrorObject[] | null | undefined,
+  schema: Record<string, unknown>,
+  data: unknown,
+  json?: string,
+  format: "js" | "cli" = "js",
+): { errors: ValidationError[]; prettyOutput?: string } {
+  if (!errors || errors.length === 0) {
+    return { errors: [] };
+  }
+
+  // Get structured errors for the errors array
+  const structuredErrors = betterAjvErrors(schema, data, errors, {
+    format: "js",
+    json,
+  }) as BetterError[] | null;
+
+  const validationErrors = (structuredErrors ?? []).map((err: BetterError) => ({
+    path: err.path ?? "/",
+    message: err.error ?? "Unknown error",
+    suggestion: err.suggestion,
+    start: err.start,
+    end: err.end,
   }));
+
+  // Get pretty CLI output if requested
+  let prettyOutput: string | undefined;
+  if (format === "cli") {
+    prettyOutput = betterAjvErrors(schema, data, errors, {
+      format: "cli",
+      json,
+    }) as string;
+  }
+
+  return { errors: validationErrors, prettyOutput };
 }
 
 /**
@@ -163,6 +214,7 @@ export function validate(
   options: ValidateOptions = {},
 ): ValidationResult {
   const validator = getValidator(options.type);
+  const schema = loadSchema();
 
   // Unknown type specified
   if (!validator) {
@@ -173,18 +225,24 @@ export function validate(
         {
           path: "/",
           message: `Unknown type "${options.type}". Available types: ${availableTypes}`,
-          keyword: "type",
-          params: { type: options.type, availableTypes: getTypeNames() },
         },
       ],
     };
   }
 
   const valid = validator(data);
+  const { errors, prettyOutput } = formatErrors(
+    validator.errors,
+    schema,
+    data,
+    options.json,
+    options.format,
+  );
 
   return {
     valid: valid as boolean,
-    errors: toValidationErrors(validator.errors),
+    errors,
+    prettyOutput,
   };
 }
 
@@ -197,7 +255,7 @@ export function validateJson(
 ): ValidationResult {
   try {
     const data = JSON.parse(json);
-    return validate(data, options);
+    return validate(data, { ...options, json });
   } catch (error) {
     return {
       valid: false,
@@ -205,8 +263,6 @@ export function validateJson(
         {
           path: "/",
           message: `Invalid JSON: ${error instanceof Error ? error.message : String(error)}`,
-          keyword: "parse",
-          params: {},
         },
       ],
     };
@@ -230,8 +286,6 @@ export function validateYaml(
         {
           path: "/",
           message: `Invalid YAML: ${error instanceof Error ? error.message : String(error)}`,
-          keyword: "parse",
-          params: {},
         },
       ],
     };
@@ -260,8 +314,6 @@ export function validateFile(
         {
           path: "/",
           message: `Failed to read file: ${error instanceof Error ? error.message : String(error)}`,
-          keyword: "file",
-          params: {},
         },
       ],
     };
