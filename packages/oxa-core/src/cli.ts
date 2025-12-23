@@ -21,7 +21,13 @@ const EXIT_VALIDATION_FAILURE = 1;
 const EXIT_EXECUTION_ERROR = 2;
 
 /**
+ * Check if stderr is a TTY (for pretty output).
+ */
+const isTTY = process.stderr.isTTY ?? false;
+
+/**
  * Format validation result for output.
+ * Uses pretty CLI format for TTY, structured JSON for non-TTY.
  */
 function formatResult(
   result: ValidationResult,
@@ -32,10 +38,35 @@ function formatResult(
     if (!quiet) {
       console.log(`${filePath}: valid`);
     }
+    return;
+  }
+
+  // For non-TTY (pipes, redirects), output structured JSON
+  if (!isTTY) {
+    console.error(
+      JSON.stringify({
+        file: filePath,
+        valid: false,
+        errors: result.errors,
+      }),
+    );
+    return;
+  }
+
+  // For TTY, use pretty CLI output if available
+  console.error(`${filePath}: invalid`);
+  if (result.prettyOutput) {
+    console.error(result.prettyOutput);
   } else {
-    console.error(`${filePath}: invalid`);
+    // Fallback to structured output
     for (const error of result.errors) {
-      console.error(`  ${error.path}: ${error.message}`);
+      const location = error.start
+        ? ` (line ${error.start.line}, col ${error.start.column})`
+        : "";
+      console.error(`  ${error.path}${location}: ${error.message}`);
+      if (error.suggestion) {
+        console.error(`    Suggestion: ${error.suggestion}`);
+      }
     }
   }
 }
@@ -92,6 +123,8 @@ program
       },
     ) => {
       let hasFailures = false;
+      // Use CLI format for TTY, JS format for pipes/redirects
+      const format = isTTY ? "cli" : "js";
 
       try {
         // Handle stdin if no files or "-" specified
@@ -100,9 +133,9 @@ program
 
           let result: ValidationResult;
           if (options.yaml) {
-            result = validateYaml(content, { type: options.type });
+            result = validateYaml(content, { type: options.type, format });
           } else {
-            result = validateJson(content, { type: options.type });
+            result = validateJson(content, { type: options.type, format });
           }
 
           if (!result.valid) {
@@ -113,7 +146,10 @@ program
         } else {
           // Validate each file
           for (const filePath of files) {
-            const result = validateFile(filePath, { type: options.type });
+            const result = validateFile(filePath, {
+              type: options.type,
+              format,
+            });
 
             if (!result.valid) {
               hasFailures = true;
