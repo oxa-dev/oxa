@@ -1,0 +1,171 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Custom tag override (default: per-package tags via changesets)"
+        type: string
+        required: false
+      publish-npm:
+        description: Publish npm packages (oxa-types, @oxa/core, oxa)
+        type: boolean
+        default: true
+      publish-pypi:
+        description: Publish Python package (oxa-types)
+        type: boolean
+        default: true
+      publish-crates:
+        description: Publish Rust package (oxa-types)
+        type: boolean
+        default: true
+      create-release:
+        description: Create GitHub Release
+        type: boolean
+        default: true
+      dry-run:
+        description: Dry run (skip actual publishing)
+        type: boolean
+        default: false
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      published-packages: ${{ steps.changesets.outputs.publishedPackages }}
+      types-version: ${{ steps.get-versions.outputs.types-version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: astral-sh/setup-uv@v5
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Create Release PR or Publish npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm run version
+          # Use changeset publish to only publish packages that were actually bumped
+          publish: ${{ (inputs.dry-run == true || inputs.publish-npm == false) && 'echo Skipping npm publish' || 'pnpm build && pnpm changeset publish' }}
+          createGithubReleases: ${{ inputs.create-release != false }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Get published types version
+        id: get-versions
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          # Read version after changesets has bumped it
+          TYPES_VERSION=$(jq -r '.version' packages/oxa-types-ts/package.json)
+          echo "types-version=$TYPES_VERSION" >> $GITHUB_OUTPUT
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: release
+    if: |
+      needs.release.outputs.published == 'true' &&
+      inputs.publish-pypi != false &&
+      contains(needs.release.outputs.published-packages, 'oxa-types')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Build Python package
+        working-directory: packages/oxa-types-py
+        run: uv build
+
+      - name: Publish to PyPI
+        if: ${{ inputs.dry-run != true }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: packages/oxa-types-py/dist/
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Dry run - show what would be published
+        if: ${{ inputs.dry-run == true }}
+        run: |
+          echo "Dry run - would publish:"
+          ls -la packages/oxa-types-py/dist/
+
+  publish-crates:
+    name: Publish to crates.io
+    needs: release
+    if: |
+      needs.release.outputs.published == 'true' &&
+      inputs.publish-crates != false &&
+      contains(needs.release.outputs.published-packages, 'oxa-types')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Publish to crates.io
+        if: ${{ inputs.dry-run != true }}
+        working-directory: packages/oxa-types-rs
+        run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+
+      - name: Dry run - check package
+        if: ${{ inputs.dry-run == true }}
+        working-directory: packages/oxa-types-rs
+        run: cargo publish --dry-run
+
+  create-schema-tag:
+    name: Create schema tag
+    needs: [release, publish-pypi, publish-crates]
+    if: |
+      always() &&
+      needs.release.outputs.published == 'true' &&
+      contains(needs.release.outputs.published-packages, 'oxa-types') &&
+      (needs.publish-pypi.result == 'success' || needs.publish-pypi.result == 'skipped') &&
+      (needs.publish-crates.result == 'success' || needs.publish-crates.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create and push schema tag
+        if: ${{ inputs.dry-run != true }}
+        run: |
+          VERSION="${{ needs.release.outputs.types-version }}"
+          TAG="schema@${VERSION}"
+
+          # Check if tag already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "Created and pushed tag: $TAG"
+          fi
+
+      - name: Dry run - show what tag would be created
+        if: ${{ inputs.dry-run == true }}
+        run: |
+          VERSION="${{ needs.release.outputs.types-version }}"
+          echo "Dry run - would create tag: schema@${VERSION}"
