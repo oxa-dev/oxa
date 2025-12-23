@@ -1,7 +1,7 @@
 # See docs at: https://mystmd.org/guide/frontmatter
 version: 1
 project:
-  id: oxa-docs
+  id: d4708b81-ae01-4dbf-9cc7-2c067d3e2b15
   title: Open Exchange Architecture
   description: A specification for representing scientific documents and their components as structured objects.
   license: CC-BY-4.0
