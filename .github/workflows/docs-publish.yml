@@ -1,0 +1,19 @@
+name: Docs Publish
+on:
+  push:
+    branches: ["main"]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  draft:
+    uses: curvenote/actions/.github/workflows/submit.yml@v1
+    with:
+      venue: oxa
+      kind: docs
+      collection: docs
+      path: docs
+      publish: true
+    secrets:
+      CURVENOTE: ${{ secrets.CURVENOTE_TOKEN }}
+      GITHUB: ${{ secrets.GITHUB_TOKEN }}
