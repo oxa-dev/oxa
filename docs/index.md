@@ -10,7 +10,7 @@ site:
 :max-width: 100
 :overlay: 60
 :kicker: Open Exchange Architecture
-:actions: [Get Started](./install.md) [Schema](./schema.md)
+:actions: [Get Started](./install.md) [Schema](./schema-overview.md)
 :footer: OXA defines open, extensible JSON schemas that describe modular and composable scientific documents — bridging the gap between authoring systems like Stencila, MyST, Quarto and the scientific publishing ecosystem which uses tools like JATS.
 A foundation for interoperable, structured scientific content.
 :::
