@@ -5,12 +5,13 @@
  * directory, formatted for use in documentation sites.
  */
 
-import { mkdirSync, rmSync, writeFileSync, existsSync } from "fs";
+import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 
 import { loadMergedSchema } from "./schema.js";
 
 const OUTPUT_DIR = join(import.meta.dirname, "../../docs/schema");
+const INDEX_FILE = join(OUTPUT_DIR, "index.md");
 
 interface SchemaProperty {
   type?: string;
@@ -34,11 +35,22 @@ interface SchemaDefinition {
 }
 
 export async function generateDocs(): Promise<void> {
+  // Preserve index.md if it exists
+  let indexContent: string | null = null;
+  if (existsSync(INDEX_FILE)) {
+    indexContent = readFileSync(INDEX_FILE, "utf-8");
+  }
+
   // Delete and recreate output directory
   if (existsSync(OUTPUT_DIR)) {
     rmSync(OUTPUT_DIR, { recursive: true, force: true });
   }
   mkdirSync(OUTPUT_DIR, { recursive: true });
+
+  // Restore index.md if it was preserved
+  if (indexContent !== null) {
+    writeFileSync(INDEX_FILE, indexContent);
+  }
 
   const schema = loadMergedSchema();
   const definitions = schema.definitions as Record<string, SchemaDefinition>;
