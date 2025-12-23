@@ -78,6 +78,39 @@ pnpm clean
 
 **Note:** This project uses [Turborepo](https://turbo.build/) for build orchestration. Turborepo provides intelligent caching and parallel task execution across the monorepo, significantly speeding up builds and tests.
 
+## Releases
+
+This project uses [Changesets](https://github.com/changesets/changesets) for version management and releases.
+
+### Adding a changeset
+
+When you make changes that should be released, run:
+
+```bash
+pnpm changeset
+```
+
+This will prompt you to:
+1. Select which packages are affected
+2. Choose the bump type (patch, minor, major)
+3. Write a summary of the changes
+
+Commit the generated changeset file with your PR.
+
+### Release process
+
+1. When PRs with changesets are merged to `main`, a "Version Packages" PR is automatically created/updated
+2. Merging the "Version Packages" PR triggers the release workflow
+3. Packages are published to:
+   - **npm**: `oxa-types`, `@oxa/core`, `oxa`
+   - **PyPI**: `oxa-types`
+   - **crates.io**: `oxa-types`
+
+### Version synchronization
+
+- `oxa-types` (TypeScript), `oxa-types` (Python), and `oxa-types` (Rust) stay in sync
+- `@oxa/core` and `oxa` can version independently
+
 ## Documentation
 
 The documentation uses [MyST](https://mystmd.org) and requires the automated codegen tool to run. To start the documentation use `npm install -g mystmd` and run `myst start` in the `docs/` folder. The online documentation is hosted using Curvenote under https://oxa.dev
