@@ -11,10 +11,16 @@ project:
     AST: Abstract Syntax Tree
     JATS: Journal Article Tag Suite
     JSON: JavaScript Object Notation
+    CLI: Command Line Interface
+    API: Application Programming Interface
   toc:
     - file: index.md
+    - file: install.md
+    - file: schema-overview.md
     - title: Schema Reference
       children:
         - pattern: schema/*.md
 site:
   template: book-theme
+  options:
+    folders: true
