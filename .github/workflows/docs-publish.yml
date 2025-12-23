@@ -6,7 +6,7 @@ permissions:
   contents: read
   pull-requests: write
 jobs:
-  draft:
+  publish:
     uses: curvenote/actions/.github/workflows/submit.yml@v1
     with:
       venue: oxa
