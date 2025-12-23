@@ -41,6 +41,7 @@ const PACKAGE_JSON_PATH = join(
 interface SchemaProperty {
   type?: string;
   const?: string;
+  enum?: string[];
   description?: string;
   items?: { $ref?: string; type?: string };
   $ref?: string;
@@ -163,6 +164,11 @@ function getTypeScriptType(prop: SchemaProperty): string {
   // Handle const values (type discriminator)
   if (prop.const) {
     return `"${prop.const}"`;
+  }
+
+  // Handle single-element enum as a literal type (same as const)
+  if (prop.enum && prop.enum.length === 1) {
+    return `"${prop.enum[0]}"`;
   }
 
   // Handle $ref

@@ -15,6 +15,7 @@ const OUTPUT_DIR = join(import.meta.dirname, "../../docs/schema");
 interface SchemaProperty {
   type?: string;
   const?: string;
+  enum?: string[];
   description?: string;
   items?: { $ref?: string; type?: string };
   $ref?: string;
@@ -88,6 +89,9 @@ function generateDocContent(name: string, def: SchemaDefinition): string {
     if (prop.const) {
       // Const types use italic _string_, with const value in parentheses
       lines.push(`__${propName}__: _string_, ("${prop.const}")`);
+    } else if (prop.enum && prop.enum.length === 1) {
+      // Single-element enum (same as const)
+      lines.push(`__${propName}__: _string_, ("${prop.enum[0]}")`);
     } else if (prop.type === "array" && prop.items) {
       const arrayType = getArrayItemType(prop.items);
       lines.push(`__${propName}__: __array__ ("${arrayType}")`);

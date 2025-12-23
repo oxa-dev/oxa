@@ -6,7 +6,7 @@ type: object
 properties:
   type:
     description: The type discriminator for Text nodes.
-    const: Text
+    enum: [Text]
   id:
     description: A unique identifier for the node.
     type: string

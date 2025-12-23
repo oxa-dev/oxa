@@ -26,6 +26,7 @@ const CARGO_TOML_PATH = join(PACKAGE_DIR, "Cargo.toml");
 interface SchemaProperty {
   type?: string;
   const?: string;
+  enum?: string[];
   description?: string;
   items?: { $ref?: string; type?: string };
   $ref?: string;
@@ -183,6 +184,11 @@ function getRustType(prop: SchemaProperty): string {
   // Handle const values (type discriminator) - use MustBe!
   if (prop.const) {
     return `MustBe!("${prop.const}")`;
+  }
+
+  // Handle single-element enum as MustBe! (same as const)
+  if (prop.enum && prop.enum.length === 1) {
+    return `MustBe!("${prop.enum[0]}")`;
   }
 
   // Handle $ref
