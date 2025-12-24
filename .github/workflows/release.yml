@@ -132,6 +132,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Authenticate with crates.io
+        id: crates-auth
         if: ${{ inputs.dry-run != true }}
         uses: rust-lang/crates-io-auth-action@v1
 
@@ -139,6 +140,8 @@ jobs:
         if: ${{ inputs.dry-run != true }}
         working-directory: packages/oxa-types-rs
         run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.crates-auth.outputs.token }}
 
       - name: Dry run - check package
         if: ${{ inputs.dry-run == true }}
