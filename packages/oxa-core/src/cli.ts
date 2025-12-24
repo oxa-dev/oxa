@@ -5,9 +5,7 @@
  */
 
 import { program } from "commander";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import version from "./version.js";
 import {
   validateFile,
   validateJson,
@@ -82,24 +80,10 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf-8");
 }
 
-/**
- * Get package version from package.json.
- */
-function getVersion(): string {
-  try {
-    const __dirname = dirname(fileURLToPath(import.meta.url));
-    const pkgPath = join(__dirname, "..", "package.json");
-    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-    return pkg.version;
-  } catch {
-    return "0.0.0";
-  }
-}
-
 program
   .name("oxa")
   .description("CLI for validating OXA documents")
-  .version(getVersion());
+  .version(version);
 
 program
   .command("validate")
