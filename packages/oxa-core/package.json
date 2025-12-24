@@ -16,7 +16,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && cp ../../schema/schema.json dist/ && pnpm run build:bundle",
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
+    "build": "pnpm run copy:version && tsc && cp ../../schema/schema.json dist/ && pnpm run build:bundle",
     "build:bundle": "esbuild src/cli.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/cli.bundle.cjs --banner:js='#!/usr/bin/env node' --log-override:empty-import-meta=silent",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
