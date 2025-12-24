@@ -29,6 +29,10 @@ on:
         description: Dry run (skip actual publishing)
         type: boolean
         default: false
+      force-publish:
+        description: Force publish (skip version checks, for initial release)
+        type: boolean
+        default: false
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -85,9 +89,11 @@ jobs:
     name: Publish to PyPI
     needs: release
     if: |
-      needs.release.outputs.published == 'true' &&
+      always() &&
       inputs.publish-pypi != false &&
-      contains(needs.release.outputs.published-packages, 'oxa-types')
+      (inputs.force-publish == true ||
+       (needs.release.outputs.published == 'true' &&
+        contains(needs.release.outputs.published-packages, 'oxa-types')))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -114,9 +120,11 @@ jobs:
     name: Publish to crates.io
     needs: release
     if: |
-      needs.release.outputs.published == 'true' &&
+      always() &&
       inputs.publish-crates != false &&
-      contains(needs.release.outputs.published-packages, 'oxa-types')
+      (inputs.force-publish == true ||
+       (needs.release.outputs.published == 'true' &&
+        contains(needs.release.outputs.published-packages, 'oxa-types')))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -142,18 +150,25 @@ jobs:
     needs: [release, publish-pypi, publish-crates]
     if: |
       always() &&
-      needs.release.outputs.published == 'true' &&
-      contains(needs.release.outputs.published-packages, 'oxa-types') &&
+      (inputs.force-publish == true ||
+       (needs.release.outputs.published == 'true' &&
+        contains(needs.release.outputs.published-packages, 'oxa-types'))) &&
       (needs.publish-pypi.result == 'success' || needs.publish-pypi.result == 'skipped') &&
       (needs.publish-crates.result == 'success' || needs.publish-crates.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' packages/oxa-types-ts/package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Create and push schema tag
         if: ${{ inputs.dry-run != true }}
         run: |
-          VERSION="${{ needs.release.outputs.types-version }}"
+          VERSION="${{ steps.version.outputs.version }}"
           TAG="schema@${VERSION}"
 
           # Check if tag already exists
@@ -168,5 +183,5 @@ jobs:
       - name: Dry run - show what tag would be created
         if: ${{ inputs.dry-run == true }}
         run: |
-          VERSION="${{ needs.release.outputs.types-version }}"
+          VERSION="${{ steps.version.outputs.version }}"
           echo "Dry run - would create tag: schema@${VERSION}"
