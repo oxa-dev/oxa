@@ -36,6 +36,24 @@ class Document(BaseModel):
     children: list["Block"] = Field(description="The block content of the document.")
 
 
+class Emphasis(BaseModel):
+    """Emphasized content (typically italicized)."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["Emphasis"] = "Emphasis"
+    id: str | None = Field(
+        default=None, description="A unique identifier for the node."
+    )
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
+    )
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
+    )
+    children: list["Inline"] = Field(description="The inline content to emphasize.")
+
+
 class Heading(BaseModel):
     """A heading with a level and inline content."""
 
@@ -114,11 +132,12 @@ Block = Annotated[Union[Heading, Paragraph], Field(discriminator="type")]
 
 
 # Union of all inline content types.
-Inline = Annotated[Union[Text, Strong], Field(discriminator="type")]
+Inline = Annotated[Union[Text, Emphasis, Strong], Field(discriminator="type")]
 
 
 # Rebuild models to resolve forward references
 Document.model_rebuild()
+Emphasis.model_rebuild()
 Heading.model_rebuild()
 Paragraph.model_rebuild()
 Strong.model_rebuild()
@@ -128,6 +147,7 @@ Text.model_rebuild()
 __all__ = [
     "Block",
     "Document",
+    "Emphasis",
     "Heading",
     "Inline",
     "Paragraph",

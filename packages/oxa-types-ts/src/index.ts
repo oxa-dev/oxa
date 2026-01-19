@@ -40,6 +40,32 @@ export interface Document {
 }
 
 /**
+ * Emphasized content (typically italicized).
+ */
+export interface Emphasis {
+  /**
+   * The type discriminator for Emphasis nodes.
+   */
+  type: "Emphasis";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The inline content to emphasize.
+   */
+  children: Inline[];
+}
+
+/**
  * A heading with a level and inline content.
  */
 export interface Heading {
@@ -155,4 +181,4 @@ export type Block = Heading | Paragraph;
 /**
  * Union of all inline content types.
  */
-export type Inline = Text | Strong;
+export type Inline = Text | Emphasis | Strong;

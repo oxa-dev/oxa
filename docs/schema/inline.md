@@ -6,4 +6,4 @@
 Union of all inline content types.
 
 
-Union of: @oxa:text, @oxa:strong
+Union of: @oxa:text, @oxa:emphasis, @oxa:strong
