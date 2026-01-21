@@ -64,6 +64,41 @@
       },
       "required": ["type", "children"]
     },
+    "Emphasis": {
+      "title": "Emphasis",
+      "description": "Emphasized content (typically italicized).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Emphasis nodes.",
+          "enum": ["Emphasis"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "children": {
+          "description": "The inline content to emphasize.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        }
+      },
+      "required": ["type", "children"]
+    },
     "Heading": {
       "title": "Heading",
       "description": "A heading with a level and inline content.",
@@ -111,6 +146,9 @@
       "anyOf": [
         {
           "$ref": "#/definitions/Text"
+        },
+        {
+          "$ref": "#/definitions/Emphasis"
         },
         {
           "$ref": "#/definitions/Strong"

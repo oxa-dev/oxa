@@ -33,6 +33,24 @@ pub struct Document {
     pub children: Vec<Block>,
 }
 
+/// Emphasized content (typically italicized).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Emphasis {
+    /// The type discriminator for Emphasis nodes.
+    pub r#type: MustBe!("Emphasis"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The inline content to emphasize.
+    pub children: Vec<Inline>,
+}
+
 /// A heading with a level and inline content.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Heading {
@@ -120,5 +138,6 @@ pub enum Block {
 #[serde(untagged)]
 pub enum Inline {
     Text(Text),
+    Emphasis(Emphasis),
     Strong(Strong),
 }

@@ -4,4 +4,5 @@ title: Inline
 description: Union of all inline content types.
 anyOf:
   - $ref: "./Text.yaml"
+  - $ref: "./Emphasis.yaml"
   - $ref: "./Strong.yaml"
