@@ -114,13 +114,13 @@ Commit the generated changeset file with your PR.
 
 ## Conformance Suite
 
-The `oxa-conformance` package provides test cases for validating OXA format conversion implementations. If you're building a tool that converts between OXA and other formats, you can use these test cases to validate your implementation.
+The `@oxa/conformance` package provides test cases for validating OXA format conversion implementations. If you're building a tool that converts between OXA and other formats, you can use these test cases to validate your implementation.
 
 To add new test cases to the conformance suite:
 
 1. Create a new JSON file in the appropriate directory:
-   - `packages/oxa-conformance/cases/inline/` for inline node tests
-   - `packages/oxa-conformance/cases/block/` for block node tests
+   - `packages/@oxa/conformance/cases/inline/` for inline node tests
+   - `packages/@oxa/conformance/cases/block/` for block node tests
 
 2. Follow the test case format:
 

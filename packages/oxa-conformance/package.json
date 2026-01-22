@@ -1,5 +1,5 @@
 {
-  "name": "oxa-conformance",
+  "name": "@oxa/conformance",
   "version": "0.1.0",
   "description": "Conformance test suite for OXA schema implementations",
   "type": "module",
@@ -29,6 +29,9 @@
     "validation"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oxa-dev/oxa.git",

@@ -9,13 +9,13 @@ The OXA Conformance Suite provides test cases containing OXA JSON alongside equi
 ## Installation
 
 ```bash
-npm install oxa-conformance
+npm install @oxa/conformance
 ```
 
 Or include it as a dev dependency:
 
 ```bash
-npm install -D oxa-conformance
+npm install -D @oxa/conformance
 ```
 
 ## Usage
@@ -26,10 +26,10 @@ The package exports a manifest listing all available test cases:
 
 ```javascript
 // ESM (recommended)
-import manifest from "oxa-conformance";
+import manifest from "@oxa/conformance";
 
 // CommonJS
-const manifest = require("oxa-conformance");
+const manifest = require("@oxa/conformance");
 
 console.log(manifest.cases); // Array of test case metadata
 ```
@@ -42,7 +42,7 @@ import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
 // Get the path to the conformance package
-const conformancePath = dirname(fileURLToPath(import.meta.resolve("oxa-conformance")));
+const conformancePath = dirname(fileURLToPath(import.meta.resolve("@oxa/conformance")));
 
 // Load a specific test case
 const textBasic = JSON.parse(
@@ -61,7 +61,7 @@ Here's an example of using the conformance suite with a testing framework:
 
 ```javascript
 import { describe, it, expect } from "vitest";
-import manifest from "oxa-conformance";
+import manifest from "@oxa/conformance";
 import { readFileSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
@@ -70,7 +70,7 @@ import { fileURLToPath } from "url";
 import { oxaToMarkdown, markdownToOxa } from "./your-converter";
 
 // Get path to conformance package
-const conformancePath = dirname(fileURLToPath(import.meta.resolve("oxa-conformance")));
+const conformancePath = dirname(fileURLToPath(import.meta.resolve("@oxa/conformance")));
 
 describe("OXA Conformance", () => {
   for (const testCase of manifest.cases) {
@@ -162,7 +162,7 @@ The `manifest.json` file provides an index of all test cases:
 ## Directory Structure
 
 ```
-oxa-conformance/
+@oxa/conformance/
 ├── manifest.json           # Index of all test cases
 ├── cases/
 │   ├── inline/            # Inline node test cases
