@@ -45,6 +45,8 @@ importers:
         specifier: workspace:*
         version: link:../oxa-core
 
+  packages/oxa-conformance: {}
+
   packages/oxa-core:
     dependencies:
       ajv:

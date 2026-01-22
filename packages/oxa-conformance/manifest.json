@@ -1,0 +1,6 @@
+{
+  "$schema": "./schemas/manifest.schema.json",
+  "version": "0.1.0",
+  "formats": ["oxa", "myst", "pandoc", "stencila", "markdown", "html", "jats"],
+  "cases": []
+}

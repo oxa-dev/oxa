@@ -25,7 +25,11 @@ const generators: Generator[] = [
   { name: "py", label: "Python Pydantic models", fn: generatePy },
   { name: "rs", label: "Rust types", fn: generateRs },
   { name: "ts", label: "TypeScript types", fn: generateTs },
-  { name: "conformance", label: "Conformance suite manifest", fn: generateConformance },
+  {
+    name: "conformance",
+    label: "Conformance suite manifest",
+    fn: generateConformance,
+  },
   { name: "docs", label: "Schema documentation", fn: generateDocs },
 ];
 
