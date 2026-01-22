@@ -55,15 +55,16 @@ pnpm typecheck
 ### Code Generation
 
 ```bash
-# Run all code generation (validate, ts, py, rs, docs)
+# Run all code generation (validate, ts, py, rs, docs, conformance)
 pnpm codegen all
 
 # Or run individual steps:
-pnpm codegen validate  # Validate schema files
-pnpm codegen ts        # Generate TypeScript types
-pnpm codegen py        # Generate Python Pydantic models
-pnpm codegen rs        # Generate Rust types
-pnpm codegen docs      # Generate MyST documentation
+pnpm codegen validate     # Validate schema files
+pnpm codegen ts           # Generate TypeScript types
+pnpm codegen py           # Generate Python Pydantic models
+pnpm codegen rs           # Generate Rust types
+pnpm codegen conformance  # Generate conformance suite manifest
+pnpm codegen docs         # Generate MyST documentation
 ```
 
 ### Building
@@ -110,6 +111,53 @@ Commit the generated changeset file with your PR.
 
 - `oxa-types` (TypeScript), `oxa-types` (Python), and `oxa-types` (Rust) stay in sync
 - `@oxa/core` and `oxa` can version independently
+
+## Conformance Suite
+
+The `oxa-conformance` package provides test cases for validating OXA format conversion implementations. If you're building a tool that converts between OXA and other formats, you can use these test cases to validate your implementation.
+
+To add new test cases to the conformance suite:
+
+1. Create a new JSON file in the appropriate directory:
+   - `packages/oxa-conformance/cases/inline/` for inline node tests
+   - `packages/oxa-conformance/cases/block/` for block node tests
+
+2. Follow the test case format:
+
+```json
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Short descriptive title",
+  "description": "What this test validates",
+  "category": "inline",
+  "formats": {
+    "oxa": { ... },
+    "myst": { ... },
+    "pandoc": { ... },
+    "stencila": { ... },
+    "markdown": "...",
+    "html": "...",
+    "jats": "..."
+  },
+  "notes": {
+    "markdown": "Optional format-specific notes"
+  }
+}
+```
+
+3. Formats should be in canonical order: `oxa`, `myst`, `pandoc`, `stencila`, `markdown`, `html`, `jats`. The `oxa` format is required; others are optional.
+
+4. Regenerate the manifest:
+
+```bash
+pnpm codegen conformance
+```
+
+5. Run tests to validate your test case:
+
+```bash
+pnpm test
+```
 
 ## Documentation
 
