@@ -271,8 +271,7 @@ function generateTestCaseSection(testCase: TestCase): string {
 
     const label = FORMAT_LABELS[format];
     const lang = FORMAT_LANGUAGES[format];
-    const content =
-      typeof value === "string" ? value : JSON.stringify(value);
+    const content = typeof value === "string" ? value : JSON.stringify(value);
 
     lines.push(`\`\`\`{tab-item} ${label}`);
     lines.push(`:sync: ${format}`);
