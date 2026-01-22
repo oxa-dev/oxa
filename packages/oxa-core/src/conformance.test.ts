@@ -86,7 +86,9 @@ describe("OXA Conformance Suite", () => {
 
         it("nodeTypes in manifest match actual types in OXA", () => {
           // Compare as sorted arrays to avoid Set iteration order issues
-          const actualTypes = Array.from(extractTypes(testCase.formats.oxa)).sort();
+          const actualTypes = Array.from(
+            extractTypes(testCase.formats.oxa),
+          ).sort();
           const manifestTypes = [...testCaseMeta.nodeTypes].sort();
 
           expect(actualTypes).toEqual(manifestTypes);
