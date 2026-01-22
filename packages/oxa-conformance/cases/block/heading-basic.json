@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic heading",
+  "description": "A level 1 heading containing text",
+  "category": "block",
+  "formats": {
+    "oxa": {
+      "type": "Heading",
+      "level": 1,
+      "children": [
+        { "type": "Text", "value": "Introduction" }
+      ]
+    },
+    "myst": {
+      "type": "heading",
+      "depth": 1,
+      "children": [
+        { "type": "text", "value": "Introduction" }
+      ]
+    },
+    "pandoc": {
+      "t": "Header",
+      "c": [
+        1,
+        ["", [], []],
+        [{ "t": "Str", "c": "Introduction" }]
+      ]
+    },
+    "stencila": {
+      "type": "Heading",
+      "depth": 1,
+      "content": [
+        { "type": "Text", "value": "Introduction" }
+      ]
+    },
+    "markdown": "# Introduction",
+    "html": "<h1>Introduction</h1>",
+    "jats": "<title>Introduction</title>"
+  },
+  "notes": {
+    "myst": "MyST uses 'depth' instead of 'level'",
+    "stencila": "Stencila uses 'depth' instead of 'level'",
+    "jats": "JATS uses <title> for section headings within <sec> elements"
+  }
+}

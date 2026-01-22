@@ -1,0 +1,35 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic paragraph",
+  "description": "A simple paragraph containing text",
+  "category": "block",
+  "formats": {
+    "oxa": {
+      "type": "Paragraph",
+      "children": [
+        { "type": "Text", "value": "This is a paragraph." }
+      ]
+    },
+    "myst": {
+      "type": "paragraph",
+      "children": [
+        { "type": "text", "value": "This is a paragraph." }
+      ]
+    },
+    "pandoc": {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "This is a paragraph." }
+      ]
+    },
+    "stencila": {
+      "type": "Paragraph",
+      "content": [
+        { "type": "Text", "value": "This is a paragraph." }
+      ]
+    },
+    "markdown": "This is a paragraph.",
+    "html": "<p>This is a paragraph.</p>",
+    "jats": "<p>This is a paragraph.</p>"
+  }
+}

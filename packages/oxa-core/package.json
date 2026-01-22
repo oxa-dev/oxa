@@ -36,6 +36,7 @@
     "oxa-types": "workspace:*"
   },
   "devDependencies": {
+    "@oxa/conformance": "workspace:*",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.0.0",
     "esbuild": "^0.25.0",

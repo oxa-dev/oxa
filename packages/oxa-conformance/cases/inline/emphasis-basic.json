@@ -1,0 +1,38 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic emphasis",
+  "description": "Emphasized text (typically rendered as italic)",
+  "category": "inline",
+  "formats": {
+    "oxa": {
+      "type": "Emphasis",
+      "children": [
+        { "type": "Text", "value": "emphasized text" }
+      ]
+    },
+    "myst": {
+      "type": "emphasis",
+      "children": [
+        { "type": "text", "value": "emphasized text" }
+      ]
+    },
+    "pandoc": {
+      "t": "Emph",
+      "c": [
+        { "t": "Str", "c": "emphasized text" }
+      ]
+    },
+    "stencila": {
+      "type": "Emphasis",
+      "content": [
+        { "type": "Text", "value": "emphasized text" }
+      ]
+    },
+    "markdown": "*emphasized text*",
+    "html": "<em>emphasized text</em>",
+    "jats": "<italic>emphasized text</italic>"
+  },
+  "notes": {
+    "markdown": "Also accepts _emphasized text_ as input"
+  }
+}

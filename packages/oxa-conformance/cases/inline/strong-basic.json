@@ -1,0 +1,38 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic strong emphasis",
+  "description": "Strongly emphasized text (typically rendered as bold)",
+  "category": "inline",
+  "formats": {
+    "oxa": {
+      "type": "Strong",
+      "children": [
+        { "type": "Text", "value": "strong text" }
+      ]
+    },
+    "myst": {
+      "type": "strong",
+      "children": [
+        { "type": "text", "value": "strong text" }
+      ]
+    },
+    "pandoc": {
+      "t": "Strong",
+      "c": [
+        { "t": "Str", "c": "strong text" }
+      ]
+    },
+    "stencila": {
+      "type": "Strong",
+      "content": [
+        { "type": "Text", "value": "strong text" }
+      ]
+    },
+    "markdown": "**strong text**",
+    "html": "<strong>strong text</strong>",
+    "jats": "<bold>strong text</bold>"
+  },
+  "notes": {
+    "markdown": "Also accepts __strong text__ as input"
+  }
+}
