@@ -6,12 +6,19 @@
  */
 
 import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from "fs";
-import { join } from "path";
+import { createRequire } from "module";
+import { join, dirname } from "path";
+
+import manifest, { type TestCase } from "@oxa/conformance";
 
 import { loadMergedSchema } from "./schema.js";
 
 const OUTPUT_DIR = join(import.meta.dirname, "../../docs/schema");
 const INDEX_FILE = join(OUTPUT_DIR, "index.md");
+
+// Resolve the conformance package directory for loading test case files
+const require = createRequire(import.meta.url);
+const CONFORMANCE_DIR = dirname(require.resolve("@oxa/conformance"));
 
 interface SchemaProperty {
   type?: string;
@@ -54,11 +61,12 @@ export async function generateDocs(): Promise<void> {
 
   const schema = loadMergedSchema();
   const definitions = schema.definitions as Record<string, SchemaDefinition>;
+  const testCases = loadTestCases();
 
   // Generate documentation for object types (non-union types)
   for (const [name, def] of Object.entries(definitions)) {
     if (!def.anyOf && def.type === "object") {
-      const content = generateDocContent(name, def);
+      const content = generateDocContent(name, def, testCases);
       const filePath = join(OUTPUT_DIR, `${name.toLowerCase()}.md`);
       writeFileSync(filePath, content);
       console.log(`Generated ${filePath}`);
@@ -76,7 +84,11 @@ export async function generateDocs(): Promise<void> {
   }
 }
 
-function generateDocContent(name: string, def: SchemaDefinition): string {
+function generateDocContent(
+  name: string,
+  def: SchemaDefinition,
+  testCases: Map<string, TestCase>,
+): string {
   const lines: string[] = [];
 
   // Frontmatter
@@ -125,6 +137,12 @@ function generateDocContent(name: string, def: SchemaDefinition): string {
     }
 
     lines.push("");
+  }
+
+  // Add test case example if available
+  const testCase = testCases.get(name.toLowerCase());
+  if (testCase) {
+    lines.push(generateTestCaseSection(testCase));
   }
 
   return lines.join("\n");
@@ -198,4 +216,74 @@ function getArrayItemType(items: { $ref?: string; type?: string }): string {
     return items.type;
   }
   return "unknown";
+}
+
+function loadTestCases(): Map<string, TestCase> {
+  const testCases = new Map<string, TestCase>();
+
+  // Filter for *-basic test cases and load them
+  for (const caseInfo of manifest.cases) {
+    if (!caseInfo.id.endsWith("-basic")) continue;
+
+    // Primary node type is first in nodeTypes array
+    const primaryType = caseInfo.nodeTypes[0];
+    if (!primaryType) continue;
+
+    const filePath = join(CONFORMANCE_DIR, caseInfo.path);
+    const content = readFileSync(filePath, "utf-8");
+    const testCase = JSON.parse(content) as TestCase;
+    testCases.set(primaryType.toLowerCase(), testCase);
+  }
+
+  return testCases;
+}
+
+const FORMAT_LABELS: Record<string, string> = {
+  oxa: "OXA",
+  myst: "MyST",
+  pandoc: "Pandoc",
+  stencila: "Stencila",
+  markdown: "Markdown",
+  html: "HTML",
+  jats: "JATS",
+};
+
+const FORMAT_LANGUAGES: Record<string, string> = {
+  oxa: "json",
+  myst: "json",
+  pandoc: "json",
+  stencila: "json",
+  markdown: "markdown",
+  html: "html",
+  jats: "xml",
+};
+
+function generateTestCaseSection(testCase: TestCase): string {
+  const lines: string[] = [];
+
+  lines.push("### Example");
+  lines.push("");
+  lines.push("````{tab-set}");
+
+  for (const format of manifest.formats) {
+    const value = testCase.formats[format as keyof typeof testCase.formats];
+    if (value === undefined) continue;
+
+    const label = FORMAT_LABELS[format];
+    const lang = FORMAT_LANGUAGES[format];
+    const content =
+      typeof value === "string" ? value : JSON.stringify(value);
+
+    lines.push(`\`\`\`{tab-item} ${label}`);
+    lines.push(`:sync: ${format}`);
+    lines.push(`\`\`\`${lang}`);
+    lines.push(content);
+    lines.push("```");
+    lines.push("```");
+    lines.push("");
+  }
+
+  lines.push("````");
+
+  return lines.join("\n");
 }

@@ -91,6 +91,9 @@ importers:
 
   scripts:
     dependencies:
+      '@oxa/conformance':
+        specifier: workspace:*
+        version: link:../packages/oxa-conformance
       ajv:
         specifier: ^8.17.1
         version: 8.17.1

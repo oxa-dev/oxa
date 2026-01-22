@@ -30,3 +30,57 @@ __children__: __array__ ("Inline")
 
 : The inline content of the heading.
 : See @oxa:inline
+
+### Example
+
+````{tab-set}
+```{tab-item} OXA
+:sync: oxa
+```json
+{"type":"Heading","level":1,"children":[{"type":"Text","value":"Introduction"}]}
+```
+```
+
+```{tab-item} MyST
+:sync: myst
+```json
+{"type":"heading","depth":1,"children":[{"type":"text","value":"Introduction"}]}
+```
+```
+
+```{tab-item} Pandoc
+:sync: pandoc
+```json
+{"t":"Header","c":[1,["",[],[]],[{"t":"Str","c":"Introduction"}]]}
+```
+```
+
+```{tab-item} Stencila
+:sync: stencila
+```json
+{"type":"Heading","depth":1,"content":[{"type":"Text","value":"Introduction"}]}
+```
+```
+
+```{tab-item} Markdown
+:sync: markdown
+```markdown
+# Introduction
+```
+```
+
+```{tab-item} HTML
+:sync: html
+```html
+<h1>Introduction</h1>
+```
+```
+
+```{tab-item} JATS
+:sync: jats
+```xml
+<title>Introduction</title>
+```
+```
+
+````
