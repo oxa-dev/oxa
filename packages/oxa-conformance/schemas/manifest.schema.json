@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://oxa.dev/schemas/conformance/manifest.schema.json",
+  "title": "OXA Conformance Suite Manifest",
+  "description": "Index of all test cases in the OXA Conformance Suite",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of the conformance suite",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "formats": {
+      "type": "array",
+      "description": "List of supported formats in canonical order",
+      "items": {
+        "type": "string",
+        "enum": ["oxa", "myst", "pandoc", "stencila", "markdown", "html", "jats"]
+      }
+    },
+    "cases": {
+      "type": "array",
+      "description": "List of all test cases",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the test case (derived from filename)"
+          },
+          "path": {
+            "type": "string",
+            "description": "Relative path to the test case file"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["inline", "block", "document", "edge-case"],
+            "description": "Category of the test case"
+          },
+          "nodeTypes": {
+            "type": "array",
+            "description": "OXA node types covered by this test case",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["id", "path", "category", "nodeTypes"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["version", "formats", "cases"],
+  "additionalProperties": false
+}

@@ -1,12 +1,13 @@
 /**
- * Generate conformance suite manifest from test case files.
+ * Generate conformance suite manifest and TypeScript types.
  *
- * Scans the cases directory and generates manifest.json with metadata
- * about all test cases.
+ * - Generates manifest.json from test case files
+ * - Generates index.d.ts from JSON schemas
  */
 
 import { readdirSync, readFileSync, writeFileSync } from "fs";
 import { basename, join } from "path";
+import { compile } from "json-schema-to-typescript";
 import prettier from "prettier";
 
 const CONFORMANCE_PATH = join(
@@ -14,7 +15,9 @@ const CONFORMANCE_PATH = join(
   "../../packages/oxa-conformance",
 );
 const CASES_PATH = join(CONFORMANCE_PATH, "cases");
-const OUTPUT_PATH = join(CONFORMANCE_PATH, "manifest.json");
+const SCHEMAS_PATH = join(CONFORMANCE_PATH, "schemas");
+const MANIFEST_OUTPUT_PATH = join(CONFORMANCE_PATH, "manifest.json");
+const TYPES_OUTPUT_PATH = join(CONFORMANCE_PATH, "index.d.ts");
 
 interface TestCase {
   title: string;
@@ -108,7 +111,69 @@ function scanCategory(category: string): ManifestCase[] {
   return cases;
 }
 
-export async function generateConformance(): Promise<void> {
+/**
+ * Generate TypeScript types from JSON schemas.
+ */
+async function generateTypes(): Promise<void> {
+  const testCaseSchema = JSON.parse(
+    readFileSync(join(SCHEMAS_PATH, "test-case.schema.json"), "utf-8"),
+  );
+  const manifestSchema = JSON.parse(
+    readFileSync(join(SCHEMAS_PATH, "manifest.schema.json"), "utf-8"),
+  );
+
+  // Generate types from schemas
+  const testCaseTypes = await compile(testCaseSchema, "TestCase", {
+    bannerComment: "",
+    additionalProperties: false,
+  });
+
+  const manifestTypes = await compile(manifestSchema, "Manifest", {
+    bannerComment: "",
+    additionalProperties: false,
+  });
+
+  // Extract the generated interface names from the output
+  // json-schema-to-typescript uses the schema title for the interface name
+  const testCaseMatch = testCaseTypes.match(/export interface (\w+)/);
+  const manifestMatch = manifestTypes.match(/export interface (\w+)/);
+  const testCaseInterfaceName = testCaseMatch?.[1] ?? "TestCase";
+  const manifestInterfaceName = manifestMatch?.[1] ?? "Manifest";
+
+  // Combine into a single declaration file with friendly type aliases
+  const output = `/**
+ * Type declarations for @oxa/conformance
+ *
+ * AUTO-GENERATED from JSON schemas - do not edit directly.
+ * Run \`pnpm codegen conformance\` to regenerate.
+ */
+
+${testCaseTypes}
+
+${manifestTypes}
+
+// Friendly type aliases
+export type TestCase = ${testCaseInterfaceName};
+export type Manifest = ${manifestInterfaceName};
+export type ManifestCase = Manifest["cases"][number];
+
+declare const manifest: Manifest;
+export default manifest;
+`;
+
+  const formatted = await prettier.format(output, {
+    parser: "typescript",
+    filepath: TYPES_OUTPUT_PATH,
+  });
+
+  writeFileSync(TYPES_OUTPUT_PATH, formatted);
+  console.log(`Generated ${TYPES_OUTPUT_PATH}`);
+}
+
+/**
+ * Generate manifest.json from test case files.
+ */
+async function generateManifest(): Promise<void> {
   // Get version from oxa-conformance package.json
   const pkgPath = join(CONFORMANCE_PATH, "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
@@ -141,9 +206,16 @@ export async function generateConformance(): Promise<void> {
   const json = JSON.stringify(manifest, null, 2);
   const formatted = await prettier.format(json, {
     parser: "json",
-    filepath: OUTPUT_PATH,
+    filepath: MANIFEST_OUTPUT_PATH,
   });
 
-  writeFileSync(OUTPUT_PATH, formatted);
-  console.log(`Generated ${OUTPUT_PATH} with ${allCases.length} test cases`);
+  writeFileSync(MANIFEST_OUTPUT_PATH, formatted);
+  console.log(
+    `Generated ${MANIFEST_OUTPUT_PATH} with ${allCases.length} test cases`,
+  );
+}
+
+export async function generateConformance(): Promise<void> {
+  await generateTypes();
+  await generateManifest();
 }

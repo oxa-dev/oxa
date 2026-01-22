@@ -4,8 +4,10 @@
   "description": "Conformance test suite for OXA schema implementations",
   "type": "module",
   "main": "./index.js",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./index.js",
       "require": "./index.cjs"
     },
@@ -16,6 +18,7 @@
   "files": [
     "index.js",
     "index.cjs",
+    "index.d.ts",
     "manifest.json",
     "cases",
     "schemas",

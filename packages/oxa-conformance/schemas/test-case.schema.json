@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://oxa.dev/schemas/conformance/test-case.schema.json",
+  "title": "OXA Conformance Test Case",
+  "description": "A test case for validating OXA format conversions",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short title describing the test case"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what the test case validates"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["inline", "block", "document"],
+      "description": "Category of the test case"
+    },
+    "formats": {
+      "type": "object",
+      "description": "Format representations of the same content. OXA is always required and should be first.",
+      "properties": {
+        "oxa": {
+          "type": "object",
+          "description": "OXA JSON representation (required, authoritative)",
+          "additionalProperties": true
+        },
+        "myst": {
+          "type": "object",
+          "description": "MyST Markdown AST representation",
+          "additionalProperties": true
+        },
+        "pandoc": {
+          "type": "object",
+          "description": "Pandoc AST JSON representation",
+          "additionalProperties": true
+        },
+        "stencila": {
+          "type": "object",
+          "description": "Stencila Schema JSON representation",
+          "additionalProperties": true
+        },
+        "markdown": {
+          "type": "string",
+          "description": "CommonMark/GFM Markdown representation"
+        },
+        "html": {
+          "type": "string",
+          "description": "Semantic HTML5 representation"
+        },
+        "jats": {
+          "type": "string",
+          "description": "JATS Publishing XML representation"
+        }
+      },
+      "required": ["oxa"],
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "object",
+      "description": "Format-specific notes and considerations",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["title", "category", "formats"],
+  "additionalProperties": false
+}

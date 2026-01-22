@@ -2,5 +2,36 @@
   "$schema": "./schemas/manifest.schema.json",
   "version": "0.1.0",
   "formats": ["oxa", "myst", "pandoc", "stencila", "markdown", "html", "jats"],
-  "cases": []
+  "cases": [
+    {
+      "id": "emphasis-basic",
+      "path": "cases/inline/emphasis-basic.json",
+      "category": "inline",
+      "nodeTypes": ["Emphasis", "Text"]
+    },
+    {
+      "id": "strong-basic",
+      "path": "cases/inline/strong-basic.json",
+      "category": "inline",
+      "nodeTypes": ["Strong", "Text"]
+    },
+    {
+      "id": "text-basic",
+      "path": "cases/inline/text-basic.json",
+      "category": "inline",
+      "nodeTypes": ["Text"]
+    },
+    {
+      "id": "heading-basic",
+      "path": "cases/block/heading-basic.json",
+      "category": "block",
+      "nodeTypes": ["Heading", "Text"]
+    },
+    {
+      "id": "paragraph-basic",
+      "path": "cases/block/paragraph-basic.json",
+      "category": "block",
+      "nodeTypes": ["Paragraph", "Text"]
+    }
+  ]
 }
