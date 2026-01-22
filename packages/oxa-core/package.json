@@ -1,6 +1,6 @@
 {
   "name": "@oxa/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Validation library for OXA documents",
   "type": "module",
   "main": "./dist/index.js",
