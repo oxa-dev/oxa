@@ -9,7 +9,7 @@ import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from "fs";
 import { createRequire } from "module";
 import { join, dirname } from "path";
 
-import manifest, { type TestCase } from "@oxa/conformance";
+import { manifest, type TestCase } from "@oxa/conformance";
 
 import { loadMergedSchema } from "./schema.js";
 

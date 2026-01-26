@@ -141,5 +141,6 @@ export type TestCase = OXAConformanceTestCase;
 export type Manifest = OXAConformanceSuiteManifest;
 export type ManifestCase = Manifest["cases"][number];
 
-declare const manifest: Manifest;
-export default manifest;
+export declare const manifest: Manifest;
+
+export declare const cases: Record<string, TestCase>;

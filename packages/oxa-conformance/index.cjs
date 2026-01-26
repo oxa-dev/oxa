@@ -3,5 +3,13 @@
  */
 
 const manifest = require("./manifest.json");
-module.exports = manifest;
-module.exports.default = manifest;
+
+/**
+ * All test cases keyed by id
+ */
+const cases = Object.fromEntries(
+  manifest.cases.map((c) => [c.id, require(`./${c.path}`)])
+);
+
+module.exports.manifest = manifest;
+module.exports.cases = cases;

@@ -8,5 +8,8 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
-const manifest = require("./manifest.json");
-export default manifest;
+export const manifest = require("./manifest.json");
+
+export const cases = Object.fromEntries(
+  manifest.cases.map((c) => [c.id, require(`./${c.path}`)])
+);

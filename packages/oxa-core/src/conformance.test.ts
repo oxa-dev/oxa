@@ -7,24 +7,8 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
-import manifest from "@oxa/conformance";
+import { manifest, cases } from "@oxa/conformance";
 import { validate } from "./validate.js";
-
-// Resolve the path to the conformance package for loading individual test case files
-const CONFORMANCE_PATH = dirname(
-  fileURLToPath(import.meta.resolve("@oxa/conformance")),
-);
-
-interface TestCase {
-  title: string;
-  category: string;
-  formats: {
-    oxa: Record<string, unknown>;
-  };
-}
 
 describe("OXA Conformance Suite", () => {
   describe("manifest", () => {
@@ -55,8 +39,7 @@ describe("OXA Conformance Suite", () => {
   describe("test cases", () => {
     for (const testCaseMeta of manifest.cases) {
       describe(`${testCaseMeta.category}/${testCaseMeta.id}`, () => {
-        const casePath = join(CONFORMANCE_PATH, testCaseMeta.path);
-        const testCase: TestCase = JSON.parse(readFileSync(casePath, "utf-8"));
+        const testCase = cases[testCaseMeta.id];
 
         it("has required fields", () => {
           expect(testCase.title).toBeDefined();
