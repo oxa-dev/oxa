@@ -29,54 +29,75 @@ __children__: __array__ ("Inline")
 
 ### Example
 
-````{tab-set}
-```{tab-item} OXA
+`````{tab-set}
+````{tab-item} OXA
 :sync: oxa
 ```json
 {"type":"Strong","children":[{"type":"Text","value":"strong text"}]}
 ```
-```
+````
 
-```{tab-item} MyST
-:sync: myst
+````{tab-item} MyST AST
+:sync: myst-ast
 ```json
 {"type":"strong","children":[{"type":"text","value":"strong text"}]}
 ```
-```
+````
 
-```{tab-item} Pandoc
-:sync: pandoc
+````{tab-item} Pandoc Types
+:sync: pandoc-types
 ```json
 {"t":"Strong","c":[{"t":"Str","c":"strong text"}]}
 ```
-```
+````
 
-```{tab-item} Stencila
-:sync: stencila
+````{tab-item} Stencila Schema
+:sync: stencila-schema
 ```json
 {"type":"Strong","content":[{"type":"Text","value":"strong text"}]}
 ```
-```
+````
 
-```{tab-item} Markdown
+````{tab-item} Markdown
 :sync: markdown
 ```markdown
 **strong text**
 ```
-```
+````
 
-```{tab-item} HTML
+````{tab-item} MyST Markdown
+:sync: myst-markdown
+```markdown
+**strong text**
+```
+````
+
+````{tab-item} Stencila Markdown
+:sync: stencila-markdown
+```markdown
+**strong text**
+```
+````
+
+````{tab-item} Quarto Markdown
+:sync: quarto-markdown
+```markdown
+**strong text**
+```
+````
+
+````{tab-item} HTML
 :sync: html
 ```html
 <strong>strong text</strong>
 ```
-```
+````
 
-```{tab-item} JATS
+````{tab-item} JATS
 :sync: jats
 ```xml
 <bold>strong text</bold>
 ```
-```
-
 ````
+
+`````

@@ -35,10 +35,13 @@ describe("OXA Conformance Suite", () => {
     it("has expected formats in canonical order", () => {
       expect(manifest.formats).toEqual([
         "oxa",
-        "myst",
-        "pandoc",
-        "stencila",
+        "myst-ast",
+        "pandoc-types",
+        "stencila-schema",
         "markdown",
+        "myst-markdown",
+        "stencila-markdown",
+        "quarto-markdown",
         "html",
         "jats",
       ]);

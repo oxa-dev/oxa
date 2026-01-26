@@ -10,29 +10,35 @@
         { "type": "Text", "value": "strong text" }
       ]
     },
-    "myst": {
+    "myst-ast": {
       "type": "strong",
       "children": [
         { "type": "text", "value": "strong text" }
       ]
     },
-    "pandoc": {
+    "pandoc-types": {
       "t": "Strong",
       "c": [
         { "t": "Str", "c": "strong text" }
       ]
     },
-    "stencila": {
+    "stencila-schema": {
       "type": "Strong",
       "content": [
         { "type": "Text", "value": "strong text" }
       ]
     },
     "markdown": "**strong text**",
+    "myst-markdown": "**strong text**",
+    "stencila-markdown": "**strong text**",
+    "quarto-markdown": "**strong text**",
     "html": "<strong>strong text</strong>",
     "jats": "<bold>strong text</bold>"
   },
   "notes": {
-    "markdown": "Also accepts __strong text__ as input"
+    "markdown": "Also accepts __strong text__ as input",
+    "myst-markdown": "Equivalent to markdown for this node type",
+    "stencila-markdown": "Equivalent to markdown for this node type",
+    "quarto-markdown": "Equivalent to markdown for this node type"
   }
 }

@@ -33,54 +33,75 @@ __children__: __array__ ("Inline")
 
 ### Example
 
-````{tab-set}
-```{tab-item} OXA
+`````{tab-set}
+````{tab-item} OXA
 :sync: oxa
 ```json
 {"type":"Heading","level":1,"children":[{"type":"Text","value":"Introduction"}]}
 ```
-```
+````
 
-```{tab-item} MyST
-:sync: myst
+````{tab-item} MyST AST
+:sync: myst-ast
 ```json
 {"type":"heading","depth":1,"children":[{"type":"text","value":"Introduction"}]}
 ```
-```
+````
 
-```{tab-item} Pandoc
-:sync: pandoc
+````{tab-item} Pandoc Types
+:sync: pandoc-types
 ```json
 {"t":"Header","c":[1,["",[],[]],[{"t":"Str","c":"Introduction"}]]}
 ```
-```
+````
 
-```{tab-item} Stencila
-:sync: stencila
+````{tab-item} Stencila Schema
+:sync: stencila-schema
 ```json
 {"type":"Heading","depth":1,"content":[{"type":"Text","value":"Introduction"}]}
 ```
-```
+````
 
-```{tab-item} Markdown
+````{tab-item} Markdown
 :sync: markdown
 ```markdown
 # Introduction
 ```
-```
+````
 
-```{tab-item} HTML
+````{tab-item} MyST Markdown
+:sync: myst-markdown
+```markdown
+# Introduction
+```
+````
+
+````{tab-item} Stencila Markdown
+:sync: stencila-markdown
+```markdown
+# Introduction
+```
+````
+
+````{tab-item} Quarto Markdown
+:sync: quarto-markdown
+```markdown
+# Introduction
+```
+````
+
+````{tab-item} HTML
 :sync: html
 ```html
 <h1>Introduction</h1>
 ```
-```
+````
 
-```{tab-item} JATS
+````{tab-item} JATS
 :sync: jats
 ```xml
 <title>Introduction</title>
 ```
-```
-
 ````
+
+`````

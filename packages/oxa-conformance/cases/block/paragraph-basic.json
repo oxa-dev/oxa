@@ -10,26 +10,34 @@
         { "type": "Text", "value": "This is a paragraph." }
       ]
     },
-    "myst": {
+    "myst-ast": {
       "type": "paragraph",
       "children": [
         { "type": "text", "value": "This is a paragraph." }
       ]
     },
-    "pandoc": {
+    "pandoc-types": {
       "t": "Para",
       "c": [
         { "t": "Str", "c": "This is a paragraph." }
       ]
     },
-    "stencila": {
+    "stencila-schema": {
       "type": "Paragraph",
       "content": [
         { "type": "Text", "value": "This is a paragraph." }
       ]
     },
     "markdown": "This is a paragraph.",
+    "myst-markdown": "This is a paragraph.",
+    "stencila-markdown": "This is a paragraph.",
+    "quarto-markdown": "This is a paragraph.",
     "html": "<p>This is a paragraph.</p>",
     "jats": "<p>This is a paragraph.</p>"
+  },
+  "notes": {
+    "myst-markdown": "Equivalent to markdown for this node type",
+    "stencila-markdown": "Equivalent to markdown for this node type",
+    "quarto-markdown": "Equivalent to markdown for this node type"
   }
 }

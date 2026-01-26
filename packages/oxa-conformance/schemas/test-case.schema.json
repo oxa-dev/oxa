@@ -31,17 +31,17 @@
           "description": "OXA JSON representation (required, authoritative)",
           "additionalProperties": true
         },
-        "myst": {
+        "myst-ast": {
           "type": "object",
           "description": "MyST Markdown AST representation",
           "additionalProperties": true
         },
-        "pandoc": {
+        "pandoc-types": {
           "type": "object",
           "description": "Pandoc AST JSON representation",
           "additionalProperties": true
         },
-        "stencila": {
+        "stencila-schema": {
           "type": "object",
           "description": "Stencila Schema JSON representation",
           "additionalProperties": true
@@ -49,6 +49,18 @@
         "markdown": {
           "type": "string",
           "description": "CommonMark/GFM Markdown representation"
+        },
+        "myst-markdown": {
+          "type": "string",
+          "description": "MyST Markdown representation"
+        },
+        "stencila-markdown": {
+          "type": "string",
+          "description": "Stencila Markdown representation"
+        },
+        "quarto-markdown": {
+          "type": "string",
+          "description": "Quarto Markdown representation"
         },
         "html": {
           "type": "string",

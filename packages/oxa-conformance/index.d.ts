@@ -38,25 +38,37 @@ export interface OXAConformanceTestCase {
     /**
      * MyST Markdown AST representation
      */
-    myst?: {
+    "myst-ast"?: {
       [k: string]: unknown;
     };
     /**
      * Pandoc AST JSON representation
      */
-    pandoc?: {
+    "pandoc-types"?: {
       [k: string]: unknown;
     };
     /**
      * Stencila Schema JSON representation
      */
-    stencila?: {
+    "stencila-schema"?: {
       [k: string]: unknown;
     };
     /**
      * CommonMark/GFM Markdown representation
      */
     markdown?: string;
+    /**
+     * MyST Markdown representation
+     */
+    "myst-markdown"?: string;
+    /**
+     * Stencila Markdown representation
+     */
+    "stencila-markdown"?: string;
+    /**
+     * Quarto Markdown representation
+     */
+    "quarto-markdown"?: string;
     /**
      * Semantic HTML5 representation
      */
@@ -91,10 +103,13 @@ export interface OXAConformanceSuiteManifest {
    */
   formats: (
     | "oxa"
-    | "myst"
-    | "pandoc"
-    | "stencila"
+    | "myst-ast"
+    | "pandoc-types"
+    | "stencila-schema"
     | "markdown"
+    | "myst-markdown"
+    | "stencila-markdown"
+    | "quarto-markdown"
     | "html"
     | "jats"
   )[];

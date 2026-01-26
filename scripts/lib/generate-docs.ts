@@ -240,20 +240,26 @@ function loadTestCases(): Map<string, TestCase> {
 
 const FORMAT_LABELS: Record<string, string> = {
   oxa: "OXA",
-  myst: "MyST",
-  pandoc: "Pandoc",
-  stencila: "Stencila",
+  "myst-ast": "MyST AST",
+  "pandoc-types": "Pandoc Types",
+  "stencila-schema": "Stencila Schema",
   markdown: "Markdown",
+  "myst-markdown": "MyST Markdown",
+  "stencila-markdown": "Stencila Markdown",
+  "quarto-markdown": "Quarto Markdown",
   html: "HTML",
   jats: "JATS",
 };
 
 const FORMAT_LANGUAGES: Record<string, string> = {
   oxa: "json",
-  myst: "json",
-  pandoc: "json",
-  stencila: "json",
+  "myst-ast": "json",
+  "pandoc-types": "json",
+  "stencila-schema": "json",
   markdown: "markdown",
+  "myst-markdown": "markdown",
+  "stencila-markdown": "markdown",
+  "quarto-markdown": "markdown",
   html: "html",
   jats: "xml",
 };
@@ -263,7 +269,7 @@ function generateTestCaseSection(testCase: TestCase): string {
 
   lines.push("### Example");
   lines.push("");
-  lines.push("````{tab-set}");
+  lines.push("`````{tab-set}");
 
   for (const format of manifest.formats) {
     const value = testCase.formats[format as keyof typeof testCase.formats];
@@ -273,16 +279,16 @@ function generateTestCaseSection(testCase: TestCase): string {
     const lang = FORMAT_LANGUAGES[format];
     const content = typeof value === "string" ? value : JSON.stringify(value);
 
-    lines.push(`\`\`\`{tab-item} ${label}`);
+    lines.push(`\`\`\`\`{tab-item} ${label}`);
     lines.push(`:sync: ${format}`);
     lines.push(`\`\`\`${lang}`);
     lines.push(content);
     lines.push("```");
-    lines.push("```");
+    lines.push("````");
     lines.push("");
   }
 
-  lines.push("````");
+  lines.push("`````");
 
   return lines.join("\n");
 }

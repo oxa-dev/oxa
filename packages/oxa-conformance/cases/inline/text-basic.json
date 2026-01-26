@@ -8,20 +8,28 @@
       "type": "Text",
       "value": "Hello, world!"
     },
-    "myst": {
+    "myst-ast": {
       "type": "text",
       "value": "Hello, world!"
     },
-    "pandoc": {
+    "pandoc-types": {
       "t": "Str",
       "c": "Hello, world!"
     },
-    "stencila": {
+    "stencila-schema": {
       "type": "Text",
       "value": "Hello, world!"
     },
     "markdown": "Hello, world!",
+    "myst-markdown": "Hello, world!",
+    "stencila-markdown": "Hello, world!",
+    "quarto-markdown": "Hello, world!",
     "html": "Hello, world!",
     "jats": "Hello, world!"
+  },
+  "notes": {
+    "myst-markdown": "Equivalent to markdown for this node type",
+    "stencila-markdown": "Equivalent to markdown for this node type",
+    "quarto-markdown": "Equivalent to markdown for this node type"
   }
 }

@@ -11,14 +11,14 @@
         { "type": "Text", "value": "Introduction" }
       ]
     },
-    "myst": {
+    "myst-ast": {
       "type": "heading",
       "depth": 1,
       "children": [
         { "type": "text", "value": "Introduction" }
       ]
     },
-    "pandoc": {
+    "pandoc-types": {
       "t": "Header",
       "c": [
         1,
@@ -26,7 +26,7 @@
         [{ "t": "Str", "c": "Introduction" }]
       ]
     },
-    "stencila": {
+    "stencila-schema": {
       "type": "Heading",
       "depth": 1,
       "content": [
@@ -34,12 +34,18 @@
       ]
     },
     "markdown": "# Introduction",
+    "myst-markdown": "# Introduction",
+    "stencila-markdown": "# Introduction",
+    "quarto-markdown": "# Introduction",
     "html": "<h1>Introduction</h1>",
     "jats": "<title>Introduction</title>"
   },
   "notes": {
-    "myst": "MyST uses 'depth' instead of 'level'",
-    "stencila": "Stencila uses 'depth' instead of 'level'",
+    "myst-ast": "MyST uses 'depth' instead of 'level'",
+    "stencila-schema": "Stencila uses 'depth' instead of 'level'",
+    "myst-markdown": "Equivalent to markdown for this node type",
+    "stencila-markdown": "Equivalent to markdown for this node type",
+    "quarto-markdown": "Equivalent to markdown for this node type",
     "jats": "JATS uses <title> for section headings within <sec> elements"
   }
 }

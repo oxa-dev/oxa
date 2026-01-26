@@ -28,54 +28,75 @@ __value__: __string__
 
 ### Example
 
-````{tab-set}
-```{tab-item} OXA
+`````{tab-set}
+````{tab-item} OXA
 :sync: oxa
 ```json
 {"type":"Text","value":"Hello, world!"}
 ```
-```
+````
 
-```{tab-item} MyST
-:sync: myst
+````{tab-item} MyST AST
+:sync: myst-ast
 ```json
 {"type":"text","value":"Hello, world!"}
 ```
-```
+````
 
-```{tab-item} Pandoc
-:sync: pandoc
+````{tab-item} Pandoc Types
+:sync: pandoc-types
 ```json
 {"t":"Str","c":"Hello, world!"}
 ```
-```
+````
 
-```{tab-item} Stencila
-:sync: stencila
+````{tab-item} Stencila Schema
+:sync: stencila-schema
 ```json
 {"type":"Text","value":"Hello, world!"}
 ```
-```
+````
 
-```{tab-item} Markdown
+````{tab-item} Markdown
 :sync: markdown
 ```markdown
 Hello, world!
 ```
-```
+````
 
-```{tab-item} HTML
+````{tab-item} MyST Markdown
+:sync: myst-markdown
+```markdown
+Hello, world!
+```
+````
+
+````{tab-item} Stencila Markdown
+:sync: stencila-markdown
+```markdown
+Hello, world!
+```
+````
+
+````{tab-item} Quarto Markdown
+:sync: quarto-markdown
+```markdown
+Hello, world!
+```
+````
+
+````{tab-item} HTML
 :sync: html
 ```html
 Hello, world!
 ```
-```
+````
 
-```{tab-item} JATS
+````{tab-item} JATS
 :sync: jats
 ```xml
 Hello, world!
 ```
-```
-
 ````
+
+`````
