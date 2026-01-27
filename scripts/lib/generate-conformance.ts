@@ -199,7 +199,18 @@ async function generateManifest(): Promise<void> {
   const manifest: Manifest = {
     $schema: "./schemas/manifest.schema.json",
     version,
-    formats: ["oxa", "myst-ast", "pandoc-types", "stencila-schema", "markdown", "myst-markdown", "stencila-markdown", "quarto-markdown", "html", "jats"],
+    formats: [
+      "oxa",
+      "myst-ast",
+      "pandoc-types",
+      "stencila-schema",
+      "markdown",
+      "myst-markdown",
+      "stencila-markdown",
+      "quarto-markdown",
+      "html",
+      "jats",
+    ],
     cases: allCases,
   };
 
