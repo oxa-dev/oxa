@@ -157,8 +157,9 @@ export type TestCase = ${testCaseInterfaceName};
 export type Manifest = ${manifestInterfaceName};
 export type ManifestCase = Manifest["cases"][number];
 
-declare const manifest: Manifest;
-export default manifest;
+export declare const manifest: Manifest;
+
+export declare const cases: Record<string, TestCase>;
 `;
 
   const formatted = await prettier.format(output, {
