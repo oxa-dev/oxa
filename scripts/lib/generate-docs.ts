@@ -6,19 +6,14 @@
  */
 
 import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from "fs";
-import { createRequire } from "module";
-import { join, dirname } from "path";
+import { join } from "path";
 
-import { manifest, type TestCase } from "@oxa/conformance";
+import { manifest, cases, type TestCase } from "@oxa/conformance";
 
 import { loadMergedSchema } from "./schema.js";
 
 const OUTPUT_DIR = join(import.meta.dirname, "../../docs/schema");
 const INDEX_FILE = join(OUTPUT_DIR, "index.md");
-
-// Resolve the conformance package directory for loading test case files
-const require = createRequire(import.meta.url);
-const CONFORMANCE_DIR = dirname(require.resolve("@oxa/conformance"));
 
 interface SchemaProperty {
   type?: string;
@@ -221,7 +216,7 @@ function getArrayItemType(items: { $ref?: string; type?: string }): string {
 function loadTestCases(): Map<string, TestCase> {
   const testCases = new Map<string, TestCase>();
 
-  // Filter for *-basic test cases and load them
+  // Filter for *-basic test cases
   for (const caseInfo of manifest.cases) {
     if (!caseInfo.id.endsWith("-basic")) continue;
 
@@ -229,9 +224,7 @@ function loadTestCases(): Map<string, TestCase> {
     const primaryType = caseInfo.nodeTypes[0];
     if (!primaryType) continue;
 
-    const filePath = join(CONFORMANCE_DIR, caseInfo.path);
-    const content = readFileSync(filePath, "utf-8");
-    const testCase = JSON.parse(content) as TestCase;
+    const testCase = cases[caseInfo.id];
     testCases.set(primaryType.toLowerCase(), testCase);
   }
 
