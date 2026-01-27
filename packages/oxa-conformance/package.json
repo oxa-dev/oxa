@@ -1,0 +1,43 @@
+{
+  "name": "@oxa/conformance",
+  "version": "0.1.0",
+  "description": "Conformance test suite for OXA schema implementations",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./manifest.json": "./manifest.json",
+    "./cases/*": "./cases/*",
+    "./schemas/*": "./schemas/*"
+  },
+  "files": [
+    "index.js",
+    "index.cjs",
+    "index.d.ts",
+    "manifest.json",
+    "cases",
+    "schemas",
+    "README.md"
+  ],
+  "keywords": [
+    "oxa",
+    "conformance",
+    "test-suite",
+    "schema",
+    "validation"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxa-dev/oxa.git",
+    "directory": "packages/oxa-conformance"
+  }
+}

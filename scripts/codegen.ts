@@ -6,6 +6,7 @@
  */
 
 import { program } from "commander";
+import { generateConformance } from "./lib/generate-conformance.js";
 import { generateDocs } from "./lib/generate-docs.js";
 import { generateJson } from "./lib/generate-json.js";
 import { generatePy } from "./lib/generate-py.js";
@@ -24,6 +25,11 @@ const generators: Generator[] = [
   { name: "py", label: "Python Pydantic models", fn: generatePy },
   { name: "rs", label: "Rust types", fn: generateRs },
   { name: "ts", label: "TypeScript types", fn: generateTs },
+  {
+    name: "conformance",
+    label: "Conformance suite manifest",
+    fn: generateConformance,
+  },
   { name: "docs", label: "Schema documentation", fn: generateDocs },
 ];
 

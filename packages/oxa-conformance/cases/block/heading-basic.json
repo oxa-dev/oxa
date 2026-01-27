@@ -1,0 +1,51 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic heading",
+  "description": "A level 1 heading containing text",
+  "category": "block",
+  "formats": {
+    "oxa": {
+      "type": "Heading",
+      "level": 1,
+      "children": [
+        { "type": "Text", "value": "Introduction" }
+      ]
+    },
+    "myst-ast": {
+      "type": "heading",
+      "depth": 1,
+      "children": [
+        { "type": "text", "value": "Introduction" }
+      ]
+    },
+    "pandoc-types": {
+      "t": "Header",
+      "c": [
+        1,
+        ["", [], []],
+        [{ "t": "Str", "c": "Introduction" }]
+      ]
+    },
+    "stencila-schema": {
+      "type": "Heading",
+      "depth": 1,
+      "content": [
+        { "type": "Text", "value": "Introduction" }
+      ]
+    },
+    "markdown": "# Introduction",
+    "myst-markdown": "# Introduction",
+    "stencila-markdown": "# Introduction",
+    "quarto-markdown": "# Introduction",
+    "html": "<h1>Introduction</h1>",
+    "jats": "<title>Introduction</title>"
+  },
+  "notes": {
+    "myst-ast": "MyST uses 'depth' instead of 'level'",
+    "stencila-schema": "Stencila uses 'depth' instead of 'level'",
+    "myst-markdown": "Equivalent to markdown for this node type",
+    "stencila-markdown": "Equivalent to markdown for this node type",
+    "quarto-markdown": "Equivalent to markdown for this node type",
+    "jats": "JATS uses <title> for section headings within <sec> elements"
+  }
+}
