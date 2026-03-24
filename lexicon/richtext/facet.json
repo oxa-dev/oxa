@@ -21,7 +21,10 @@
             "closed": false,
             "refs": [
               "#emphasis",
-              "#strong"
+              "#inlineCode",
+              "#strong",
+              "#subscript",
+              "#superscript"
             ]
           }
         }
@@ -49,9 +52,32 @@
       "type": "object",
       "description": "Emphasized content (typically italicized)."
     },
+    "inlineCode": {
+      "type": "object",
+      "description": "Short fragments of code appearing within prose.",
+      "properties": {
+        "language": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
     "strong": {
       "type": "object",
       "description": "Strongly emphasized content (typically bold)."
+    },
+    "subscript": {
+      "type": "object",
+      "description": "Content rendered below the baseline (e.g. chemical formulae, variable indices)."
+    },
+    "superscript": {
+      "type": "object",
+      "description": "Content rendered above the baseline (e.g. exponents, ordinal suffixes)."
     }
   }
 }

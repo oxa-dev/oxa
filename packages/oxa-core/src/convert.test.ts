@@ -21,14 +21,27 @@ const lexiconFiles = {
   },
 } as const;
 
-const facetFragments = ["emphasis", "strong"] as const;
+const facetFragments = [
+  "emphasis",
+  "inlineCode",
+  "strong",
+  "subscript",
+  "superscript",
+] as const;
 
-const documentBlockRefs = ["#heading", "#paragraph"] as const;
+const documentBlockRefs = [
+  "#code",
+  "#heading",
+  "#paragraph",
+  "#thematicBreak",
+] as const;
 
 const requiredDocumentDefs = [
   "richText",
+  "code",
   "paragraph",
   "heading",
+  "thematicBreak",
   "block",
 ] as const;
 
