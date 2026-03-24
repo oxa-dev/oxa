@@ -213,9 +213,7 @@ program
       },
     ) => {
       try {
-        if (
-          !SUPPORTED_FORMATS.includes(options.to as ConvertFormat)
-        ) {
+        if (!SUPPORTED_FORMATS.includes(options.to as ConvertFormat)) {
           throw new Error(
             `Unknown format: "${options.to}". Supported formats: ${SUPPORTED_FORMATS.join(", ")}`,
           );

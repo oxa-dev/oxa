@@ -96,7 +96,15 @@ describe("oxa cli", () => {
     it("converts JSON from stdin to ATProto JSON with --created-at", async () => {
       const { exitCode, stdout } = await execa(
         "node",
-        [CLI_PATH, "convert", "--to", "atproto", "--created-at", createdAt, "-"],
+        [
+          CLI_PATH,
+          "convert",
+          "--to",
+          "atproto",
+          "--created-at",
+          createdAt,
+          "-",
+        ],
         {
           input: JSON.stringify(convertibleDocument),
         },
@@ -109,7 +117,16 @@ describe("oxa cli", () => {
     it("converts YAML from stdin with --yaml", async () => {
       const { exitCode, stdout } = await execa(
         "node",
-        [CLI_PATH, "convert", "--to", "atproto", "--yaml", "--created-at", createdAt, "-"],
+        [
+          CLI_PATH,
+          "convert",
+          "--to",
+          "atproto",
+          "--yaml",
+          "--created-at",
+          createdAt,
+          "-",
+        ],
         {
           input: convertibleYaml,
         },
@@ -166,7 +183,15 @@ describe("oxa cli", () => {
     it("exits with error for unknown --to format", async () => {
       const result = await execa(
         "node",
-        [CLI_PATH, "convert", "--to", "unknown", "--created-at", createdAt, "-"],
+        [
+          CLI_PATH,
+          "convert",
+          "--to",
+          "unknown",
+          "--created-at",
+          createdAt,
+          "-",
+        ],
         {
           input: JSON.stringify(convertibleDocument),
           reject: false,
