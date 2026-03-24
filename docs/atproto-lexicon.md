@@ -53,8 +53,6 @@ There are also structural differences. The `app.bsky.richtext.facet` features un
 
 Finally, the `app.bsky` namespace is owned by Bluesky PBC. Extending it with document-formatting features would conflate social and scientific concerns in a namespace OXA does not control.
 
-> **Note:** As the AT Protocol ecosystem matures, it is possible that a shared, domain-neutral rich text facet standard will emerge. If that happens, OXA will revisit this decision and consider adopting or aligning with such a standard to maximise interoperability across applications.
-
 ### Compatible features from other namespaces
 
 Where an OXA facet feature is semantically equivalent to a feature in another AT Protocol namespace, the converter emits both features in the same facet's `features` array. This gives consumers that understand the other namespace free interoperability without OXA depending on that namespace for its core schema.
