@@ -1,0 +1,141 @@
+{
+  "lexicon": 1,
+  "id": "pub.oxa.document.defs",
+  "defs": {
+    "richText": {
+      "type": "object",
+      "description": "Rich text content: a plain text string with facet annotations.",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "facets": {
+          "type": "array",
+          "items": {
+            "type": "ref",
+            "ref": "pub.oxa.richtext.facet"
+          }
+        }
+      }
+    },
+    "code": {
+      "type": "object",
+      "description": "A block of preformatted text, typically source code.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "type": "unknown"
+        },
+        "language": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "heading": {
+      "type": "object",
+      "description": "A heading with a level and inline content.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "type": "unknown"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "text": {
+          "type": "string"
+        },
+        "facets": {
+          "type": "array",
+          "items": {
+            "type": "ref",
+            "ref": "pub.oxa.richtext.facet"
+          }
+        }
+      },
+      "required": [
+        "level"
+      ]
+    },
+    "paragraph": {
+      "type": "object",
+      "description": "A paragraph of inline content.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "type": "unknown"
+        },
+        "text": {
+          "type": "string"
+        },
+        "facets": {
+          "type": "array",
+          "items": {
+            "type": "ref",
+            "ref": "pub.oxa.richtext.facet"
+          }
+        }
+      }
+    },
+    "thematicBreak": {
+      "type": "object",
+      "description": "A thematic or structural division between sections of content.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "type": "unknown"
+        }
+      }
+    },
+    "block": {
+      "type": "union",
+      "closed": false,
+      "refs": [
+        "#code",
+        "#heading",
+        "#paragraph",
+        "#thematicBreak"
+      ]
+    }
+  }
+}

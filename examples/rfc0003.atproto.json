@@ -1,0 +1,152 @@
+{
+  "$type": "pub.oxa.document.document",
+  "title": {
+    "text": "Water Dissociation: H2O → H+ + OH−",
+    "facets": [
+      {
+        "index": { "byteStart": 21, "byteEnd": 22 },
+        "features": [{ "$type": "pub.oxa.richtext.facet#subscript" }]
+      },
+      {
+        "index": { "byteStart": 29, "byteEnd": 30 },
+        "features": [{ "$type": "pub.oxa.richtext.facet#superscript" }]
+      },
+      {
+        "index": { "byteStart": 35, "byteEnd": 38 },
+        "features": [{ "$type": "pub.oxa.richtext.facet#superscript" }]
+      }
+    ]
+  },
+  "children": [
+    {
+      "$type": "pub.oxa.document.defs#heading",
+      "text": "Introduction",
+      "facets": [],
+      "level": 1
+    },
+    {
+      "$type": "pub.oxa.document.defs#paragraph",
+      "text": "Water (H2O) undergoes autoionization, a process in which a water molecule donates a proton to another. The equilibrium constant for this reaction, Kw, is approximately 10−14 at 25 °C.",
+      "facets": [
+        {
+          "index": { "byteStart": 8, "byteEnd": 9 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#subscript" }]
+        },
+        {
+          "index": { "byteStart": 22, "byteEnd": 36 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#strong" }]
+        },
+        {
+          "index": { "byteStart": 148, "byteEnd": 149 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#subscript" }]
+        },
+        {
+          "index": { "byteStart": 147, "byteEnd": 149 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#emphasis" }]
+        },
+        {
+          "index": { "byteStart": 170, "byteEnd": 175 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#superscript" }]
+        }
+      ]
+    },
+    { "$type": "pub.oxa.document.defs#thematicBreak" },
+    {
+      "$type": "pub.oxa.document.defs#heading",
+      "text": "Computing the Equilibrium",
+      "facets": [],
+      "level": 2
+    },
+    {
+      "$type": "pub.oxa.document.defs#paragraph",
+      "text": "The following Python snippet computes Kw from ion concentrations:",
+      "facets": [
+        {
+          "index": { "byteStart": 38, "byteEnd": 40 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        }
+      ]
+    },
+    {
+      "$type": "pub.oxa.document.defs#code",
+      "value": "H_plus = 1e-7   # mol/L\nOH_minus = 1e-7  # mol/L\nKw = H_plus * OH_minus\nprint(f\"Kw = {Kw:.2e}\")  # Kw = 1.00e-14",
+      "language": "python"
+    },
+    {
+      "$type": "pub.oxa.document.defs#paragraph",
+      "text": "You can run this with python kw.py. The result confirms the well-known value of Kw.",
+      "facets": [
+        {
+          "index": { "byteStart": 22, "byteEnd": 34 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 81, "byteEnd": 82 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#subscript" }]
+        },
+        {
+          "index": { "byteStart": 80, "byteEnd": 82 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#emphasis" }]
+        }
+      ]
+    },
+    { "$type": "pub.oxa.document.defs#thematicBreak" },
+    {
+      "$type": "pub.oxa.document.defs#heading",
+      "text": "Summary",
+      "facets": [],
+      "level": 2
+    },
+    {
+      "$type": "pub.oxa.document.defs#paragraph",
+      "text": "This example demonstrates every node type from RFC0003: Heading, Paragraph, Code, ThematicBreak, Text, Emphasis, Strong, Superscript, Subscript, and InlineCode.",
+      "facets": [
+        {
+          "index": { "byteStart": 47, "byteEnd": 54 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#strong" }]
+        },
+        {
+          "index": { "byteStart": 56, "byteEnd": 63 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 65, "byteEnd": 74 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 76, "byteEnd": 80 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 82, "byteEnd": 95 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 97, "byteEnd": 101 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 103, "byteEnd": 111 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 113, "byteEnd": 119 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 121, "byteEnd": 132 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 134, "byteEnd": 143 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        },
+        {
+          "index": { "byteStart": 149, "byteEnd": 159 },
+          "features": [{ "$type": "pub.oxa.richtext.facet#inlineCode" }]
+        }
+      ]
+    }
+  ],
+  "createdAt": "2026-03-24T19:14:02.007Z"
+}

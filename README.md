@@ -196,6 +196,24 @@ The schema can be downloaded from oxa.dev.
 
 https://oxa.dev/schemas/0.0.1.json
 
+## ATProto conversion
+
+The `@oxa/core` CLI can also convert OXA documents to the ATProto JSON shape used by
+the OXA lexicon.
+
+```bash
+oxa convert --to atproto --created-at 2026-03-22T00:00:00.000Z examples/document.yaml
+cat examples/document.yaml | oxa convert --to atproto --yaml --created-at 2026-03-22T00:00:00.000Z -
+```
+
+The conversion API is also exported from the package entrypoint:
+
+```ts
+import { flattenInlines, mapBlock, oxaToAtproto } from "@oxa/core";
+```
+
+The generated ATProto records use the `pub.oxa.document.*` lexicon namespace.
+
 ## Licensing and Attribution
 
 Each document can include licensing and rights metadata:

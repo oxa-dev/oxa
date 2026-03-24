@@ -5,13 +5,18 @@
  */
 
 import { program } from "commander";
+import { readFileSync } from "fs";
+import yaml from "js-yaml";
 import version from "./version.js";
+import { oxaToAtproto, type DocumentNode } from "./convert.js";
 import {
   validateFile,
   validateJson,
   validateYaml,
   type ValidationResult,
 } from "./validate.js";
+
+const yamlFileExtensions = [".yaml", ".yml"] as const;
 
 // Exit codes
 const EXIT_SUCCESS = 0;
@@ -80,6 +85,44 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf-8");
 }
 
+function parseDocumentText(content: string, isYaml: boolean): unknown {
+  return isYaml ? yaml.load(content) : JSON.parse(content);
+}
+
+function isYamlFilePath(filePath: string): boolean {
+  return yamlFileExtensions.some((extension) => filePath.endsWith(extension));
+}
+
+function parseFile(filePath: string): unknown {
+  const content = readFileSync(filePath, "utf-8");
+  return parseDocumentText(content, isYamlFilePath(filePath));
+}
+
+function validateContent(
+  content: string,
+  options: { type?: string; yaml?: boolean },
+  format: "cli" | "js",
+): ValidationResult {
+  return options.yaml
+    ? validateYaml(content, { type: options.type, format })
+    : validateJson(content, { type: options.type, format });
+}
+
+function isStdinInput(file: string | undefined): file is undefined | "-" {
+  return file === undefined || file === "-";
+}
+
+async function readDocument(
+  file: string | undefined,
+  options: { yaml?: boolean },
+): Promise<unknown> {
+  if (isStdinInput(file)) {
+    return parseDocumentText(await readStdin(), options.yaml ?? false);
+  }
+
+  return parseFile(file);
+}
+
 program
   .name("oxa")
   .description("CLI for validating OXA documents")
@@ -114,13 +157,7 @@ program
         // Handle stdin if no files or "-" specified
         if (files.length === 0 || (files.length === 1 && files[0] === "-")) {
           const content = await readStdin();
-
-          let result: ValidationResult;
-          if (options.yaml) {
-            result = validateYaml(content, { type: options.type, format });
-          } else {
-            result = validateJson(content, { type: options.type, format });
-          }
+          const result = validateContent(content, options, format);
 
           if (!result.valid) {
             hasFailures = true;
@@ -144,6 +181,75 @@ program
         }
 
         process.exit(hasFailures ? EXIT_VALIDATION_FAILURE : EXIT_SUCCESS);
+      } catch (error) {
+        console.error(
+          `Error: ${error instanceof Error ? error.message : String(error)}`,
+        );
+        process.exit(EXIT_EXECUTION_ERROR);
+      }
+    },
+  );
+
+const SUPPORTED_FORMATS = ["atproto"] as const;
+type ConvertFormat = (typeof SUPPORTED_FORMATS)[number];
+
+program
+  .command("convert")
+  .description("Convert OXA documents to other formats")
+  .argument("[file]", "File to convert (use - for stdin)")
+  .requiredOption(
+    "--to <format>",
+    `Target format (${SUPPORTED_FORMATS.join(", ")})`,
+  )
+  .option("--yaml", "Parse stdin as YAML")
+  .option("--created-at <datetime>", "Set the ATProto createdAt value")
+  .action(
+    async (
+      file: string | undefined,
+      options: {
+        to: string;
+        yaml?: boolean;
+        createdAt?: string;
+      },
+    ) => {
+      try {
+        if (!SUPPORTED_FORMATS.includes(options.to as ConvertFormat)) {
+          throw new Error(
+            `Unknown format: "${options.to}". Supported formats: ${SUPPORTED_FORMATS.join(", ")}`,
+          );
+        }
+
+        if (options.createdAt !== undefined) {
+          const date = new Date(options.createdAt);
+          if (isNaN(date.getTime())) {
+            throw new Error(
+              `Invalid --created-at value: "${options.createdAt}" is not a valid datetime`,
+            );
+          }
+        }
+
+        const document = await readDocument(file, options);
+
+        if (
+          !document ||
+          typeof document !== "object" ||
+          (document as Record<string, unknown>).type !== "Document" ||
+          !Array.isArray((document as Record<string, unknown>).children)
+        ) {
+          throw new Error(
+            "Input is not a valid OXA Document (missing type: Document or children array)",
+          );
+        }
+
+        console.log(
+          JSON.stringify(
+            oxaToAtproto(document as DocumentNode, {
+              createdAt: options.createdAt,
+            }),
+          ),
+        );
+
+        process.exit(EXIT_SUCCESS);
       } catch (error) {
         console.error(
           `Error: ${error instanceof Error ? error.message : String(error)}`,
