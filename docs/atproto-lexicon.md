@@ -55,6 +55,26 @@ Finally, the `app.bsky` namespace is owned by Bluesky PBC. Extending it with doc
 
 > **Note:** As the AT Protocol ecosystem matures, it is possible that a shared, domain-neutral rich text facet standard will emerge. If that happens, OXA will revisit this decision and consider adopting or aligning with such a standard to maximise interoperability across applications.
 
+### Compatible features from other namespaces
+
+Where an OXA facet feature is semantically equivalent to a feature in another AT Protocol namespace, the converter emits both features in the same facet's `features` array. This gives consumers that understand the other namespace free interoperability without OXA depending on that namespace for its core schema.
+
+For example, when `Link` is added to the OXA schema, a link facet will carry both the OXA feature and Bluesky's `app.bsky.richtext.facet#link`:
+
+```json
+{
+  "index": { "byteStart": 10, "byteEnd": 20 },
+  "features": [
+    { "$type": "pub.oxa.richtext.facet#link", "uri": "https://example.com" },
+    { "$type": "app.bsky.richtext.facet#link", "uri": "https://example.com" }
+  ]
+}
+```
+
+This works because AT Protocol facets support multiple features per byte range, and consumers ignore feature types they don't recognise. A Bluesky client rendering an OXA document record will make links clickable even though it doesn't understand `pub.oxa.richtext.facet#emphasis`.
+
+The mapping is maintained in the `compatibleFeatures` export from `@oxa/core`. It is a record keyed by OXA facet feature `$type`, where each value is an array of functions that produce a compatible feature object (or `null` to skip). This design is not Bluesky-specific — any AT Protocol namespace can be added to the map.
+
 ## Flattening inlines into facets
 
 The most significant transformation between an OXA document and its lexicon representation is how inline content is handled.
@@ -197,11 +217,22 @@ Produces:
 The conversion functions are also exported from the `@oxa/core` package:
 
 ```typescript
-import { flattenInlines, mapBlock, oxaToAtproto } from "@oxa/core";
+import { flattenInlines, mapBlock, oxaToAtproto, compatibleFeatures } from "@oxa/core";
 
 const atprotoRecord = oxaToAtproto(oxaDocument, {
   createdAt: "2026-01-01T00:00:00.000Z",
 });
+```
+
+The `compatibleFeatures` export is a mutable record that controls which additional facet features from other AT Protocol namespaces are emitted alongside OXA features (see [compatible features](#compatible-features-from-other-namespaces) above). You can add or remove entries to customise interoperability:
+
+```typescript
+import { compatibleFeatures } from "@oxa/core";
+
+// Emit a hypothetical shared-namespace feature alongside OXA links
+compatibleFeatures["pub.oxa.richtext.facet#link"] = [
+  (node) => ({ $type: "org.example.richtext.facet#link", uri: node.uri as string }),
+];
 ```
 
 ## Generated from the OXA schema

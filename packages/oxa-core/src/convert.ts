@@ -49,7 +49,8 @@ export type DocumentNode = {
 };
 
 interface FacetFeature {
-  $type: "pub.oxa.richtext.facet#strong" | "pub.oxa.richtext.facet#emphasis";
+  $type: string;
+  [key: string]: unknown;
 }
 
 interface Facet {
@@ -99,6 +100,32 @@ const facetFeatureTypes = {
   Emphasis: "pub.oxa.richtext.facet#emphasis",
 } as const;
 
+/**
+ * Compatible facet features from other AT Protocol namespaces.
+ *
+ * When an OXA facet feature has a semantically equivalent type in another
+ * namespace (e.g. Bluesky's `app.bsky.richtext.facet`), the converter emits
+ * both features in the same facet. This gives consumers that understand the
+ * other namespace free interoperability without OXA depending on that
+ * namespace for its core schema.
+ *
+ * Each key is an OXA facet feature `$type`. The value is an array of
+ * functions that receive the OXA inline node and return a compatible
+ * feature object (or `null` to skip).
+ *
+ * Currently empty — the only OXA facet features (`strong`, `emphasis`) have
+ * no Bluesky equivalents. When `Link` is added to the OXA schema, an entry
+ * like the following would provide Bluesky link interop:
+ *
+ *   "pub.oxa.richtext.facet#link": [
+ *     (node) => ({ $type: "app.bsky.richtext.facet#link", uri: node.uri }),
+ *   ],
+ */
+export const compatibleFeatures: Record<
+  string,
+  Array<(node: Record<string, unknown>) => FacetFeature | null>
+> = {};
+
 const formattingPropertyNames = ["id", "classes", "data"] as const;
 const blockPropertyNames = ["id", "classes", "data"] as const;
 const paragraphType = "pub.oxa.document.defs#paragraph" as const;
@@ -119,9 +146,22 @@ function createFacet(
   byteStart: number,
   byteEnd: number,
 ): Facet {
+  const oxaType = facetFeatureTypes[node.type];
+  const features: FacetFeature[] = [{ $type: oxaType }];
+
+  const compat = compatibleFeatures[oxaType];
+  if (compat) {
+    for (const toFeature of compat) {
+      const extra = toFeature(node as unknown as Record<string, unknown>);
+      if (extra) {
+        features.push(extra);
+      }
+    }
+  }
+
   return {
     index: { byteStart, byteEnd },
-    features: [{ $type: facetFeatureTypes[node.type] }],
+    features,
   };
 }
 

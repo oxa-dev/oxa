@@ -673,6 +673,61 @@ describe("flattenInlines", () => {
     });
   });
 
+  it("emits compatible features from other namespaces alongside OXA features", async () => {
+    const { compatibleFeatures } = await import("./convert.js");
+    const saved = { ...compatibleFeatures };
+
+    compatibleFeatures["pub.oxa.richtext.facet#strong"] = [
+      () => ({ $type: "com.example.richtext.facet#bold" }),
+    ];
+
+    try {
+      const richText = await flatten([text("a "), strong([text("b")])]);
+
+      expect(richText).toEqual({
+        text: "a b",
+        facets: [
+          {
+            index: { byteStart: 2, byteEnd: 3 },
+            features: [
+              { $type: "pub.oxa.richtext.facet#strong" },
+              { $type: "com.example.richtext.facet#bold" },
+            ],
+          },
+        ],
+      });
+    } finally {
+      for (const key of Object.keys(compatibleFeatures)) {
+        delete compatibleFeatures[key];
+      }
+      Object.assign(compatibleFeatures, saved);
+    }
+  });
+
+  it("skips compatible features that return null", async () => {
+    const { compatibleFeatures } = await import("./convert.js");
+    const saved = { ...compatibleFeatures };
+
+    compatibleFeatures["pub.oxa.richtext.facet#emphasis"] = [
+      () => null,
+      () => ({ $type: "com.example.richtext.facet#italic" }),
+    ];
+
+    try {
+      const richText = await flatten([emphasis([text("x")])]);
+
+      expect(richText.facets[0].features).toEqual([
+        { $type: "pub.oxa.richtext.facet#emphasis" },
+        { $type: "com.example.richtext.facet#italic" },
+      ]);
+    } finally {
+      for (const key of Object.keys(compatibleFeatures)) {
+        delete compatibleFeatures[key];
+      }
+      Object.assign(compatibleFeatures, saved);
+    }
+  });
+
   it("handles deeply nested formatting with overlapping facet ranges", async () => {
     const richText = await flatten([
       strong([
