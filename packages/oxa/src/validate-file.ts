@@ -17,10 +17,7 @@ export function isYamlFilePath(filePath: string): boolean {
   return yamlFileExtensions.some((extension) => filePath.endsWith(extension));
 }
 
-export function parseDocumentText(
-  content: string,
-  isYaml: boolean,
-): unknown {
+export function parseDocumentText(content: string, isYaml: boolean): unknown {
   return isYaml ? yaml.load(content) : JSON.parse(content);
 }
 
