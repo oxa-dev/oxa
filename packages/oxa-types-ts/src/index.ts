@@ -6,6 +6,36 @@
  */
 
 /**
+ * A block of preformatted text, typically source code.
+ */
+export interface Code {
+  /**
+   * The type discriminator for Code nodes.
+   */
+  type: "Code";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The programming language of the code content.
+   */
+  language?: string;
+  /**
+   * The code content.
+   */
+  value: string;
+}
+
+/**
  * A document with metadata, title, and block content.
  */
 export interface Document {
@@ -96,6 +126,36 @@ export interface Heading {
 }
 
 /**
+ * Short fragments of code appearing within prose.
+ */
+export interface InlineCode {
+  /**
+   * The type discriminator for InlineCode nodes.
+   */
+  type: "InlineCode";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The programming language of the code content.
+   */
+  language?: string;
+  /**
+   * The code content.
+   */
+  value: string;
+}
+
+/**
  * A paragraph of inline content.
  */
 export interface Paragraph {
@@ -148,6 +208,58 @@ export interface Strong {
 }
 
 /**
+ * Content rendered below the baseline (e.g. chemical formulae, variable indices).
+ */
+export interface Subscript {
+  /**
+   * The type discriminator for Subscript nodes.
+   */
+  type: "Subscript";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The inline content to render as subscript.
+   */
+  children: Inline[];
+}
+
+/**
+ * Content rendered above the baseline (e.g. exponents, ordinal suffixes).
+ */
+export interface Superscript {
+  /**
+   * The type discriminator for Superscript nodes.
+   */
+  type: "Superscript";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The inline content to render as superscript.
+   */
+  children: Inline[];
+}
+
+/**
  * A text node containing a string value.
  */
 export interface Text {
@@ -174,11 +286,39 @@ export interface Text {
 }
 
 /**
+ * A thematic or structural division between sections of content.
+ */
+export interface ThematicBreak {
+  /**
+   * The type discriminator for ThematicBreak nodes.
+   */
+  type: "ThematicBreak";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+}
+
+/**
  * Union of all block content types.
  */
-export type Block = Heading | Paragraph;
+export type Block = Code | Heading | Paragraph | ThematicBreak;
 
 /**
  * Union of all inline content types.
  */
-export type Inline = Text | Emphasis | Strong;
+export type Inline =
+  | Text
+  | Emphasis
+  | InlineCode
+  | Strong
+  | Subscript
+  | Superscript;

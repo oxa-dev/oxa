@@ -10,12 +10,54 @@
       "description": "Union of all block content types.",
       "anyOf": [
         {
+          "$ref": "#/definitions/Code"
+        },
+        {
           "$ref": "#/definitions/Heading"
         },
         {
           "$ref": "#/definitions/Paragraph"
+        },
+        {
+          "$ref": "#/definitions/ThematicBreak"
         }
       ]
+    },
+    "Code": {
+      "title": "Code",
+      "description": "A block of preformatted text, typically source code.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Code nodes.",
+          "enum": ["Code"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "language": {
+          "description": "The programming language of the code content.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The code content.",
+          "type": "string"
+        }
+      },
+      "required": ["type", "value"]
     },
     "Document": {
       "title": "Document",
@@ -151,9 +193,54 @@
           "$ref": "#/definitions/Emphasis"
         },
         {
+          "$ref": "#/definitions/InlineCode"
+        },
+        {
           "$ref": "#/definitions/Strong"
+        },
+        {
+          "$ref": "#/definitions/Subscript"
+        },
+        {
+          "$ref": "#/definitions/Superscript"
         }
       ]
+    },
+    "InlineCode": {
+      "title": "InlineCode",
+      "description": "Short fragments of code appearing within prose.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for InlineCode nodes.",
+          "enum": ["InlineCode"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "language": {
+          "description": "The programming language of the code content.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The code content.",
+          "type": "string"
+        }
+      },
+      "required": ["type", "value"]
     },
     "Paragraph": {
       "title": "Paragraph",
@@ -225,6 +312,76 @@
       },
       "required": ["type", "children"]
     },
+    "Subscript": {
+      "title": "Subscript",
+      "description": "Content rendered below the baseline (e.g. chemical formulae, variable indices).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Subscript nodes.",
+          "enum": ["Subscript"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "children": {
+          "description": "The inline content to render as subscript.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        }
+      },
+      "required": ["type", "children"]
+    },
+    "Superscript": {
+      "title": "Superscript",
+      "description": "Content rendered above the baseline (e.g. exponents, ordinal suffixes).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Superscript nodes.",
+          "enum": ["Superscript"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "children": {
+          "description": "The inline content to render as superscript.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        }
+      },
+      "required": ["type", "children"]
+    },
     "Text": {
       "title": "Text",
       "description": "A text node containing a string value.",
@@ -256,6 +413,34 @@
         }
       },
       "required": ["type", "value"]
+    },
+    "ThematicBreak": {
+      "title": "ThematicBreak",
+      "description": "A thematic or structural division between sections of content.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for ThematicBreak nodes.",
+          "enum": ["ThematicBreak"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": ["type"]
     }
   },
   "$ref": "#/definitions/Document"

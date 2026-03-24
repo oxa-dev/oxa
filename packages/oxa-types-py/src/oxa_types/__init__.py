@@ -11,6 +11,18 @@ from typing import Annotated, Any, Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
+class Code(BaseModel):
+    """A block of preformatted text, typically source code."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["Code"] = "Code"
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
+    language: str | None = Field(default=None, description="The programming language of the code content.")
+    value: str = Field(description="The code content.")
+
 
 class Document(BaseModel):
     """A document with metadata, title, and block content."""
@@ -18,21 +30,11 @@ class Document(BaseModel):
     model_config = ConfigDict(strict=True)
 
     type: Literal["Document"] = "Document"
-    id: str | None = Field(
-        default=None, description="A unique identifier for the node."
-    )
-    classes: list[str] | None = Field(
-        default=None, description="A list of class names for styling or semantics."
-    )
-    data: dict[str, Any] | None = Field(
-        default=None, description="Arbitrary key-value data attached to the node."
-    )
-    metadata: dict[str, Any] | None = Field(
-        default=None, description="Arbitrary document metadata."
-    )
-    title: list["Inline"] | None = Field(
-        default=None, description="The document title as inline content."
-    )
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
+    metadata: dict[str, Any] | None = Field(default=None, description="Arbitrary document metadata.")
+    title: list["Inline"] | None = Field(default=None, description="The document title as inline content.")
     children: list["Block"] = Field(description="The block content of the document.")
 
 
@@ -42,15 +44,9 @@ class Emphasis(BaseModel):
     model_config = ConfigDict(strict=True)
 
     type: Literal["Emphasis"] = "Emphasis"
-    id: str | None = Field(
-        default=None, description="A unique identifier for the node."
-    )
-    classes: list[str] | None = Field(
-        default=None, description="A list of class names for styling or semantics."
-    )
-    data: dict[str, Any] | None = Field(
-        default=None, description="Arbitrary key-value data attached to the node."
-    )
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
     children: list["Inline"] = Field(description="The inline content to emphasize.")
 
 
@@ -60,17 +56,24 @@ class Heading(BaseModel):
     model_config = ConfigDict(strict=True)
 
     type: Literal["Heading"] = "Heading"
-    id: str | None = Field(
-        default=None, description="A unique identifier for the node."
-    )
-    classes: list[str] | None = Field(
-        default=None, description="A list of class names for styling or semantics."
-    )
-    data: dict[str, Any] | None = Field(
-        default=None, description="Arbitrary key-value data attached to the node."
-    )
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
     level: int = Field(description="The heading level (1-6).")
     children: list["Inline"] = Field(description="The inline content of the heading.")
+
+
+class InlineCode(BaseModel):
+    """Short fragments of code appearing within prose."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["InlineCode"] = "InlineCode"
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
+    language: str | None = Field(default=None, description="The programming language of the code content.")
+    value: str = Field(description="The code content.")
 
 
 class Paragraph(BaseModel):
@@ -79,15 +82,9 @@ class Paragraph(BaseModel):
     model_config = ConfigDict(strict=True)
 
     type: Literal["Paragraph"] = "Paragraph"
-    id: str | None = Field(
-        default=None, description="A unique identifier for the node."
-    )
-    classes: list[str] | None = Field(
-        default=None, description="A list of class names for styling or semantics."
-    )
-    data: dict[str, Any] | None = Field(
-        default=None, description="Arbitrary key-value data attached to the node."
-    )
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
     children: list["Inline"] = Field(description="The inline content of the paragraph.")
 
 
@@ -97,16 +94,34 @@ class Strong(BaseModel):
     model_config = ConfigDict(strict=True)
 
     type: Literal["Strong"] = "Strong"
-    id: str | None = Field(
-        default=None, description="A unique identifier for the node."
-    )
-    classes: list[str] | None = Field(
-        default=None, description="A list of class names for styling or semantics."
-    )
-    data: dict[str, Any] | None = Field(
-        default=None, description="Arbitrary key-value data attached to the node."
-    )
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
     children: list["Inline"] = Field(description="The inline content to emphasize.")
+
+
+class Subscript(BaseModel):
+    """Content rendered below the baseline (e.g. chemical formulae, variable indices)."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["Subscript"] = "Subscript"
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
+    children: list["Inline"] = Field(description="The inline content to render as subscript.")
+
+
+class Superscript(BaseModel):
+    """Content rendered above the baseline (e.g. exponents, ordinal suffixes)."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["Superscript"] = "Superscript"
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
+    children: list["Inline"] = Field(description="The inline content to render as superscript.")
 
 
 class Text(BaseModel):
@@ -115,42 +130,57 @@ class Text(BaseModel):
     model_config = ConfigDict(strict=True)
 
     type: Literal["Text"] = "Text"
-    id: str | None = Field(
-        default=None, description="A unique identifier for the node."
-    )
-    classes: list[str] | None = Field(
-        default=None, description="A list of class names for styling or semantics."
-    )
-    data: dict[str, Any] | None = Field(
-        default=None, description="Arbitrary key-value data attached to the node."
-    )
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
     value: str = Field(description="The text content.")
 
 
+class ThematicBreak(BaseModel):
+    """A thematic or structural division between sections of content."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["ThematicBreak"] = "ThematicBreak"
+    id: str | None = Field(default=None, description="A unique identifier for the node.")
+    classes: list[str] | None = Field(default=None, description="A list of class names for styling or semantics.")
+    data: dict[str, Any] | None = Field(default=None, description="Arbitrary key-value data attached to the node.")
+
+
 # Union of all block content types.
-Block = Annotated[Union[Heading, Paragraph], Field(discriminator="type")]
+Block = Annotated[Union[Code, Heading, Paragraph, ThematicBreak], Field(discriminator="type")]
 
 
 # Union of all inline content types.
-Inline = Annotated[Union[Text, Emphasis, Strong], Field(discriminator="type")]
+Inline = Annotated[Union[Text, Emphasis, InlineCode, Strong, Subscript, Superscript], Field(discriminator="type")]
 
 
 # Rebuild models to resolve forward references
+Code.model_rebuild()
 Document.model_rebuild()
 Emphasis.model_rebuild()
 Heading.model_rebuild()
+InlineCode.model_rebuild()
 Paragraph.model_rebuild()
 Strong.model_rebuild()
+Subscript.model_rebuild()
+Superscript.model_rebuild()
 Text.model_rebuild()
+ThematicBreak.model_rebuild()
 
 
 __all__ = [
     "Block",
+    "Code",
     "Document",
     "Emphasis",
     "Heading",
     "Inline",
+    "InlineCode",
     "Paragraph",
     "Strong",
+    "Subscript",
+    "Superscript",
     "Text",
+    "ThematicBreak",
 ]

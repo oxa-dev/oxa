@@ -9,6 +9,27 @@
 use monostate::MustBe;
 use serde::{Deserialize, Serialize};
 
+/// A block of preformatted text, typically source code.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Code {
+    /// The type discriminator for Code nodes.
+    pub r#type: MustBe!("Code"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The programming language of the code content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
+    /// The code content.
+    pub value: String,
+}
+
 /// A document with metadata, title, and block content.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Document {
@@ -71,6 +92,27 @@ pub struct Heading {
     pub children: Vec<Inline>,
 }
 
+/// Short fragments of code appearing within prose.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct InlineCode {
+    /// The type discriminator for InlineCode nodes.
+    pub r#type: MustBe!("InlineCode"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The programming language of the code content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
+    /// The code content.
+    pub value: String,
+}
+
 /// A paragraph of inline content.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Paragraph {
@@ -107,6 +149,42 @@ pub struct Strong {
     pub children: Vec<Inline>,
 }
 
+/// Content rendered below the baseline (e.g. chemical formulae, variable indices).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Subscript {
+    /// The type discriminator for Subscript nodes.
+    pub r#type: MustBe!("Subscript"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The inline content to render as subscript.
+    pub children: Vec<Inline>,
+}
+
+/// Content rendered above the baseline (e.g. exponents, ordinal suffixes).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Superscript {
+    /// The type discriminator for Superscript nodes.
+    pub r#type: MustBe!("Superscript"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The inline content to render as superscript.
+    pub children: Vec<Inline>,
+}
+
 /// A text node containing a string value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Text {
@@ -125,12 +203,30 @@ pub struct Text {
     pub value: String,
 }
 
+/// A thematic or structural division between sections of content.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ThematicBreak {
+    /// The type discriminator for ThematicBreak nodes.
+    pub r#type: MustBe!("ThematicBreak"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+}
+
 /// Union of all block content types.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Block {
+    Code(Code),
     Heading(Heading),
     Paragraph(Paragraph),
+    ThematicBreak(ThematicBreak),
 }
 
 /// Union of all inline content types.
@@ -139,5 +235,8 @@ pub enum Block {
 pub enum Inline {
     Text(Text),
     Emphasis(Emphasis),
+    InlineCode(InlineCode),
     Strong(Strong),
+    Subscript(Subscript),
+    Superscript(Superscript),
 }
