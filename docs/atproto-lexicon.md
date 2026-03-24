@@ -2,8 +2,6 @@
 title: AT Protocol Lexicon
 ---
 
-# AT Protocol Lexicon
-
 OXA defines an [AT Protocol (atproto)](https://atproto.com) [Lexicon](https://atproto.com/guides/lexicon) for publishing scientific documents to the [Atmosphere](https://atproto.com/guides/understanding-atproto).
 
 The lexicon lives under the `pub.oxa.*` namespace and enables OXA documents to be stored as records in any AT Protocol [Personal Data Server (PDS)](https://atproto.com/guides/the-at-stack), making scientific content natively available alongside social interactions, feeds, and moderation infrastructure.
@@ -21,13 +19,13 @@ By defining a lexicon, OXA documents become first-class objects on the AT Protoc
 
 ## Lexicon structure
 
-The OXA lexicon is organised into two namespaces:
+The OXA lexicon is organized into two namespaces:
 
-| File | NSID | Purpose |
-|------|------|---------|
-| `lexicon/document/document.json` | `pub.oxa.document.document` | The `Document` record type — the root object stored in a PDS |
-| `lexicon/document/defs.json` | `pub.oxa.document.defs` | Block-level type definitions (`paragraph`, `heading`, `richText`) and the `block` union |
-| `lexicon/richtext/facet.json` | `pub.oxa.richtext.facet` | Facet annotations for inline formatting (`emphasis`, `strong`, `byteSlice`) |
+| File                             | NSID                        | Purpose                                                                                 |
+| -------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
+| `lexicon/document/document.json` | `pub.oxa.document.document` | The `Document` record type — the root object stored in a PDS                            |
+| `lexicon/document/defs.json`     | `pub.oxa.document.defs`     | Block-level type definitions (`paragraph`, `heading`, `richText`) and the `block` union |
+| `lexicon/richtext/facet.json`    | `pub.oxa.richtext.facet`    | Facet annotations for inline formatting (`emphasis`, `strong`, `byteSlice`)             |
 
 A `Document` record contains an array of `children` (blocks). Each block carries a `text` string and an optional `facets` array that annotates ranges of that text with formatting features.
 
@@ -35,7 +33,7 @@ A `Document` record contains an array of `children` (blocks). Each block carries
 
 The lexicon follows the conventions described in the [Lexicon Style Guide](https://atproto.com/guides/lexicon-style-guide#design-patterns):
 
-- **Rich text via facets.** Instead of embedding markup in strings, inline formatting is represented as byte-range annotations — the same pattern established by [`app.bsky.richtext.facet`](https://docs.bsky.app/docs/advanced-guides/post-richtext). This keeps text plain and makes it safe to render even if a consumer doesn't understand a particular facet type. See [why `pub.oxa.richtext.facet`?](#why-devoxa-not-appbsky) below for why OXA defines its own facet lexicon rather than reusing Bluesky's.
+- **Rich text via facets.** Instead of embedding markup in strings, inline formatting is represented as byte-range annotations — the same pattern established by [`app.bsky.richtext.facet`](https://docs.bsky.app/docs/advanced-guides/post-richtext). This keeps text plain and makes it safe to render even if a consumer doesn't understand a particular facet type. See [why `pub.oxa.richtext.facet`?](#why-puboxa-not-appbsky) below for why OXA defines its own facet lexicon rather than reusing Bluesky's.
 - **Open unions.** The `block` union and the facet `features` union are both declared with `"closed": false`, allowing future extension without breaking existing consumers.
 - **Minimal required fields.** Only fields that are truly necessary for functionality are marked `required` (e.g. `children` and `createdAt` on a document, `level` on a heading). This keeps the schema flexible for evolution.
 - **Singular nouns for record schemas.** The record type is named `document` (not `documents`), following the convention for record schemas.
@@ -43,7 +41,9 @@ The lexicon follows the conventions described in the [Lexicon Style Guide](https
 - **`createdAt` timestamp.** The document record includes a `createdAt` field (datetime string), which is standard practice for ATProto records.
 - **`$type` discriminators.** Every block and facet feature carries a `$type` string so consumers can identify types in the open union without ambiguity.
 
-## Why `pub.oxa.richtext.facet`? {#why-devoxa-not-appbsky}
+(why-puboxa-not-appbsky)=
+
+## Why `pub.oxa.richtext.facet`?
 
 OXA defines its own facet lexicon (`pub.oxa.richtext.facet`) rather than reusing Bluesky's `app.bsky.richtext.facet`. This is a deliberate choice driven by the different domains the two lexicons serve.
 
@@ -123,7 +123,7 @@ The conversion walks the inline tree depth-first, concatenating all `Text` node 
 
 This design has several advantages in a decentralized setting:
 
-- **Safe rendering.** A consumer that doesn't recognise a facet type can still display the plain text.
+- **Safe rendering.** A consumer that doesn't recognize a facet type can still display the plain text.
 - **Simple validation.** Facets are flat — there is no recursive nesting to validate.
 - **Extensibility.** New facet feature types (links, mentions, math, etc.) can be added to the open union without changing the text representation.
 
@@ -215,21 +215,29 @@ Produces:
 The conversion functions are also exported from the `@oxa/core` package:
 
 ```typescript
-import { flattenInlines, mapBlock, oxaToAtproto, compatibleFeatures } from "@oxa/core";
+import {
+  flattenInlines,
+  mapBlock,
+  oxaToAtproto,
+  compatibleFeatures,
+} from "@oxa/core";
 
 const atprotoRecord = oxaToAtproto(oxaDocument, {
   createdAt: "2026-01-01T00:00:00.000Z",
 });
 ```
 
-The `compatibleFeatures` export is a mutable record that controls which additional facet features from other AT Protocol namespaces are emitted alongside OXA features (see [compatible features](#compatible-features-from-other-namespaces) above). You can add or remove entries to customise interoperability:
+The `compatibleFeatures` export is a mutable record that controls which additional facet features from other AT Protocol namespaces are emitted alongside OXA features (see [compatible features](#compatible-features-from-other-namespaces) above). You can add or remove entries to customize interoperability:
 
 ```typescript
 import { compatibleFeatures } from "@oxa/core";
 
 // Emit a hypothetical shared-namespace feature alongside OXA links
 compatibleFeatures["pub.oxa.richtext.facet#link"] = [
-  (node) => ({ $type: "org.example.richtext.facet#link", uri: node.uri as string }),
+  (node) => ({
+    $type: "org.example.richtext.facet#link",
+    uri: node.uri as string,
+  }),
 ];
 ```
 

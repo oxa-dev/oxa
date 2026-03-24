@@ -1,0 +1,135 @@
+{
+  "$schema": "https://oxa.dev/v0.2.0/schema.json",
+  "type": "Document",
+  "title": [
+    { "type": "Text", "value": "Water Dissociation: H" },
+    { "type": "Subscript", "children": [{ "type": "Text", "value": "2" }] },
+    { "type": "Text", "value": "O → H" },
+    { "type": "Superscript", "children": [{ "type": "Text", "value": "+" }] },
+    { "type": "Text", "value": " + OH" },
+    { "type": "Superscript", "children": [{ "type": "Text", "value": "−" }] }
+  ],
+  "children": [
+    {
+      "type": "Heading",
+      "level": 1,
+      "children": [{ "type": "Text", "value": "Introduction" }]
+    },
+    {
+      "type": "Paragraph",
+      "children": [
+        { "type": "Text", "value": "Water (H" },
+        {
+          "type": "Subscript",
+          "children": [{ "type": "Text", "value": "2" }]
+        },
+        { "type": "Text", "value": "O) undergoes " },
+        {
+          "type": "Strong",
+          "children": [{ "type": "Text", "value": "autoionization" }]
+        },
+        {
+          "type": "Text",
+          "value": ", a process in which a water molecule donates a proton to another. The equilibrium constant for this reaction, "
+        },
+        {
+          "type": "Emphasis",
+          "children": [
+            { "type": "Text", "value": "K" },
+            {
+              "type": "Subscript",
+              "children": [{ "type": "Text", "value": "w" }]
+            }
+          ]
+        },
+        { "type": "Text", "value": ", is approximately 10" },
+        {
+          "type": "Superscript",
+          "children": [{ "type": "Text", "value": "−14" }]
+        },
+        { "type": "Text", "value": " at 25 °C." }
+      ]
+    },
+    { "type": "ThematicBreak" },
+    {
+      "type": "Heading",
+      "level": 2,
+      "children": [{ "type": "Text", "value": "Computing the Equilibrium" }]
+    },
+    {
+      "type": "Paragraph",
+      "children": [
+        { "type": "Text", "value": "The following Python snippet computes " },
+        { "type": "InlineCode", "value": "Kw" },
+        { "type": "Text", "value": " from ion concentrations:" }
+      ]
+    },
+    {
+      "type": "Code",
+      "language": "python",
+      "value": "H_plus = 1e-7   # mol/L\nOH_minus = 1e-7  # mol/L\nKw = H_plus * OH_minus\nprint(f\"Kw = {Kw:.2e}\")  # Kw = 1.00e-14"
+    },
+    {
+      "type": "Paragraph",
+      "children": [
+        { "type": "Text", "value": "You can run this with " },
+        { "type": "InlineCode", "value": "python kw.py" },
+        {
+          "type": "Text",
+          "value": ". The result confirms the well-known value of "
+        },
+        {
+          "type": "Emphasis",
+          "children": [
+            { "type": "Text", "value": "K" },
+            {
+              "type": "Subscript",
+              "children": [{ "type": "Text", "value": "w" }]
+            }
+          ]
+        },
+        { "type": "Text", "value": "." }
+      ]
+    },
+    { "type": "ThematicBreak" },
+    {
+      "type": "Heading",
+      "level": 2,
+      "children": [{ "type": "Text", "value": "Summary" }]
+    },
+    {
+      "type": "Paragraph",
+      "children": [
+        {
+          "type": "Text",
+          "value": "This example demonstrates every node type from "
+        },
+        {
+          "type": "Strong",
+          "children": [{ "type": "Text", "value": "RFC0003" }]
+        },
+        { "type": "Text", "value": ": " },
+        { "type": "InlineCode", "value": "Heading" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "Paragraph" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "Code" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "ThematicBreak" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "Text" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "Emphasis" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "Strong" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "Superscript" },
+        { "type": "Text", "value": ", " },
+        { "type": "InlineCode", "value": "Subscript" },
+        { "type": "Text", "value": ", and " },
+        { "type": "InlineCode", "value": "InlineCode" },
+        { "type": "Text", "value": "." }
+      ]
+    }
+  ]
+}

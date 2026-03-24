@@ -7,15 +7,24 @@ type TextNode = {
   value: string;
 };
 
+type InlineCodeNode = {
+  type: "InlineCode";
+  value: string;
+  language?: string;
+  id?: string;
+  classes?: string[];
+  data?: Record<string, unknown>;
+};
+
 type FormattingNode = {
-  type: "Strong" | "Emphasis";
+  type: "Strong" | "Emphasis" | "Superscript" | "Subscript";
   children: InlineNode[];
   id?: string;
   classes?: string[];
   data?: Record<string, unknown>;
 };
 
-type InlineNode = TextNode | FormattingNode;
+type InlineNode = TextNode | InlineCodeNode | FormattingNode;
 
 type BlockNodeBase = {
   id?: string;
@@ -34,12 +43,27 @@ type HeadingNode = BlockNodeBase & {
   children: InlineNode[];
 };
 
+type CodeNode = BlockNodeBase & {
+  type: "Code";
+  value: string;
+  language?: string;
+};
+
+type ThematicBreakNode = BlockNodeBase & {
+  type: "ThematicBreak";
+};
+
 type UnknownBlockNode = BlockNodeBase & {
   type: string;
   children?: InlineNode[];
 };
 
-type BlockNode = ParagraphNode | HeadingNode | UnknownBlockNode;
+type BlockNode =
+  | ParagraphNode
+  | HeadingNode
+  | CodeNode
+  | ThematicBreakNode
+  | UnknownBlockNode;
 
 export type DocumentNode = {
   type: "Document";
@@ -77,7 +101,21 @@ type AtprotoHeading = RichText &
     level: number;
   };
 
-type AtprotoBlock = AtprotoParagraph | AtprotoHeading;
+type AtprotoCode = BlockNodeBase & {
+  $type: "pub.oxa.document.defs#code";
+  value: string;
+  language?: string;
+};
+
+type AtprotoThematicBreak = BlockNodeBase & {
+  $type: "pub.oxa.document.defs#thematicBreak";
+};
+
+type AtprotoBlock =
+  | AtprotoParagraph
+  | AtprotoHeading
+  | AtprotoCode
+  | AtprotoThematicBreak;
 
 type AtprotoDocument = {
   $type: "pub.oxa.document.document";
@@ -93,11 +131,18 @@ type OxaToAtprotoOptions = {
 
 type FormattingPropertyName = "id" | "classes" | "data";
 type BlockPropertyName = keyof BlockNodeBase;
-type KnownBlockNode = ParagraphNode | HeadingNode;
+type KnownBlockNode =
+  | ParagraphNode
+  | HeadingNode
+  | CodeNode
+  | ThematicBreakNode;
 
 const facetFeatureTypes = {
   Strong: "pub.oxa.richtext.facet#strong",
   Emphasis: "pub.oxa.richtext.facet#emphasis",
+  Superscript: "pub.oxa.richtext.facet#superscript",
+  Subscript: "pub.oxa.richtext.facet#subscript",
+  InlineCode: "pub.oxa.richtext.facet#inlineCode",
 } as const;
 
 /**
@@ -130,6 +175,8 @@ const formattingPropertyNames = ["id", "classes", "data"] as const;
 const blockPropertyNames = ["id", "classes", "data"] as const;
 const paragraphType = "pub.oxa.document.defs#paragraph" as const;
 const headingType = "pub.oxa.document.defs#heading" as const;
+const codeType = "pub.oxa.document.defs#code" as const;
+const thematicBreakType = "pub.oxa.document.defs#thematicBreak" as const;
 
 const encoder = new TextEncoder();
 
@@ -142,7 +189,7 @@ function getCurrentByteOffset(richText: RichText): number {
 }
 
 function createFacet(
-  node: FormattingNode,
+  node: FormattingNode | InlineCodeNode,
   byteStart: number,
   byteEnd: number,
 ): Facet {
@@ -212,6 +259,15 @@ function flattenNode(node: InlineNode, richText: RichText): void {
     return;
   }
 
+  if (node.type === "InlineCode") {
+    warnDroppedProperties(node as unknown as FormattingNode);
+    const byteStart = getCurrentByteOffset(richText);
+    richText.text += node.value;
+    const byteEnd = getCurrentByteOffset(richText);
+    richText.facets.push(createFacet(node, byteStart, byteEnd));
+    return;
+  }
+
   warnDroppedProperties(node);
 
   const byteStart = getCurrentByteOffset(richText);
@@ -245,7 +301,9 @@ function copyBlockProps(block: BlockNodeBase): BlockNodeBase {
   );
 }
 
-function mapBlockRichText(block: KnownBlockNode): BlockNodeBase & RichText {
+type RichTextBlockNode = ParagraphNode | HeadingNode;
+
+function mapBlockRichText(block: RichTextBlockNode): BlockNodeBase & RichText {
   return {
     ...copyBlockProps(block),
     ...flattenInlines(block.children),
@@ -264,14 +322,46 @@ function getOptionalDocumentFields(
 }
 
 function isKnownBlock(block: BlockNode): block is KnownBlockNode {
-  return block.type === "Paragraph" || block.type === "Heading";
+  return (
+    block.type === "Paragraph" ||
+    block.type === "Heading" ||
+    block.type === "Code" ||
+    block.type === "ThematicBreak"
+  );
 }
 
 function warnUnknownBlockType(block: BlockNode): void {
   warn(`unknown block type: ${block.type}`);
 }
 
+function mapCodeBlock(block: CodeNode): AtprotoCode {
+  const result: AtprotoCode = {
+    $type: codeType,
+    ...copyBlockProps(block),
+    value: block.value,
+  };
+  if (block.language !== undefined) {
+    result.language = block.language;
+  }
+  return result;
+}
+
+function mapThematicBreak(block: ThematicBreakNode): AtprotoThematicBreak {
+  return {
+    $type: thematicBreakType,
+    ...copyBlockProps(block),
+  };
+}
+
 function mapKnownBlock(block: KnownBlockNode): AtprotoBlock {
+  if (block.type === "Code") {
+    return mapCodeBlock(block);
+  }
+
+  if (block.type === "ThematicBreak") {
+    return mapThematicBreak(block);
+  }
+
   const richTextBlock = mapBlockRichText(block);
 
   if (block.type === "Paragraph") {
