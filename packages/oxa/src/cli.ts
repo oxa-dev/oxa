@@ -1,22 +1,36 @@
 /**
  * OXA CLI
  *
- * Command-line interface for validating OXA documents.
+ * Command-line interface for validating and converting OXA documents.
  */
 
 import { program } from "commander";
-import { readFileSync } from "fs";
-import yaml from "js-yaml";
 import version from "./version.js";
-import { oxaToAtproto, type DocumentNode } from "./convert.js";
+import {
+  oxaToAtproto,
+  type Document,
+  type Session,
+  type ValidationResult,
+} from "@oxa/core";
 import {
   validateFile,
-  validateJson,
-  validateYaml,
-  type ValidationResult,
-} from "./validate.js";
+  validateContent,
+  parseFile,
+  parseDocumentText,
+} from "./validate-file.js";
 
-const yamlFileExtensions = [".yaml", ".yml"] as const;
+// ── Session for CLI ─────────────────────────────────────────────────────
+
+const session: Session = {
+  log: {
+    debug: (...args) => process.stderr.write(`[debug] ${args.join(" ")}\n`),
+    info: (...args) => process.stderr.write(`${args.join(" ")}\n`),
+    warn: (...args) => process.stderr.write(`Warning: ${args.join(" ")}\n`),
+    error: (...args) => process.stderr.write(`Error: ${args.join(" ")}\n`),
+  },
+};
+
+// ── CLI helpers ─────────────────────────────────────────────────────────
 
 // Exit codes
 const EXIT_SUCCESS = 0;
@@ -85,29 +99,6 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf-8");
 }
 
-function parseDocumentText(content: string, isYaml: boolean): unknown {
-  return isYaml ? yaml.load(content) : JSON.parse(content);
-}
-
-function isYamlFilePath(filePath: string): boolean {
-  return yamlFileExtensions.some((extension) => filePath.endsWith(extension));
-}
-
-function parseFile(filePath: string): unknown {
-  const content = readFileSync(filePath, "utf-8");
-  return parseDocumentText(content, isYamlFilePath(filePath));
-}
-
-function validateContent(
-  content: string,
-  options: { type?: string; yaml?: boolean },
-  format: "cli" | "js",
-): ValidationResult {
-  return options.yaml
-    ? validateYaml(content, { type: options.type, format })
-    : validateJson(content, { type: options.type, format });
-}
-
 function isStdinInput(file: string | undefined): file is undefined | "-" {
   return file === undefined || file === "-";
 }
@@ -122,6 +113,8 @@ async function readDocument(
 
   return parseFile(file);
 }
+
+// ── Commands ────────────────────────────────────────────────────────────
 
 program
   .name("oxa")
@@ -243,7 +236,7 @@ program
 
         console.log(
           JSON.stringify(
-            oxaToAtproto(document as DocumentNode, {
+            oxaToAtproto(session, document as Document, {
               createdAt: options.createdAt,
             }),
           ),

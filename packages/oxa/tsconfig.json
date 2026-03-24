@@ -2,13 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "resolveJsonModule": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "noEmit": false
   },
-  "include": ["src/**/*.ts", "src/schema.json"],
+  "include": ["src/**/*.ts"],
   "exclude": ["dist", "src/**/*.test.ts"]
 }

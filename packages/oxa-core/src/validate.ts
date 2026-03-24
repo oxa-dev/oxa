@@ -1,5 +1,8 @@
 /**
  * Validation functions for OXA documents.
+ *
+ * This module is browser-safe — it does not import Node.js modules.
+ * The schema is bundled directly via JSON import.
  */
 
 import AjvDefault from "ajv";
@@ -7,10 +10,8 @@ import addFormatsDefault from "ajv-formats";
 import type { ValidateFunction, ErrorObject } from "ajv";
 // @ts-expect-error - better-ajv-errors has broken TypeScript exports
 import betterAjvErrors from "better-ajv-errors";
-import { existsSync, readFileSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
 import yaml from "js-yaml";
+import schemaData from "./schema.json" with { type: "json" };
 
 // Handle CJS/ESM interop - these packages don't have proper ESM types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,50 +19,7 @@ const Ajv = AjvDefault as any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const addFormats = addFormatsDefault as any;
 
-// Load schema from bundled location (dist/) or source location (schema/)
-// Handle both ESM (import.meta.url) and CJS (__dirname global) for bundled CLI
-const currentDir =
-  typeof import.meta !== "undefined" && import.meta.url
-    ? dirname(fileURLToPath(import.meta.url))
-    : typeof __dirname !== "undefined"
-      ? __dirname
-      : process.cwd();
-
-function findSchemaPath(): string {
-  // When running from dist/, schema is bundled alongside
-  const bundledPath = join(currentDir, "schema.json");
-  if (existsSync(bundledPath)) {
-    return bundledPath;
-  }
-  // When running from src/ (e.g., during tests), use source schema
-  const sourcePath = join(
-    currentDir,
-    "..",
-    "..",
-    "..",
-    "schema",
-    "schema.json",
-  );
-  if (existsSync(sourcePath)) {
-    return sourcePath;
-  }
-  throw new Error(
-    `Schema not found at ${bundledPath} or ${sourcePath}. Run 'pnpm build' first.`,
-  );
-}
-
-let schema: Record<string, unknown> | null = null;
-
-function loadSchema(): Record<string, unknown> {
-  if (!schema) {
-    const schemaPath = findSchemaPath();
-    schema = JSON.parse(readFileSync(schemaPath, "utf-8")) as Record<
-      string,
-      unknown
-    >;
-  }
-  return schema!;
-}
+const schema: Record<string, unknown> = schemaData as Record<string, unknown>;
 
 /**
  * Result of validating a document.
@@ -112,8 +70,7 @@ const validatorCache = new Map<string, ValidateFunction>();
  * Get available type names from the schema definitions.
  */
 export function getTypeNames(): string[] {
-  const schemaData = loadSchema();
-  const definitions = schemaData.definitions as Record<string, unknown>;
+  const definitions = schema.definitions as Record<string, unknown>;
   return Object.keys(definitions);
 }
 
@@ -128,11 +85,9 @@ function getValidator(type?: string): ValidateFunction | null {
     return validatorCache.get(cacheKey)!;
   }
 
-  const schemaData = loadSchema();
-
   // Validate that the type exists in definitions
   if (type) {
-    const definitions = schemaData.definitions as Record<string, unknown>;
+    const definitions = schema.definitions as Record<string, unknown>;
     if (!definitions || !(type in definitions)) {
       return null;
     }
@@ -214,8 +169,6 @@ export function validate(
   options: ValidateOptions = {},
 ): ValidationResult {
   const validator = getValidator(options.type);
-  const schema = loadSchema();
-
   // Unknown type specified
   if (!validator) {
     const availableTypes = getTypeNames().join(", ");
@@ -250,12 +203,15 @@ export function validate(
  * Validate a JSON string against the OXA schema.
  */
 export function validateJson(
-  json: string,
+  json: string | Record<string, unknown>,
   options: ValidateOptions = {},
 ): ValidationResult {
   try {
-    const data = JSON.parse(json);
-    return validate(data, { ...options, json });
+    const data = typeof json === "string" ? JSON.parse(json) : json;
+    return validate(data, {
+      ...options,
+      json: typeof json === "string" ? json : undefined,
+    });
   } catch (error) {
     return {
       valid: false,
@@ -293,36 +249,8 @@ export function validateYaml(
 }
 
 /**
- * Validate a file (JSON or YAML based on extension).
- */
-export function validateFile(
-  filePath: string,
-  options: ValidateOptions = {},
-): ValidationResult {
-  try {
-    const content = readFileSync(filePath, "utf-8");
-
-    if (filePath.endsWith(".yaml") || filePath.endsWith(".yml")) {
-      return validateYaml(content, options);
-    } else {
-      return validateJson(content, options);
-    }
-  } catch (error) {
-    return {
-      valid: false,
-      errors: [
-        {
-          path: "/",
-          message: `Failed to read file: ${error instanceof Error ? error.message : String(error)}`,
-        },
-      ],
-    };
-  }
-}
-
-/**
- * Get the bundled OXA schema.
+ * Get the loaded OXA schema.
  */
 export function getSchema(): Record<string, unknown> {
-  return structuredClone(loadSchema());
+  return structuredClone(schema);
 }

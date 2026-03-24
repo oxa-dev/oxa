@@ -8,7 +8,7 @@
 
 import { describe, it, expect } from "vitest";
 import { manifest, cases } from "@oxa/conformance";
-import { validate } from "./validate.js";
+import { validate } from "@oxa/core";
 
 describe("OXA Conformance Suite", () => {
   describe("manifest", () => {

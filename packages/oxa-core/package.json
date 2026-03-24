@@ -9,16 +9,13 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./schema.json": "./dist/schema.json"
+    }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "build": "pnpm run copy:version && tsc && cp ../../schema/schema.json dist/ && pnpm run build:bundle",
-    "build:bundle": "esbuild src/cli.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/cli.bundle.cjs --banner:js='#!/usr/bin/env node' --log-override:empty-import-meta=silent",
+    "build": "cp ../../schema/schema.json src/schema.json && tsc",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
@@ -31,16 +28,12 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "better-ajv-errors": "^2.0.2",
-    "commander": "^14.0.0",
     "js-yaml": "^4.1.0",
     "oxa-types": "workspace:*"
   },
   "devDependencies": {
     "@oxa/conformance": "workspace:*",
-    "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.0.0",
-    "esbuild": "^0.25.0",
-    "execa": "^9.5.0"
+    "@types/js-yaml": "^4.0.9"
   },
   "keywords": [
     "oxa",
@@ -58,7 +51,6 @@
     "url": "git+https://github.com/oxa-dev/oxa.git",
     "directory": "packages/oxa-core"
   },
-  "engines": {
-    "node": ">=22"
-  }
+  "engines": {}
+
 }

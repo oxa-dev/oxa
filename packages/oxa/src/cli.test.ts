@@ -6,7 +6,7 @@ import { tmpdir } from "os";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CLI_PATH = join(__dirname, "..", "dist", "cli.js");
+const CLI_PATH = join(__dirname, "..", "dist", "cli.cjs");
 
 // Valid minimal document (only required fields)
 const validDocument = {

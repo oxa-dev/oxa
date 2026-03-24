@@ -20,6 +20,8 @@
 export type * from "oxa-types";
 
 // Export validation functions and types
+export { type Session, type Logger } from "./types.js";
+
 export {
   compatibleFeatures,
   flattenInlines,
@@ -31,7 +33,6 @@ export {
   validate,
   validateJson,
   validateYaml,
-  validateFile,
   getSchema,
   getTypeNames,
   type ValidationResult,
