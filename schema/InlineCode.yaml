@@ -1,0 +1,30 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: InlineCode
+title: InlineCode
+description: Short fragments of code appearing within prose.
+type: object
+properties:
+  type:
+    description: The type discriminator for InlineCode nodes.
+    enum: [InlineCode]
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+  language:
+    description: The programming language of the code content.
+    type: string
+  value:
+    description: The code content.
+    type: string
+required:
+  - type
+  - value

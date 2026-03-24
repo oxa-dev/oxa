@@ -5,4 +5,7 @@ description: Union of all inline content types.
 anyOf:
   - $ref: "./Text.yaml"
   - $ref: "./Emphasis.yaml"
+  - $ref: "./InlineCode.yaml"
   - $ref: "./Strong.yaml"
+  - $ref: "./Subscript.yaml"
+  - $ref: "./Superscript.yaml"

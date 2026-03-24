@@ -1,0 +1,23 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: ThematicBreak
+title: ThematicBreak
+description: A thematic or structural division between sections of content.
+type: object
+properties:
+  type:
+    description: The type discriminator for ThematicBreak nodes.
+    enum: [ThematicBreak]
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+required:
+  - type

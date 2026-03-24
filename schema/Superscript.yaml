@@ -1,0 +1,29 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: Superscript
+title: Superscript
+description: Content rendered above the baseline (e.g. exponents, ordinal suffixes).
+type: object
+properties:
+  type:
+    description: The type discriminator for Superscript nodes.
+    enum: [Superscript]
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+  children:
+    description: The inline content to render as superscript.
+    type: array
+    items:
+      $ref: "./Inline.yaml"
+required:
+  - type
+  - children

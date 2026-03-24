@@ -1,0 +1,30 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: Code
+title: Code
+description: A block of preformatted text, typically source code.
+type: object
+properties:
+  type:
+    description: The type discriminator for Code nodes.
+    enum: [Code]
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+  language:
+    description: The programming language of the code content.
+    type: string
+  value:
+    description: The code content.
+    type: string
+required:
+  - type
+  - value
