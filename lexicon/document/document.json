@@ -1,0 +1,50 @@
+{
+  "lexicon": 1,
+  "id": "dev.oxa.document.document",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A document with metadata, title, and block content.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "classes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "type": "unknown"
+          },
+          "metadata": {
+            "type": "unknown"
+          },
+          "title": {
+            "type": "ref",
+            "ref": "dev.oxa.document.defs#richText"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "ref",
+              "ref": "dev.oxa.document.defs#block"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        },
+        "required": [
+          "children",
+          "createdAt"
+        ]
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import { program } from "commander";
 import { generateConformance } from "./lib/generate-conformance.js";
 import { generateDocs } from "./lib/generate-docs.js";
 import { generateJson } from "./lib/generate-json.js";
+import { generateLexicon } from "./lib/generate-lexicon.js";
 import { generatePy } from "./lib/generate-py.js";
 import { generateRs } from "./lib/generate-rs.js";
 import { generateTs } from "./lib/generate-ts.js";
@@ -31,6 +32,7 @@ const generators: Generator[] = [
     fn: generateConformance,
   },
   { name: "docs", label: "Schema documentation", fn: generateDocs },
+  { name: "lexicon", label: "AT Protocol Lexicon", fn: generateLexicon },
 ];
 
 async function validate(): Promise<void> {

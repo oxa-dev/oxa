@@ -20,6 +20,8 @@
 export type * from "oxa-types";
 
 // Export validation functions and types
+export { flattenInlines, mapBlock, oxaToAtproto } from "./convert.js";
+
 export {
   validate,
   validateJson,

@@ -17,6 +17,7 @@ project:
     - file: index.md
     - file: install.md
     - file: schema-overview.md
+    - file: atproto-lexicon.md
     - title: Schema Reference
       children:
         - pattern: schema/*.md
