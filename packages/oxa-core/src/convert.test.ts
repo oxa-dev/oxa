@@ -8,15 +8,15 @@ const REPO_ROOT = resolve(__dirname, "../../..");
 
 const lexiconFiles = {
   facet: {
-    id: "dev.oxa.richtext.facet",
+    id: "pub.oxa.richtext.facet",
     path: resolve(REPO_ROOT, "lexicon/richtext/facet.json"),
   },
   defs: {
-    id: "dev.oxa.document.defs",
+    id: "pub.oxa.document.defs",
     path: resolve(REPO_ROOT, "lexicon/document/defs.json"),
   },
   document: {
-    id: "dev.oxa.document.document",
+    id: "pub.oxa.document.document",
     path: resolve(REPO_ROOT, "lexicon/document/document.json"),
   },
 } as const;
@@ -299,7 +299,7 @@ describe("ATProto lexicon structure", () => {
     expectFragments(defs, requiredDocumentDefs, "Missing defs fragment");
 
     expect(defs.richText.properties.facets.items.ref).toBe(
-      "dev.oxa.richtext.facet",
+      "pub.oxa.richtext.facet",
     );
     expect(defs.block.type).toBe("union");
     expect(defs.block.closed).toBe(false);
@@ -313,9 +313,9 @@ describe("ATProto lexicon structure", () => {
     expect(main.type).toBe("record");
     expect(main.key).toBe("tid");
     expect(record.required).toEqual(["children", "createdAt"]);
-    expect(record.properties.title.ref).toBe("dev.oxa.document.defs#richText");
+    expect(record.properties.title.ref).toBe("pub.oxa.document.defs#richText");
     expect(record.properties.children.items.ref).toBe(
-      "dev.oxa.document.defs#block",
+      "pub.oxa.document.defs#block",
     );
     expect(record.properties.createdAt).toEqual({
       type: "string",
@@ -351,7 +351,7 @@ describe("mapBlock", () => {
     );
 
     await expect(map(block)).resolves.toEqual({
-      $type: "dev.oxa.document.defs#paragraph",
+      $type: "pub.oxa.document.defs#paragraph",
       id: "para-1",
       classes: ["lead"],
       data: { align: "left" },
@@ -359,7 +359,7 @@ describe("mapBlock", () => {
       facets: [
         {
           index: { byteStart: 6, byteEnd: 10 },
-          features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
         },
       ],
     });
@@ -373,7 +373,7 @@ describe("mapBlock", () => {
     });
 
     await expect(map(block)).resolves.toEqual({
-      $type: "dev.oxa.document.defs#heading",
+      $type: "pub.oxa.document.defs#heading",
       id: "intro",
       classes: ["hero"],
       data: { section: true },
@@ -382,7 +382,7 @@ describe("mapBlock", () => {
       facets: [
         {
           index: { byteStart: 5, byteEnd: 9 },
-          features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
         },
       ],
     });
@@ -439,7 +439,7 @@ describe("oxaToAtproto", () => {
     );
 
     await expect(convertDocument(document, { createdAt })).resolves.toEqual({
-      $type: "dev.oxa.document.document",
+      $type: "pub.oxa.document.document",
       title: {
         text: "Hello, World",
         facets: [],
@@ -450,22 +450,22 @@ describe("oxaToAtproto", () => {
       },
       children: [
         {
-          $type: "dev.oxa.document.defs#heading",
+          $type: "pub.oxa.document.defs#heading",
           level: 1,
           text: "Introduction",
           facets: [],
         },
         {
-          $type: "dev.oxa.document.defs#paragraph",
+          $type: "pub.oxa.document.defs#paragraph",
           text: "This is bold and italic text.",
           facets: [
             {
               index: { byteStart: 8, byteEnd: 12 },
-              features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+              features: [{ $type: "pub.oxa.richtext.facet#strong" }],
             },
             {
               index: { byteStart: 17, byteEnd: 23 },
-              features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+              features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
             },
           ],
         },
@@ -480,7 +480,7 @@ describe("oxaToAtproto", () => {
     await expect(
       convertDocument(documentNode([]), { createdAt }),
     ).resolves.toEqual({
-      $type: "dev.oxa.document.document",
+      $type: "pub.oxa.document.document",
       children: [],
       createdAt,
     });
@@ -516,11 +516,11 @@ describe("oxaToAtproto", () => {
       );
 
       expect(converted).toEqual({
-        $type: "dev.oxa.document.document",
+        $type: "pub.oxa.document.document",
         metadata,
         children: [
           {
-            $type: "dev.oxa.document.defs#paragraph",
+            $type: "pub.oxa.document.defs#paragraph",
             text: "Keep this paragraph",
             facets: [],
           },
@@ -564,7 +564,7 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 6, byteEnd: 11 },
-          features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
         },
       ],
     });
@@ -584,11 +584,11 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 8, byteEnd: 12 },
-          features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
         },
         {
           index: { byteStart: 17, byteEnd: 23 },
-          features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
         },
       ],
     });
@@ -602,7 +602,7 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 4, byteEnd: 9 },
-          features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
         },
       ],
     });
@@ -621,11 +621,11 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 6, byteEnd: 15 },
-          features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
         },
         {
           index: { byteStart: 20, byteEnd: 32 },
-          features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
         },
       ],
     });
@@ -649,11 +649,11 @@ describe("flattenInlines", () => {
       expect.arrayContaining([
         {
           index: { byteStart: 0, byteEnd: 20 },
-          features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
         },
         {
           index: { byteStart: 9, byteEnd: 20 },
-          features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
         },
       ]),
     );
@@ -667,7 +667,7 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 0, byteEnd: 8 },
-          features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
         },
       ],
     });
@@ -687,15 +687,15 @@ describe("flattenInlines", () => {
       expect.arrayContaining([
         {
           index: { byteStart: 0, byteEnd: 14 },
-          features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
         },
         {
           index: { byteStart: 5, byteEnd: 14 },
-          features: [{ $type: "dev.oxa.richtext.facet#emphasis" }],
+          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
         },
         {
           index: { byteStart: 10, byteEnd: 14 },
-          features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
         },
       ]),
     );
@@ -720,7 +720,7 @@ describe("flattenInlines", () => {
         facets: [
           {
             index: { byteStart: 0, byteEnd: 6 },
-            features: [{ $type: "dev.oxa.richtext.facet#strong" }],
+            features: [{ $type: "pub.oxa.richtext.facet#strong" }],
           },
         ],
       });

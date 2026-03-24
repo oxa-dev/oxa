@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "dev.oxa.document.document",
+  "id": "pub.oxa.document.document",
   "defs": {
     "main": {
       "type": "record",
@@ -26,13 +26,13 @@
           },
           "title": {
             "type": "ref",
-            "ref": "dev.oxa.document.defs#richText"
+            "ref": "pub.oxa.document.defs#richText"
           },
           "children": {
             "type": "array",
             "items": {
               "type": "ref",
-              "ref": "dev.oxa.document.defs#block"
+              "ref": "pub.oxa.document.defs#block"
             }
           },
           "createdAt": {

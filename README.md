@@ -212,7 +212,7 @@ The conversion API is also exported from the package entrypoint:
 import { flattenInlines, mapBlock, oxaToAtproto } from "@oxa/core";
 ```
 
-The generated ATProto records use the `dev.oxa.document.*` lexicon namespace.
+The generated ATProto records use the `pub.oxa.document.*` lexicon namespace.
 
 ## Licensing and Attribution
 

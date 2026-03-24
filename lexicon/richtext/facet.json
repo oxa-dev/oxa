@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "dev.oxa.richtext.facet",
+  "id": "pub.oxa.richtext.facet",
   "defs": {
     "main": {
       "type": "object",

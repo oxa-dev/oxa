@@ -49,7 +49,7 @@ export type DocumentNode = {
 };
 
 interface FacetFeature {
-  $type: "dev.oxa.richtext.facet#strong" | "dev.oxa.richtext.facet#emphasis";
+  $type: "pub.oxa.richtext.facet#strong" | "pub.oxa.richtext.facet#emphasis";
 }
 
 interface Facet {
@@ -67,19 +67,19 @@ interface RichText {
 
 type AtprotoParagraph = RichText &
   BlockNodeBase & {
-    $type: "dev.oxa.document.defs#paragraph";
+    $type: "pub.oxa.document.defs#paragraph";
   };
 
 type AtprotoHeading = RichText &
   BlockNodeBase & {
-    $type: "dev.oxa.document.defs#heading";
+    $type: "pub.oxa.document.defs#heading";
     level: number;
   };
 
 type AtprotoBlock = AtprotoParagraph | AtprotoHeading;
 
 type AtprotoDocument = {
-  $type: "dev.oxa.document.document";
+  $type: "pub.oxa.document.document";
   title?: RichText;
   metadata?: Record<string, unknown>;
   children: AtprotoBlock[];
@@ -95,14 +95,14 @@ type BlockPropertyName = keyof BlockNodeBase;
 type KnownBlockNode = ParagraphNode | HeadingNode;
 
 const facetFeatureTypes = {
-  Strong: "dev.oxa.richtext.facet#strong",
-  Emphasis: "dev.oxa.richtext.facet#emphasis",
+  Strong: "pub.oxa.richtext.facet#strong",
+  Emphasis: "pub.oxa.richtext.facet#emphasis",
 } as const;
 
 const formattingPropertyNames = ["id", "classes", "data"] as const;
 const blockPropertyNames = ["id", "classes", "data"] as const;
-const paragraphType = "dev.oxa.document.defs#paragraph" as const;
-const headingType = "dev.oxa.document.defs#heading" as const;
+const paragraphType = "pub.oxa.document.defs#paragraph" as const;
+const headingType = "pub.oxa.document.defs#heading" as const;
 
 const encoder = new TextEncoder();
 
@@ -269,7 +269,7 @@ export function oxaToAtproto(
   options: OxaToAtprotoOptions = {},
 ): AtprotoDocument {
   return {
-    $type: "dev.oxa.document.document",
+    $type: "pub.oxa.document.document",
     ...getOptionalDocumentFields(document),
     children: mapKnownBlocks(document.children),
     createdAt: options.createdAt ?? new Date().toISOString(),

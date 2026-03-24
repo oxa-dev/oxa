@@ -77,7 +77,7 @@ describe("oxa cli", () => {
   describe("convert", () => {
     const createdAt = "2026-03-22T00:00:00.000Z";
     const expectedConverted = {
-      $type: "dev.oxa.document.document",
+      $type: "pub.oxa.document.document",
       title: {
         text: "CLI Example",
         facets: [],
@@ -85,7 +85,7 @@ describe("oxa cli", () => {
       metadata: { license: "CC-BY-4.0" },
       children: [
         {
-          $type: "dev.oxa.document.defs#paragraph",
+          $type: "pub.oxa.document.defs#paragraph",
           text: "Hello from CLI",
           facets: [],
         },

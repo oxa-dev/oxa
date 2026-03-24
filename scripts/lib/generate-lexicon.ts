@@ -83,7 +83,7 @@ function getUnionMembers(
 }
 
 /**
- * Generate dev.oxa.richtext.facet lexicon.
+ * Generate pub.oxa.richtext.facet lexicon.
  *
  * Follows the Bluesky pattern: main has `index` (ref to #byteSlice)
  * and `features` (array of union refs to feature types).
@@ -157,13 +157,13 @@ function generateFacetLexicon(
 
   return {
     lexicon: 1,
-    id: "dev.oxa.richtext.facet",
+    id: "pub.oxa.richtext.facet",
     defs,
   };
 }
 
 /**
- * Generate dev.oxa.document.defs lexicon.
+ * Generate pub.oxa.document.defs lexicon.
  *
  * Contains:
  * - richText: reusable object with text + facets (like Bluesky's pattern)
@@ -187,7 +187,7 @@ function generateDefsLexicon(
         type: "array",
         items: {
           type: "ref",
-          ref: "dev.oxa.richtext.facet",
+          ref: "pub.oxa.richtext.facet",
         },
       },
     },
@@ -219,7 +219,7 @@ function generateDefsLexicon(
           type: "array",
           items: {
             type: "ref",
-            ref: "dev.oxa.richtext.facet",
+            ref: "pub.oxa.richtext.facet",
           },
         };
         continue;
@@ -254,13 +254,13 @@ function generateDefsLexicon(
 
   return {
     lexicon: 1,
-    id: "dev.oxa.document.defs",
+    id: "pub.oxa.document.defs",
     defs,
   };
 }
 
 /**
- * Generate dev.oxa.document.document lexicon.
+ * Generate pub.oxa.document.document lexicon.
  *
  * The Document type becomes a record (matching Bluesky's app.bsky.feed.post pattern).
  */
@@ -284,7 +284,7 @@ function generateDocumentLexicon(
     if (propName === "title" && isInlineArray(prop)) {
       recordProperties["title"] = {
         type: "ref",
-        ref: "dev.oxa.document.defs#richText",
+        ref: "pub.oxa.document.defs#richText",
       };
       continue;
     }
@@ -295,7 +295,7 @@ function generateDocumentLexicon(
         type: "array",
         items: {
           type: "ref",
-          ref: "dev.oxa.document.defs#block",
+          ref: "pub.oxa.document.defs#block",
         },
       };
       if (schemaRequired.has(propName)) {
@@ -331,7 +331,7 @@ function generateDocumentLexicon(
 
   return {
     lexicon: 1,
-    id: "dev.oxa.document.document",
+    id: "pub.oxa.document.document",
     defs: {
       main: {
         type: "record",
@@ -452,7 +452,7 @@ function extractNonStructuralProperties(
  */
 function resolveRefToLexicon(typeName: string): string {
   // For now, types map to document defs
-  return `dev.oxa.document.defs#${toCamelCase(typeName)}`;
+  return `pub.oxa.document.defs#${toCamelCase(typeName)}`;
 }
 
 function toCamelCase(s: string): string {

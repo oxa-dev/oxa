@@ -4,16 +4,16 @@ title: AT Protocol Lexicon
 
 # AT Protocol Lexicon
 
-OXA defines an [AT Protocol (atproto)](https://atproto.com) [Lexicon](https://atproto.com/guides/lexicon) for publishing scientific documents to the [Atmosphere](https://atproto.com/guides/understanding-atproto) — the open, decentralized social network behind [Bluesky](https://bsky.app).
+OXA defines an [AT Protocol (atproto)](https://atproto.com) [Lexicon](https://atproto.com/guides/lexicon) for publishing scientific documents to the [Atmosphere](https://atproto.com/guides/understanding-atproto).
 
-The lexicon lives under the `dev.oxa.*` namespace and enables OXA documents to be stored as records in any AT Protocol [Personal Data Server (PDS)](https://atproto.com/guides/the-at-stack), making scientific content natively available alongside social interactions, feeds, and moderation infrastructure.
+The lexicon lives under the `pub.oxa.*` namespace and enables OXA documents to be stored as records in any AT Protocol [Personal Data Server (PDS)](https://atproto.com/guides/the-at-stack), making scientific content natively available alongside social interactions, feeds, and moderation infrastructure.
 
 ## Why an AT Protocol lexicon?
 
 Scientific publishing today relies on centralized platforms. Researchers upload papers to a service, and that service controls access, discovery, and permanence. AT Protocol offers a different model:
 
 - **User-owned data.** Documents live in the author's signed data repository and can be migrated between hosts.
-- **Decentralized discovery.** Any indexer can crawl the network's [firehose](https://atproto.com/specs/sync) to discover and aggregate scientific content — no single gatekeeper required.
+- **Decentralized discovery.** Any indexer can crawl the network's [firehose](https://atproto.com/specs/sync) to discover and aggregate scientific content.
 - **Interoperability by default.** The Lexicon type system gives every consumer the same schema, so tools can read, validate, and render documents without out-of-band agreements.
 - **Built-in identity.** Authors are identified by [DIDs](https://atproto.com/specs/did) and [handles](https://atproto.com/specs/handle), providing a ready-made, portable identity layer.
 
@@ -25,9 +25,9 @@ The OXA lexicon is organised into two namespaces:
 
 | File | NSID | Purpose |
 |------|------|---------|
-| `lexicon/document/document.json` | `dev.oxa.document.document` | The `Document` record type — the root object stored in a PDS |
-| `lexicon/document/defs.json` | `dev.oxa.document.defs` | Block-level type definitions (`paragraph`, `heading`, `richText`) and the `block` union |
-| `lexicon/richtext/facet.json` | `dev.oxa.richtext.facet` | Facet annotations for inline formatting (`emphasis`, `strong`, `byteSlice`) |
+| `lexicon/document/document.json` | `pub.oxa.document.document` | The `Document` record type — the root object stored in a PDS |
+| `lexicon/document/defs.json` | `pub.oxa.document.defs` | Block-level type definitions (`paragraph`, `heading`, `richText`) and the `block` union |
+| `lexicon/richtext/facet.json` | `pub.oxa.richtext.facet` | Facet annotations for inline formatting (`emphasis`, `strong`, `byteSlice`) |
 
 A `Document` record contains an array of `children` (blocks). Each block carries a `text` string and an optional `facets` array that annotates ranges of that text with formatting features.
 
@@ -35,7 +35,7 @@ A `Document` record contains an array of `children` (blocks). Each block carries
 
 The lexicon follows the conventions described in the [Lexicon Style Guide](https://atproto.com/guides/lexicon-style-guide#design-patterns):
 
-- **Rich text via facets.** Instead of embedding markup in strings, inline formatting is represented as byte-range annotations — the same pattern established by [`app.bsky.richtext.facet`](https://docs.bsky.app/docs/advanced-guides/post-richtext). This keeps text plain and makes it safe to render even if a consumer doesn't understand a particular facet type. See [why `dev.oxa.richtext.facet`?](#why-devoxa-not-appbsky) below for why OXA defines its own facet lexicon rather than reusing Bluesky's.
+- **Rich text via facets.** Instead of embedding markup in strings, inline formatting is represented as byte-range annotations — the same pattern established by [`app.bsky.richtext.facet`](https://docs.bsky.app/docs/advanced-guides/post-richtext). This keeps text plain and makes it safe to render even if a consumer doesn't understand a particular facet type. See [why `pub.oxa.richtext.facet`?](#why-devoxa-not-appbsky) below for why OXA defines its own facet lexicon rather than reusing Bluesky's.
 - **Open unions.** The `block` union and the facet `features` union are both declared with `"closed": false`, allowing future extension without breaking existing consumers.
 - **Minimal required fields.** Only fields that are truly necessary for functionality are marked `required` (e.g. `children` and `createdAt` on a document, `level` on a heading). This keeps the schema flexible for evolution.
 - **Singular nouns for record schemas.** The record type is named `document` (not `documents`), following the convention for record schemas.
@@ -43,13 +43,13 @@ The lexicon follows the conventions described in the [Lexicon Style Guide](https
 - **`createdAt` timestamp.** The document record includes a `createdAt` field (datetime string), which is standard practice for ATProto records.
 - **`$type` discriminators.** Every block and facet feature carries a `$type` string so consumers can identify types in the open union without ambiguity.
 
-## Why `dev.oxa.richtext.facet`? {#why-devoxa-not-appbsky}
+## Why `pub.oxa.richtext.facet`? {#why-devoxa-not-appbsky}
 
-OXA defines its own facet lexicon (`dev.oxa.richtext.facet`) rather than reusing Bluesky's `app.bsky.richtext.facet`. This is a deliberate choice driven by the different domains the two lexicons serve.
+OXA defines its own facet lexicon (`pub.oxa.richtext.facet`) rather than reusing Bluesky's `app.bsky.richtext.facet`. This is a deliberate choice driven by the different domains the two lexicons serve.
 
 Bluesky's facet features are designed for social microblogging — its feature union contains `mention` (account references), `link` (URLs), and `tag` (hashtags). These are not the annotations scientific documents need. OXA documents require typographic and semantic formatting: `emphasis`, `strong`, and in the future inline types like `subscript`, `superscript`, `inlineMath`, `inlineCode`, `link`, `cite`, and others defined in the OXA schema.
 
-There are also structural differences. The `app.bsky.richtext.facet` features union is closed, meaning third parties cannot extend it without modifying the original lexicon. The `dev.oxa.richtext.facet` features union is declared with `"closed": false`, following the style guide's recommendation for extensibility. This allows the OXA facet feature set to grow as the schema grows — and because the lexicon is generated from the OXA schema, new inline types become facet features automatically.
+There are also structural differences. The `app.bsky.richtext.facet` features union is closed, meaning third parties cannot extend it without modifying the original lexicon. The `pub.oxa.richtext.facet` features union is declared with `"closed": false`, following the style guide's recommendation for extensibility. This allows the OXA facet feature set to grow as the schema grows. Because the lexicon is generated from the OXA schema, new inline types become facet features automatically.
 
 Finally, the `app.bsky` namespace is owned by Bluesky PBC. Extending it with document-formatting features would conflate social and scientific concerns in a namespace OXA does not control.
 
@@ -86,16 +86,16 @@ AT Protocol [uses facets instead of a tree](https://www.pfrazee.com/blog/why-fac
 
 ```json
 {
-  "$type": "dev.oxa.document.defs#paragraph",
+  "$type": "pub.oxa.document.defs#paragraph",
   "text": "This is bold and italic text.",
   "facets": [
     {
       "index": { "byteStart": 8, "byteEnd": 23 },
-      "features": [{ "$type": "dev.oxa.richtext.facet#strong" }]
+      "features": [{ "$type": "pub.oxa.richtext.facet#strong" }]
     },
     {
       "index": { "byteStart": 17, "byteEnd": 23 },
-      "features": [{ "$type": "dev.oxa.richtext.facet#emphasis" }]
+      "features": [{ "$type": "pub.oxa.richtext.facet#emphasis" }]
     }
   ]
 }
@@ -169,21 +169,21 @@ Produces:
 
 ```json
 {
-  "$type": "dev.oxa.document.document",
+  "$type": "pub.oxa.document.document",
   "children": [
     {
-      "$type": "dev.oxa.document.defs#heading",
+      "$type": "pub.oxa.document.defs#heading",
       "level": 1,
       "text": "Hello",
       "facets": []
     },
     {
-      "$type": "dev.oxa.document.defs#paragraph",
+      "$type": "pub.oxa.document.defs#paragraph",
       "text": "Some emphasized text.",
       "facets": [
         {
           "index": { "byteStart": 5, "byteEnd": 15 },
-          "features": [{ "$type": "dev.oxa.richtext.facet#emphasis" }]
+          "features": [{ "$type": "pub.oxa.richtext.facet#emphasis" }]
         }
       ]
     }
@@ -210,9 +210,9 @@ The lexicon files are generated from the OXA YAML schema definitions by the code
 
 1. Loads the merged OXA JSON Schema.
 2. Classifies each type as inline or block based on the `Inline` and `Block` union definitions.
-3. Maps inline types to facet features in `dev.oxa.richtext.facet` (excluding `Text`, which becomes the plain text string).
-4. Maps block types to object definitions in `dev.oxa.document.defs`, replacing their inline `children` arrays with `text` + `facets` pairs.
-5. Emits the `Document` record type in `dev.oxa.document.document`.
+3. Maps inline types to facet features in `pub.oxa.richtext.facet` (excluding `Text`, which becomes the plain text string).
+4. Maps block types to object definitions in `pub.oxa.document.defs`, replacing their inline `children` arrays with `text` + `facets` pairs.
+5. Emits the `Document` record type in `pub.oxa.document.document`.
 
 To regenerate the lexicon after changing the schema:
 
