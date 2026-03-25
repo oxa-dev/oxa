@@ -18,6 +18,9 @@ A foundation for interoperable, structured scientific content.
 The **Open Exchange Architecture (OXA)** is a specification for representing scientific documents and their components as structured JSON objects.
 It’s designed to enable **exchange, interoperability, and long-term preservation** of scientific knowledge, while remaining compatible with modern web and data standards.
 
+:::{anywidget} https://cdn.jsdelivr.net/npm/@oxa/demo/dist/anywidget.js
+:::
+
 OXA provides schemas and examples for representing:
 
 - Executable and interactive research components

@@ -1,0 +1,46 @@
+{
+  "name": "@oxa/demo",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./anywidget": "./dist/anywidget.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --config vite.config.anywidget.ts",
+    "build:lib": "vite build",
+    "build:anywidget": "vite build --config vite.config.anywidget.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-yaml": "^6.1.2",
+    "@codemirror/language": "^6.11.0",
+    "@oxa/core": "workspace:*",
+    "@oxa/react": "workspace:*",
+    "@uiw/react-codemirror": "^4.23.10",
+    "codemirror": "^6.0.1",
+    "js-yaml": "^4.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@codemirror/state": "^6.6.0",
+    "@tailwindcss/vite": "^4.1.10",
+    "@types/js-yaml": "^4.0.9",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.2",
+    "tailwindcss": "^4.1.10",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}
