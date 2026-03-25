@@ -23,7 +23,7 @@ The OXA lexicon is organized into three namespaces:
 
 | File                             | NSID                        | Purpose                                                                                 |
 | -------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
-| `lexicon/document/document.json` | `pub.oxa.document.document` | The `Document` record type — the root object stored in a PDS                            |
+| `lexicon/document/document.json` | `pub.oxa.document` | The `Document` record type — the root object stored in a PDS                            |
 | `lexicon/blocks/defs.json`       | `pub.oxa.blocks.defs`       | Block-level type definitions (`paragraph`, `heading`, `richText`) and the `block` union |
 | `lexicon/richtext/facet.json`    | `pub.oxa.richtext.facet`    | Facet annotations for inline formatting (`emphasis`, `strong`, `byteSlice`)             |
 
@@ -187,7 +187,7 @@ Produces:
 
 ```json
 {
-  "$type": "pub.oxa.document.document",
+  "$type": "pub.oxa.document",
   "children": [
     {
       "$type": "pub.oxa.blocks.defs#heading",
@@ -249,7 +249,7 @@ The lexicon files are generated from the OXA YAML schema definitions by the code
 2. Classifies each type as inline or block based on the `Inline` and `Block` union definitions.
 3. Maps inline types to facet features in `pub.oxa.richtext.facet` (excluding `Text`, which becomes the plain text string).
 4. Maps block types to object definitions in `pub.oxa.blocks.defs`, replacing their inline `children` arrays with `text` + `facets` pairs.
-5. Emits the `Document` record type in `pub.oxa.document.document`.
+5. Emits the `Document` record type in `pub.oxa.document`.
 
 To regenerate the lexicon after changing the schema:
 

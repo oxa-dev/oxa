@@ -122,7 +122,7 @@ type AtprotoBlock =
   | AtprotoThematicBreak;
 
 type AtprotoDocument = {
-  $type: "pub.oxa.document.document";
+  $type: "pub.oxa.document";
   title?: RichText;
   metadata?: Record<string, unknown>;
   children: AtprotoBlock[];
@@ -414,7 +414,7 @@ export function oxaToAtproto(
   options: OxaToAtprotoOptions = {},
 ): AtprotoDocument {
   return {
-    $type: "pub.oxa.document.document",
+    $type: "pub.oxa.document",
     ...getOptionalDocumentFields(session, document),
     children: mapKnownBlocks(session, document.children),
     createdAt: options.createdAt ?? new Date().toISOString(),

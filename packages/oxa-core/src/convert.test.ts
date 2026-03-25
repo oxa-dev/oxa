@@ -30,7 +30,7 @@ const lexiconFiles = {
     path: resolve(REPO_ROOT, "lexicon/blocks/defs.json"),
   },
   document: {
-    id: "pub.oxa.document.document",
+    id: "pub.oxa.document",
     path: resolve(REPO_ROOT, "lexicon/document/document.json"),
   },
 } as const;
@@ -464,7 +464,7 @@ describe("oxaToAtproto", () => {
     );
 
     await expect(convertDocument(document, { createdAt })).resolves.toEqual({
-      $type: "pub.oxa.document.document",
+      $type: "pub.oxa.document",
       title: {
         text: "Hello, World",
         facets: [],
@@ -505,7 +505,7 @@ describe("oxaToAtproto", () => {
     await expect(
       convertDocument(documentNode([]), { createdAt }),
     ).resolves.toEqual({
-      $type: "pub.oxa.document.document",
+      $type: "pub.oxa.document",
       children: [],
       createdAt,
     });
@@ -539,7 +539,7 @@ describe("oxaToAtproto", () => {
     );
 
     expect(converted).toEqual({
-      $type: "pub.oxa.document.document",
+      $type: "pub.oxa.document",
       metadata,
       children: [
         {

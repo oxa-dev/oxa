@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "pub.oxa.document.document",
+  "id": "pub.oxa.document",
   "defs": {
     "main": {
       "type": "record",

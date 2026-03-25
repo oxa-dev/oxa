@@ -77,7 +77,7 @@ describe("oxa cli", () => {
   describe("convert", () => {
     const createdAt = "2026-03-22T00:00:00.000Z";
     const expectedConverted = {
-      $type: "pub.oxa.document.document",
+      $type: "pub.oxa.document",
       title: {
         text: "CLI Example",
         facets: [],

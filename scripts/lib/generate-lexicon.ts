@@ -66,7 +66,7 @@ export async function generateLexicon(): Promise<void> {
   writeLexiconFile(join(LEXICON_DIR, "richtext", "facet.json"), facetFile);
   writeLexiconFile(join(LEXICON_DIR, "blocks", "defs.json"), blocksDefsFile);
   writeLexiconFile(
-    join(LEXICON_DIR, "document", "document.json"),
+    join(LEXICON_DIR, "document.json"),
     documentFile,
   );
 
@@ -260,7 +260,7 @@ function generateBlocksDefsLexicon(
 }
 
 /**
- * Generate pub.oxa.document.document lexicon.
+ * Generate pub.oxa.document lexicon.
  *
  * The Document type becomes a record (matching Bluesky's app.bsky.feed.post pattern).
  */
@@ -331,7 +331,7 @@ function generateDocumentLexicon(
 
   return {
     lexicon: 1,
-    id: "pub.oxa.document.document",
+    id: "pub.oxa.document",
     defs: {
       main: {
         type: "record",

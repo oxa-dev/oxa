@@ -1,5 +1,5 @@
 {
-  "$type": "pub.oxa.document.document",
+  "$type": "pub.oxa.document",
   "title": {
     "text": "Water Dissociation: H2O → H+ + OH−",
     "facets": [
