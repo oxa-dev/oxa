@@ -153,27 +153,34 @@ const facetFeatureTypes = {
  * Compatible facet features from other AT Protocol namespaces.
  *
  * When an OXA facet feature has a semantically equivalent type in another
- * namespace (e.g. Bluesky's `app.bsky.richtext.facet`), the converter emits
- * both features in the same facet. This gives consumers that understand the
- * other namespace free interoperability without OXA depending on that
+ * namespace (e.g. Bluesky's `app.bsky.richtext.facet`), the converter
+ * emits both features in the same facet. This gives consumers that understand
+ * the other namespace free interoperability without OXA depending on that
  * namespace for its core schema.
  *
  * Each key is an OXA facet feature `$type`. The value is an array of
  * functions that receive the OXA inline node and return a compatible
  * feature object (or `null` to skip).
  *
- * Currently empty — the only OXA facet features (`strong`, `emphasis`) have
- * no Bluesky equivalents. When `Link` is added to the OXA schema, an entry
- * like the following would provide Bluesky link interop:
- *
- *   "pub.oxa.richtext.facet#link": [
- *     (node) => ({ $type: "app.bsky.richtext.facet#link", uri: node.uri }),
- *   ],
+ * These lexicons should be checked periodically for new features that
+ * could be mapped here:
+ *   - Leaflet: https://github.com/hyperlink-academy/leaflet/blob/main/lexicons/pub/leaflet/richtext/facet.json
+ *   - Bluesky: https://github.com/bluesky-social/atproto/blob/main/lexicons/app/bsky/richtext/facet.json
  */
 export const compatibleFeatures: Record<
   string,
   Array<(node: Record<string, unknown>) => FacetFeature | null>
-> = {};
+> = {
+  "pub.oxa.richtext.facet#strong": [
+    () => ({ $type: "pub.leaflet.richtext.facet#bold" }),
+  ],
+  "pub.oxa.richtext.facet#emphasis": [
+    () => ({ $type: "pub.leaflet.richtext.facet#italic" }),
+  ],
+  "pub.oxa.richtext.facet#inlineCode": [
+    () => ({ $type: "pub.leaflet.richtext.facet#code" }),
+  ],
+};
 
 const formattingPropertyNames = ["id", "classes", "data"] as const;
 const blockPropertyNames = ["id", "classes", "data"] as const;

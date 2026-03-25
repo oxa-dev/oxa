@@ -57,21 +57,29 @@ Finally, the `app.bsky` namespace is owned by Bluesky PBC. Extending it with doc
 
 Where an OXA facet feature is semantically equivalent to a feature in another AT Protocol namespace, the converter emits both features in the same facet's `features` array. This gives consumers that understand the other namespace free interoperability without OXA depending on that namespace for its core schema.
 
-For example, when `Link` is added to the OXA schema, a link facet will carry both the OXA feature and Bluesky's `app.bsky.richtext.facet#link`:
+For example, OXA's `#strong` facet feature is semantically equivalent to Leaflet's `#bold`, so the converter emits both:
 
 ```json
 {
   "index": { "byteStart": 10, "byteEnd": 20 },
   "features": [
-    { "$type": "pub.oxa.richtext.facet#link", "uri": "https://example.com" },
-    { "$type": "app.bsky.richtext.facet#link", "uri": "https://example.com" }
+    { "$type": "pub.oxa.richtext.facet#strong" },
+    { "$type": "pub.leaflet.richtext.facet#bold" }
   ]
 }
 ```
 
-This works because AT Protocol facets support multiple features per byte range, and consumers ignore feature types they don't recognise. A Bluesky client rendering an OXA document record will make links clickable even though it doesn't understand `pub.oxa.richtext.facet#emphasis`.
+The current Leaflet mappings are:
 
-The mapping is maintained in the `compatibleFeatures` export from `@oxa/core`. It is a record keyed by OXA facet feature `$type`, where each value is an array of functions that produce a compatible feature object (or `null` to skip). This design is not Bluesky-specific — any AT Protocol namespace can be added to the map.
+| OXA feature    | Leaflet feature                            |
+| -------------- | ------------------------------------------ |
+| `#strong`      | `pub.leaflet.richtext.facet#bold`          |
+| `#emphasis`    | `pub.leaflet.richtext.facet#italic`        |
+| `#inlineCode`  | `pub.leaflet.richtext.facet#code`          |
+
+This works because AT Protocol facets support multiple features per byte range, and consumers ignore feature types they don't recognise. A Leaflet client rendering an OXA document record will render bold, italic, and code spans even though it doesn't understand `pub.oxa.richtext.facet#superscript`.
+
+The mapping is maintained in the `compatibleFeatures` export from `@oxa/core`. It is a record keyed by OXA facet feature `$type`, where each value is an array of functions that produce a compatible feature object (or `null` to skip). This design is not Leaflet-specific — any AT Protocol namespace can be added to the map.
 
 ## Flattening inlines into facets
 
@@ -109,11 +117,17 @@ AT Protocol [uses facets instead of a tree](https://www.pfrazee.com/blog/why-fac
   "facets": [
     {
       "index": { "byteStart": 8, "byteEnd": 23 },
-      "features": [{ "$type": "pub.oxa.richtext.facet#strong" }]
+      "features": [
+        { "$type": "pub.oxa.richtext.facet#strong" },
+        { "$type": "pub.leaflet.richtext.facet#bold" }
+      ]
     },
     {
       "index": { "byteStart": 17, "byteEnd": 23 },
-      "features": [{ "$type": "pub.oxa.richtext.facet#emphasis" }]
+      "features": [
+        { "$type": "pub.oxa.richtext.facet#emphasis" },
+        { "$type": "pub.leaflet.richtext.facet#italic" }
+      ]
     }
   ]
 }
@@ -201,7 +215,10 @@ Produces:
       "facets": [
         {
           "index": { "byteStart": 5, "byteEnd": 15 },
-          "features": [{ "$type": "pub.oxa.richtext.facet#emphasis" }]
+          "features": [
+            { "$type": "pub.oxa.richtext.facet#emphasis" },
+            { "$type": "pub.leaflet.richtext.facet#italic" }
+          ]
         }
       ]
     }
