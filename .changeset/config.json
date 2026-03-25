@@ -2,7 +2,10 @@
   "$schema": "https://unpkg.com/@changesets/config@3.1.2/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "oxa-dev/oxa" }],
   "commit": false,
-  "fixed": [["@oxa/core", "oxa"]],
+  "fixed": [
+    ["@oxa/core", "oxa"],
+    ["@oxa/demo", "@oxa/react"]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
