@@ -388,7 +388,10 @@ describe("mapBlock", () => {
       facets: [
         {
           index: { byteStart: 6, byteEnd: 10 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
       ],
     });
@@ -411,7 +414,10 @@ describe("mapBlock", () => {
       facets: [
         {
           index: { byteStart: 5, byteEnd: 9 },
-          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#emphasis" },
+            { $type: "pub.leaflet.richtext.facet#italic" },
+          ],
         },
       ],
     });
@@ -486,11 +492,17 @@ describe("oxaToAtproto", () => {
           facets: [
             {
               index: { byteStart: 8, byteEnd: 12 },
-              features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+              features: [
+                { $type: "pub.oxa.richtext.facet#strong" },
+                { $type: "pub.leaflet.richtext.facet#bold" },
+              ],
             },
             {
               index: { byteStart: 17, byteEnd: 23 },
-              features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+              features: [
+                { $type: "pub.oxa.richtext.facet#emphasis" },
+                { $type: "pub.leaflet.richtext.facet#italic" },
+              ],
             },
           ],
         },
@@ -584,7 +596,10 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 6, byteEnd: 11 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
       ],
     });
@@ -604,11 +619,17 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 8, byteEnd: 12 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
         {
           index: { byteStart: 17, byteEnd: 23 },
-          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#emphasis" },
+            { $type: "pub.leaflet.richtext.facet#italic" },
+          ],
         },
       ],
     });
@@ -622,7 +643,10 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 4, byteEnd: 9 },
-          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#emphasis" },
+            { $type: "pub.leaflet.richtext.facet#italic" },
+          ],
         },
       ],
     });
@@ -641,11 +665,17 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 6, byteEnd: 15 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
         {
           index: { byteStart: 20, byteEnd: 32 },
-          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#emphasis" },
+            { $type: "pub.leaflet.richtext.facet#italic" },
+          ],
         },
       ],
     });
@@ -669,11 +699,17 @@ describe("flattenInlines", () => {
       expect.arrayContaining([
         {
           index: { byteStart: 0, byteEnd: 20 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
         {
           index: { byteStart: 9, byteEnd: 20 },
-          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#emphasis" },
+            { $type: "pub.leaflet.richtext.facet#italic" },
+          ],
         },
       ]),
     );
@@ -687,7 +723,10 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 0, byteEnd: 8 },
-          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#emphasis" },
+            { $type: "pub.leaflet.richtext.facet#italic" },
+          ],
         },
       ],
     });
@@ -762,15 +801,24 @@ describe("flattenInlines", () => {
       expect.arrayContaining([
         {
           index: { byteStart: 0, byteEnd: 14 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
         {
           index: { byteStart: 5, byteEnd: 14 },
-          features: [{ $type: "pub.oxa.richtext.facet#emphasis" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#emphasis" },
+            { $type: "pub.leaflet.richtext.facet#italic" },
+          ],
         },
         {
           index: { byteStart: 10, byteEnd: 14 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
       ]),
     );
@@ -795,7 +843,10 @@ describe("flattenInlines", () => {
       facets: [
         {
           index: { byteStart: 0, byteEnd: 6 },
-          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+          features: [
+            { $type: "pub.oxa.richtext.facet#strong" },
+            { $type: "pub.leaflet.richtext.facet#bold" },
+          ],
         },
       ],
     });
