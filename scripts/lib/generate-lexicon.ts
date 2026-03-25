@@ -65,10 +65,7 @@ export async function generateLexicon(): Promise<void> {
   // Write files
   writeLexiconFile(join(LEXICON_DIR, "richtext", "facet.json"), facetFile);
   writeLexiconFile(join(LEXICON_DIR, "blocks", "defs.json"), blocksDefsFile);
-  writeLexiconFile(
-    join(LEXICON_DIR, "document.json"),
-    documentFile,
-  );
+  writeLexiconFile(join(LEXICON_DIR, "document.json"), documentFile);
 
   console.log(`Generated lexicon files in ${LEXICON_DIR}`);
 }
