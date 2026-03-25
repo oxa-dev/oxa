@@ -1,6 +1,6 @@
 {
   "$schema": "./schemas/manifest.schema.json",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "formats": [
     "oxa",
     "myst-ast",

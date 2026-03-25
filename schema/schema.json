@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://oxa.dev/v0.2.0/schema.json",
+  "$id": "https://oxa.dev/v0.2.1/schema.json",
   "title": "OXA Schema",
   "description": "JSON Schema for OXA document types",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "definitions": {
     "Block": {
       "title": "Block",
