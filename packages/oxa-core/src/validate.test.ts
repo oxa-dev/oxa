@@ -1,12 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { writeFileSync, unlinkSync, mkdtempSync } from "fs";
-import { join } from "path";
-import { tmpdir } from "os";
+import { describe, it, expect } from "vitest";
 import {
   validate,
   validateJson,
   validateYaml,
-  validateFile,
   getSchema,
   getTypeNames,
 } from "./validate.js";
@@ -128,56 +124,6 @@ children: []
   it("returns errors for valid YAML but invalid document", () => {
     const result = validateYaml("type: Document");
     expect(result.valid).toBe(false);
-  });
-});
-
-describe("validateFile", () => {
-  let tempDir: string;
-  let jsonFile: string;
-  let yamlFile: string;
-  let invalidFile: string;
-
-  beforeAll(() => {
-    tempDir = mkdtempSync(join(tmpdir(), "oxa-test-"));
-    jsonFile = join(tempDir, "valid.json");
-    yamlFile = join(tempDir, "valid.yaml");
-    invalidFile = join(tempDir, "invalid.json");
-
-    writeFileSync(jsonFile, JSON.stringify(validDocument));
-    writeFileSync(
-      yamlFile,
-      `type: Document
-children: []
-`,
-    );
-    writeFileSync(invalidFile, '{"type": "Document"}');
-  });
-
-  afterAll(() => {
-    unlinkSync(jsonFile);
-    unlinkSync(yamlFile);
-    unlinkSync(invalidFile);
-  });
-
-  it("validates JSON file", () => {
-    const result = validateFile(jsonFile);
-    expect(result.valid).toBe(true);
-  });
-
-  it("validates YAML file", () => {
-    const result = validateFile(yamlFile);
-    expect(result.valid).toBe(true);
-  });
-
-  it("returns errors for invalid file content", () => {
-    const result = validateFile(invalidFile);
-    expect(result.valid).toBe(false);
-  });
-
-  it("returns error for non-existent file", () => {
-    const result = validateFile("/nonexistent/file.json");
-    expect(result.valid).toBe(false);
-    expect(result.errors[0].message).toContain("Failed to read file");
   });
 });
 

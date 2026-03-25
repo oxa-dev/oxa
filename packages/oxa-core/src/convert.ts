@@ -1,6 +1,10 @@
 /**
  * Minimal inline conversion helpers for OXA rich text.
+ *
+ * All functions take a `Session` object as their first argument.
  */
+
+import type { Session } from "./types.js";
 
 type TextNode = {
   type: "Text";
@@ -212,10 +216,6 @@ function createFacet(
   };
 }
 
-function warn(message: string): void {
-  process.stderr.write(`Warning: ${message}\n`);
-}
-
 function getDroppedFormattingProperties(
   node: FormattingNode,
 ): FormattingPropertyName[] {
@@ -241,26 +241,30 @@ function copyDefinedProperties<T extends object, K extends keyof T>(
   return props;
 }
 
-function warnDroppedProperties(node: FormattingNode): void {
+function warnDroppedProperties(session: Session, node: FormattingNode): void {
   const dropped = getDroppedFormattingProperties(node);
 
   if (dropped.length === 0) {
     return;
   }
 
-  warn(
+  session.log.warn(
     `dropping unsupported inline properties on ${node.type}: ${dropped.join(", ")}`,
   );
 }
 
-function flattenNode(node: InlineNode, richText: RichText): void {
+function flattenNode(
+  session: Session,
+  node: InlineNode,
+  richText: RichText,
+): void {
   if (node.type === "Text") {
     richText.text += node.value;
     return;
   }
 
   if (node.type === "InlineCode") {
-    warnDroppedProperties(node as unknown as FormattingNode);
+    warnDroppedProperties(session, node as unknown as FormattingNode);
     const byteStart = getCurrentByteOffset(richText);
     richText.text += node.value;
     const byteEnd = getCurrentByteOffset(richText);
@@ -268,12 +272,12 @@ function flattenNode(node: InlineNode, richText: RichText): void {
     return;
   }
 
-  warnDroppedProperties(node);
+  warnDroppedProperties(session, node);
 
   const byteStart = getCurrentByteOffset(richText);
 
   for (const child of node.children) {
-    flattenNode(child, richText);
+    flattenNode(session, child, richText);
   }
 
   const byteEnd = getCurrentByteOffset(richText);
@@ -281,14 +285,17 @@ function flattenNode(node: InlineNode, richText: RichText): void {
   richText.facets.push(createFacet(node, byteStart, byteEnd));
 }
 
-export function flattenInlines(inlines: InlineNode[]): RichText {
+export function flattenInlines(
+  session: Session,
+  inlines: InlineNode[],
+): RichText {
   const richText: RichText = {
     text: "",
     facets: [],
   };
 
   for (const inline of inlines) {
-    flattenNode(inline, richText);
+    flattenNode(session, inline, richText);
   }
 
   return richText;
@@ -303,19 +310,23 @@ function copyBlockProps(block: BlockNodeBase): BlockNodeBase {
 
 type RichTextBlockNode = ParagraphNode | HeadingNode;
 
-function mapBlockRichText(block: RichTextBlockNode): BlockNodeBase & RichText {
+function mapBlockRichText(
+  session: Session,
+  block: RichTextBlockNode,
+): BlockNodeBase & RichText {
   return {
     ...copyBlockProps(block),
-    ...flattenInlines(block.children),
+    ...flattenInlines(session, block.children),
   };
 }
 
 function getOptionalDocumentFields(
+  session: Session,
   document: DocumentNode,
 ): Partial<AtprotoDocument> {
   return {
     ...(document.title !== undefined
-      ? { title: flattenInlines(document.title) }
+      ? { title: flattenInlines(session, document.title) }
       : {}),
     ...(document.metadata !== undefined ? { metadata: document.metadata } : {}),
   };
@@ -330,8 +341,8 @@ function isKnownBlock(block: BlockNode): block is KnownBlockNode {
   );
 }
 
-function warnUnknownBlockType(block: BlockNode): void {
-  warn(`unknown block type: ${block.type}`);
+function warnUnknownBlockType(session: Session, block: BlockNode): void {
+  session.log.warn(`unknown block type: ${block.type}`);
 }
 
 function mapCodeBlock(block: CodeNode): AtprotoCode {
@@ -353,7 +364,7 @@ function mapThematicBreak(block: ThematicBreakNode): AtprotoThematicBreak {
   };
 }
 
-function mapKnownBlock(block: KnownBlockNode): AtprotoBlock {
+function mapKnownBlock(session: Session, block: KnownBlockNode): AtprotoBlock {
   if (block.type === "Code") {
     return mapCodeBlock(block);
   }
@@ -362,7 +373,7 @@ function mapKnownBlock(block: KnownBlockNode): AtprotoBlock {
     return mapThematicBreak(block);
   }
 
-  const richTextBlock = mapBlockRichText(block);
+  const richTextBlock = mapBlockRichText(session, block);
 
   if (block.type === "Paragraph") {
     return {
@@ -378,30 +389,34 @@ function mapKnownBlock(block: KnownBlockNode): AtprotoBlock {
   };
 }
 
-function mapKnownBlocks(blocks: BlockNode[]): AtprotoBlock[] {
+function mapKnownBlocks(session: Session, blocks: BlockNode[]): AtprotoBlock[] {
   return blocks.flatMap((block) => {
-    const mapped = mapBlock(block);
+    const mapped = mapBlock(session, block);
     return mapped === undefined ? [] : [mapped];
   });
 }
 
-export function mapBlock(block: BlockNode): AtprotoBlock | undefined {
+export function mapBlock(
+  session: Session,
+  block: BlockNode,
+): AtprotoBlock | undefined {
   if (!isKnownBlock(block)) {
-    warnUnknownBlockType(block);
+    warnUnknownBlockType(session, block);
     return undefined;
   }
 
-  return mapKnownBlock(block);
+  return mapKnownBlock(session, block);
 }
 
 export function oxaToAtproto(
+  session: Session,
   document: DocumentNode,
   options: OxaToAtprotoOptions = {},
 ): AtprotoDocument {
   return {
     $type: "pub.oxa.document.document",
-    ...getOptionalDocumentFields(document),
-    children: mapKnownBlocks(document.children),
+    ...getOptionalDocumentFields(session, document),
+    children: mapKnownBlocks(session, document.children),
     createdAt: options.createdAt ?? new Date().toISOString(),
   };
 }

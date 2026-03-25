@@ -1,1 +1,2 @@
-src/version.ts
+dist/
+src/schema.json

@@ -1,10 +1,24 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import { dirname, relative, resolve } from "path";
 import { fileURLToPath } from "url";
+import type { Session } from "./types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "../../..");
+
+function createTestSession(): Session & { messages: string[] } {
+  const messages: string[] = [];
+  return {
+    messages,
+    log: {
+      debug: (...args: unknown[]) => messages.push(String(args.join(" "))),
+      info: (...args: unknown[]) => messages.push(String(args.join(" "))),
+      warn: (...args: unknown[]) => messages.push(String(args.join(" "))),
+      error: (...args: unknown[]) => messages.push(String(args.join(" "))),
+    },
+  };
+}
 
 const lexiconFiles = {
   facet: {
@@ -154,7 +168,7 @@ function documentNode(
   } satisfies TestDocumentNode;
 }
 
-async function flatten(inlines: unknown[]) {
+async function flatten(inlines: unknown[], session?: Session) {
   const convertModule = await import("./convert.js").catch((error) => {
     if (error instanceof Error && error.message.includes("/src/convert.js")) {
       return undefined;
@@ -170,10 +184,10 @@ async function flatten(inlines: unknown[]) {
     "Expected packages/oxa-core/src/convert.ts to export flattenInlines",
   ).toBeTypeOf("function");
 
-  return flattenInlines!(inlines as never);
+  return flattenInlines!(session ?? createTestSession(), inlines as never);
 }
 
-async function map(block: unknown) {
+async function map(block: unknown, session?: Session) {
   const convertModule = await import("./convert.js");
   const mapBlock = convertModule.mapBlock;
 
@@ -182,10 +196,14 @@ async function map(block: unknown) {
     "Expected packages/oxa-core/src/convert.ts to export mapBlock",
   ).toBeTypeOf("function");
 
-  return mapBlock!(block as never);
+  return mapBlock!(session ?? createTestSession(), block as never);
 }
 
-async function convertDocument(document: unknown, options?: unknown) {
+async function convertDocument(
+  document: unknown,
+  options?: unknown,
+  session?: Session,
+) {
   const convertModule = await import("./convert.js");
   const oxaToAtproto = convertModule.oxaToAtproto;
 
@@ -194,7 +212,11 @@ async function convertDocument(document: unknown, options?: unknown) {
     "Expected packages/oxa-core/src/convert.ts to export oxaToAtproto",
   ).toBeTypeOf("function");
 
-  return oxaToAtproto!(document as never, options as never);
+  return oxaToAtproto!(
+    session ?? createTestSession(),
+    document as never,
+    options as never,
+  );
 }
 
 function readLexicon(filePath: string): LexiconDoc {
@@ -206,12 +228,6 @@ function readLexicon(filePath: string): LexiconDoc {
       `Failed to read or parse ${relative(REPO_ROOT, filePath)}: ${message}`,
     );
   }
-}
-
-function stderrOutput(writeSpy: ReturnType<typeof vi.spyOn>) {
-  return writeSpy.mock.calls
-    .map(([chunk]: [unknown, ...unknown[]]) => String(chunk))
-    .join("");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -402,29 +418,25 @@ describe("mapBlock", () => {
   });
 
   it("warns and omits unknown block types instead of coercing them into known ATProto blocks", async () => {
-    const writeSpy = vi
-      .spyOn(process.stderr, "write")
-      .mockImplementation(() => true);
+    const session = createTestSession();
 
-    try {
-      await expect(
-        map({
-          type: "Callout",
-          children: [text("Should be dropped")],
-          id: "callout-1",
-          classes: ["note"],
-          data: { severity: "warning" },
-        }),
-      ).resolves.toBeUndefined();
+    const result = await map(
+      {
+        type: "Callout",
+        children: [text("Should be dropped")],
+        id: "callout-1",
+        classes: ["note"],
+        data: { severity: "warning" },
+      },
+      session,
+    );
 
-      expect(writeSpy).toHaveBeenCalled();
+    expect(result).toBeUndefined();
+    expect(session.messages.length).toBeGreaterThan(0);
 
-      const warning = stderrOutput(writeSpy);
-      expect(warning).toContain("unknown block type");
-      expect(warning).toContain("Callout");
-    } finally {
-      writeSpy.mockRestore();
-    }
+    const warning = session.messages.join("\n");
+    expect(warning).toContain("unknown block type");
+    expect(warning).toContain("Callout");
   });
 });
 
@@ -507,50 +519,45 @@ describe("oxaToAtproto", () => {
         tags: ["oxa", "atproto"],
       },
     };
-    const writeSpy = vi
-      .spyOn(process.stderr, "write")
-      .mockImplementation(() => true);
+    const session = createTestSession();
 
-    try {
-      const converted = await convertDocument(
-        {
-          type: "Document",
-          metadata,
-          children: [
-            paragraph([text("Keep this paragraph")]),
-            {
-              type: "Callout",
-              children: [text("Drop this block")],
-              data: { severity: "warning" },
-            },
-          ],
-        },
-        { createdAt },
-      );
-
-      expect(converted).toEqual({
-        $type: "pub.oxa.document.document",
+    const converted = await convertDocument(
+      {
+        type: "Document",
         metadata,
         children: [
+          paragraph([text("Keep this paragraph")]),
           {
-            $type: "pub.oxa.document.defs#paragraph",
-            text: "Keep this paragraph",
-            facets: [],
+            type: "Callout",
+            children: [text("Drop this block")],
+            data: { severity: "warning" },
           },
         ],
-        createdAt,
-      });
-      expect(converted.metadata).toBe(metadata);
-      expect("title" in converted).toBe(false);
+      },
+      { createdAt },
+      session,
+    );
 
-      expect(writeSpy).toHaveBeenCalled();
+    expect(converted).toEqual({
+      $type: "pub.oxa.document.document",
+      metadata,
+      children: [
+        {
+          $type: "pub.oxa.document.defs#paragraph",
+          text: "Keep this paragraph",
+          facets: [],
+        },
+      ],
+      createdAt,
+    });
+    expect(converted.metadata).toBe(metadata);
+    expect("title" in converted).toBe(false);
 
-      const warning = stderrOutput(writeSpy);
-      expect(warning).toContain("unknown block type");
-      expect(warning).toContain("Callout");
-    } finally {
-      writeSpy.mockRestore();
-    }
+    expect(session.messages.length).toBeGreaterThan(0);
+
+    const warning = session.messages.join("\n");
+    expect(warning).toContain("unknown block type");
+    expect(warning).toContain("Callout");
   });
 });
 
@@ -769,39 +776,36 @@ describe("flattenInlines", () => {
     );
   });
 
-  it("warns to stderr and drops inline id, classes, and data properties on formatting nodes", async () => {
-    const writeSpy = vi
-      .spyOn(process.stderr, "write")
-      .mockImplementation(() => true);
+  it("warns and drops inline id, classes, and data properties on formatting nodes", async () => {
+    const session = createTestSession();
 
-    try {
-      const richText = await flatten([
+    const richText = await flatten(
+      [
         strong([text("styled")], {
           id: "inline-id",
           classes: ["callout", "accent"],
           data: { note: "keep warning only" },
         }),
-      ]);
+      ],
+      session,
+    );
 
-      expect(richText).toEqual({
-        text: "styled",
-        facets: [
-          {
-            index: { byteStart: 0, byteEnd: 6 },
-            features: [{ $type: "pub.oxa.richtext.facet#strong" }],
-          },
-        ],
-      });
+    expect(richText).toEqual({
+      text: "styled",
+      facets: [
+        {
+          index: { byteStart: 0, byteEnd: 6 },
+          features: [{ $type: "pub.oxa.richtext.facet#strong" }],
+        },
+      ],
+    });
 
-      expect(writeSpy).toHaveBeenCalled();
+    expect(session.messages.length).toBeGreaterThan(0);
 
-      const warning = stderrOutput(writeSpy);
-      expect(warning).toContain("Strong");
-      expect(warning).toContain("id");
-      expect(warning).toContain("classes");
-      expect(warning).toContain("data");
-    } finally {
-      writeSpy.mockRestore();
-    }
+    const warning = session.messages.join("\n");
+    expect(warning).toContain("Strong");
+    expect(warning).toContain("id");
+    expect(warning).toContain("classes");
+    expect(warning).toContain("data");
   });
 });
