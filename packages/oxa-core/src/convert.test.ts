@@ -26,8 +26,8 @@ const lexiconFiles = {
     path: resolve(REPO_ROOT, "lexicon/richtext/facet.json"),
   },
   defs: {
-    id: "pub.oxa.document.defs",
-    path: resolve(REPO_ROOT, "lexicon/document/defs.json"),
+    id: "pub.oxa.blocks.defs",
+    path: resolve(REPO_ROOT, "lexicon/blocks/defs.json"),
   },
   document: {
     id: "pub.oxa.document.document",
@@ -342,9 +342,9 @@ describe("ATProto lexicon structure", () => {
     expect(main.type).toBe("record");
     expect(main.key).toBe("tid");
     expect(record.required).toEqual(["children", "createdAt"]);
-    expect(record.properties.title.ref).toBe("pub.oxa.document.defs#richText");
+    expect(record.properties.title.ref).toBe("pub.oxa.blocks.defs#richText");
     expect(record.properties.children.items.ref).toBe(
-      "pub.oxa.document.defs#block",
+      "pub.oxa.blocks.defs#block",
     );
     expect(record.properties.createdAt).toEqual({
       type: "string",
@@ -380,7 +380,7 @@ describe("mapBlock", () => {
     );
 
     await expect(map(block)).resolves.toEqual({
-      $type: "pub.oxa.document.defs#paragraph",
+      $type: "pub.oxa.blocks.defs#paragraph",
       id: "para-1",
       classes: ["lead"],
       data: { align: "left" },
@@ -402,7 +402,7 @@ describe("mapBlock", () => {
     });
 
     await expect(map(block)).resolves.toEqual({
-      $type: "pub.oxa.document.defs#heading",
+      $type: "pub.oxa.blocks.defs#heading",
       id: "intro",
       classes: ["hero"],
       data: { section: true },
@@ -475,13 +475,13 @@ describe("oxaToAtproto", () => {
       },
       children: [
         {
-          $type: "pub.oxa.document.defs#heading",
+          $type: "pub.oxa.blocks.defs#heading",
           level: 1,
           text: "Introduction",
           facets: [],
         },
         {
-          $type: "pub.oxa.document.defs#paragraph",
+          $type: "pub.oxa.blocks.defs#paragraph",
           text: "This is bold and italic text.",
           facets: [
             {
@@ -543,7 +543,7 @@ describe("oxaToAtproto", () => {
       metadata,
       children: [
         {
-          $type: "pub.oxa.document.defs#paragraph",
+          $type: "pub.oxa.blocks.defs#paragraph",
           text: "Keep this paragraph",
           facets: [],
         },

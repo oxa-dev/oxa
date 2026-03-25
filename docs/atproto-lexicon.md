@@ -19,12 +19,12 @@ By defining a lexicon, OXA documents become first-class objects on the AT Protoc
 
 ## Lexicon structure
 
-The OXA lexicon is organized into two namespaces:
+The OXA lexicon is organized into three namespaces:
 
 | File                             | NSID                        | Purpose                                                                                 |
 | -------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
 | `lexicon/document/document.json` | `pub.oxa.document.document` | The `Document` record type — the root object stored in a PDS                            |
-| `lexicon/document/defs.json`     | `pub.oxa.document.defs`     | Block-level type definitions (`paragraph`, `heading`, `richText`) and the `block` union |
+| `lexicon/blocks/defs.json`       | `pub.oxa.blocks.defs`       | Block-level type definitions (`paragraph`, `heading`, `richText`) and the `block` union |
 | `lexicon/richtext/facet.json`    | `pub.oxa.richtext.facet`    | Facet annotations for inline formatting (`emphasis`, `strong`, `byteSlice`)             |
 
 A `Document` record contains an array of `children` (blocks). Each block carries a `text` string and an optional `facets` array that annotates ranges of that text with formatting features.
@@ -104,7 +104,7 @@ AT Protocol [uses facets instead of a tree](https://www.pfrazee.com/blog/why-fac
 
 ```json
 {
-  "$type": "pub.oxa.document.defs#paragraph",
+  "$type": "pub.oxa.blocks.defs#paragraph",
   "text": "This is bold and italic text.",
   "facets": [
     {
@@ -190,13 +190,13 @@ Produces:
   "$type": "pub.oxa.document.document",
   "children": [
     {
-      "$type": "pub.oxa.document.defs#heading",
+      "$type": "pub.oxa.blocks.defs#heading",
       "level": 1,
       "text": "Hello",
       "facets": []
     },
     {
-      "$type": "pub.oxa.document.defs#paragraph",
+      "$type": "pub.oxa.blocks.defs#paragraph",
       "text": "Some emphasized text.",
       "facets": [
         {
@@ -248,7 +248,7 @@ The lexicon files are generated from the OXA YAML schema definitions by the code
 1. Loads the merged OXA JSON Schema.
 2. Classifies each type as inline or block based on the `Inline` and `Block` union definitions.
 3. Maps inline types to facet features in `pub.oxa.richtext.facet` (excluding `Text`, which becomes the plain text string).
-4. Maps block types to object definitions in `pub.oxa.document.defs`, replacing their inline `children` arrays with `text` + `facets` pairs.
+4. Maps block types to object definitions in `pub.oxa.blocks.defs`, replacing their inline `children` arrays with `text` + `facets` pairs.
 5. Emits the `Document` record type in `pub.oxa.document.document`.
 
 To regenerate the lexicon after changing the schema:

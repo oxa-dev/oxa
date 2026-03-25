@@ -26,13 +26,13 @@
           },
           "title": {
             "type": "ref",
-            "ref": "pub.oxa.document.defs#richText"
+            "ref": "pub.oxa.blocks.defs#richText"
           },
           "children": {
             "type": "array",
             "items": {
               "type": "ref",
-              "ref": "pub.oxa.document.defs#block"
+              "ref": "pub.oxa.blocks.defs#block"
             }
           },
           "createdAt": {
