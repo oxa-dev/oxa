@@ -1,6 +1,6 @@
 [project]
 name = "oxa-types"
-version = "0.2.0"
+version = "0.2.1"
 description = "Pydantic models generated from the OXA schema"
 readme = "README.md"
 license = "MIT"

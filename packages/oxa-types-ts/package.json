@@ -1,6 +1,6 @@
 {
   "name": "oxa-types",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "TypeScript type definitions generated from the OXA schema",
   "type": "module",
   "types": "./dist/index.d.ts",

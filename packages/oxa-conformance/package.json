@@ -1,6 +1,6 @@
 {
   "name": "@oxa/conformance",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Conformance test suite for OXA schema implementations",
   "type": "module",
   "main": "./index.js",
