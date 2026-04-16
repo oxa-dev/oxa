@@ -96,23 +96,23 @@ interface RichText {
 
 type AtprotoParagraph = RichText &
   BlockNodeBase & {
-    $type: "pub.oxa.document.defs#paragraph";
+    $type: "pub.oxa.blocks.defs#paragraph";
   };
 
 type AtprotoHeading = RichText &
   BlockNodeBase & {
-    $type: "pub.oxa.document.defs#heading";
+    $type: "pub.oxa.blocks.defs#heading";
     level: number;
   };
 
 type AtprotoCode = BlockNodeBase & {
-  $type: "pub.oxa.document.defs#code";
+  $type: "pub.oxa.blocks.defs#code";
   value: string;
   language?: string;
 };
 
 type AtprotoThematicBreak = BlockNodeBase & {
-  $type: "pub.oxa.document.defs#thematicBreak";
+  $type: "pub.oxa.blocks.defs#thematicBreak";
 };
 
 type AtprotoBlock =
@@ -122,7 +122,7 @@ type AtprotoBlock =
   | AtprotoThematicBreak;
 
 type AtprotoDocument = {
-  $type: "pub.oxa.document.document";
+  $type: "pub.oxa.document";
   title?: RichText;
   metadata?: Record<string, unknown>;
   children: AtprotoBlock[];
@@ -184,10 +184,10 @@ export const compatibleFeatures: Record<
 
 const formattingPropertyNames = ["id", "classes", "data"] as const;
 const blockPropertyNames = ["id", "classes", "data"] as const;
-const paragraphType = "pub.oxa.document.defs#paragraph" as const;
-const headingType = "pub.oxa.document.defs#heading" as const;
-const codeType = "pub.oxa.document.defs#code" as const;
-const thematicBreakType = "pub.oxa.document.defs#thematicBreak" as const;
+const paragraphType = "pub.oxa.blocks.defs#paragraph" as const;
+const headingType = "pub.oxa.blocks.defs#heading" as const;
+const codeType = "pub.oxa.blocks.defs#code" as const;
+const thematicBreakType = "pub.oxa.blocks.defs#thematicBreak" as const;
 
 const encoder = new TextEncoder();
 
@@ -421,7 +421,7 @@ export function oxaToAtproto(
   options: OxaToAtprotoOptions = {},
 ): AtprotoDocument {
   return {
-    $type: "pub.oxa.document.document",
+    $type: "pub.oxa.document",
     ...getOptionalDocumentFields(session, document),
     children: mapKnownBlocks(session, document.children),
     createdAt: options.createdAt ?? new Date().toISOString(),

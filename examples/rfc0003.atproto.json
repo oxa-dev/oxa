@@ -1,5 +1,5 @@
 {
-  "$type": "pub.oxa.document.document",
+  "$type": "pub.oxa.document",
   "title": {
     "text": "Water Dissociation: H2O → H+ + OH−",
     "facets": [
@@ -19,13 +19,13 @@
   },
   "children": [
     {
-      "$type": "pub.oxa.document.defs#heading",
+      "$type": "pub.oxa.blocks.defs#heading",
       "text": "Introduction",
       "facets": [],
       "level": 1
     },
     {
-      "$type": "pub.oxa.document.defs#paragraph",
+      "$type": "pub.oxa.blocks.defs#paragraph",
       "text": "Water (H2O) undergoes autoionization, a process in which a water molecule donates a proton to another. The equilibrium constant for this reaction, Kw, is approximately 10−14 at 25 °C.",
       "facets": [
         {
@@ -50,15 +50,15 @@
         }
       ]
     },
-    { "$type": "pub.oxa.document.defs#thematicBreak" },
+    { "$type": "pub.oxa.blocks.defs#thematicBreak" },
     {
-      "$type": "pub.oxa.document.defs#heading",
+      "$type": "pub.oxa.blocks.defs#heading",
       "text": "Computing the Equilibrium",
       "facets": [],
       "level": 2
     },
     {
-      "$type": "pub.oxa.document.defs#paragraph",
+      "$type": "pub.oxa.blocks.defs#paragraph",
       "text": "The following Python snippet computes Kw from ion concentrations:",
       "facets": [
         {
@@ -68,12 +68,12 @@
       ]
     },
     {
-      "$type": "pub.oxa.document.defs#code",
+      "$type": "pub.oxa.blocks.defs#code",
       "value": "H_plus = 1e-7   # mol/L\nOH_minus = 1e-7  # mol/L\nKw = H_plus * OH_minus\nprint(f\"Kw = {Kw:.2e}\")  # Kw = 1.00e-14",
       "language": "python"
     },
     {
-      "$type": "pub.oxa.document.defs#paragraph",
+      "$type": "pub.oxa.blocks.defs#paragraph",
       "text": "You can run this with python kw.py. The result confirms the well-known value of Kw.",
       "facets": [
         {
@@ -90,15 +90,15 @@
         }
       ]
     },
-    { "$type": "pub.oxa.document.defs#thematicBreak" },
+    { "$type": "pub.oxa.blocks.defs#thematicBreak" },
     {
-      "$type": "pub.oxa.document.defs#heading",
+      "$type": "pub.oxa.blocks.defs#heading",
       "text": "Summary",
       "facets": [],
       "level": 2
     },
     {
-      "$type": "pub.oxa.document.defs#paragraph",
+      "$type": "pub.oxa.blocks.defs#paragraph",
       "text": "This example demonstrates every node type from RFC0003: Heading, Paragraph, Code, ThematicBreak, Text, Emphasis, Strong, Superscript, Subscript, and InlineCode.",
       "facets": [
         {

@@ -10,8 +10,8 @@
  * model (a plain text string + facets with byte-slice annotations).
  *
  * Output files:
- *   lexicon/richtext/facet.json  — facet definition + inline feature types
- *   lexicon/document/defs.json   — block-level type defs and rich text helper
+ *   lexicon/richtext/facet.json   — facet definition + inline feature types
+ *   lexicon/blocks/defs.json      — block-level type defs and rich text helper
  *   lexicon/document/document.json — the Document record type
  */
 
@@ -59,16 +59,13 @@ export async function generateLexicon(): Promise<void> {
 
   // Generate the three lexicon files
   const facetFile = generateFacetLexicon(definitions, inlineMembers);
-  const defsFile = generateDefsLexicon(definitions, blockMembers);
+  const blocksDefsFile = generateBlocksDefsLexicon(definitions, blockMembers);
   const documentFile = generateDocumentLexicon(definitions);
 
   // Write files
   writeLexiconFile(join(LEXICON_DIR, "richtext", "facet.json"), facetFile);
-  writeLexiconFile(join(LEXICON_DIR, "document", "defs.json"), defsFile);
-  writeLexiconFile(
-    join(LEXICON_DIR, "document", "document.json"),
-    documentFile,
-  );
+  writeLexiconFile(join(LEXICON_DIR, "blocks", "defs.json"), blocksDefsFile);
+  writeLexiconFile(join(LEXICON_DIR, "document.json"), documentFile);
 
   console.log(`Generated lexicon files in ${LEXICON_DIR}`);
 }
@@ -163,14 +160,14 @@ function generateFacetLexicon(
 }
 
 /**
- * Generate pub.oxa.document.defs lexicon.
+ * Generate pub.oxa.blocks.defs lexicon.
  *
  * Contains:
  * - richText: reusable object with text + facets (like Bluesky's pattern)
  * - One def per block type, with children: Inline[] flattened to richText
  * - block: union of all block types
  */
-function generateDefsLexicon(
+function generateBlocksDefsLexicon(
   definitions: Record<string, SchemaDefinition>,
   blockMembers: string[],
 ): LexiconFile {
@@ -254,13 +251,13 @@ function generateDefsLexicon(
 
   return {
     lexicon: 1,
-    id: "pub.oxa.document.defs",
+    id: "pub.oxa.blocks.defs",
     defs,
   };
 }
 
 /**
- * Generate pub.oxa.document.document lexicon.
+ * Generate pub.oxa.document lexicon.
  *
  * The Document type becomes a record (matching Bluesky's app.bsky.feed.post pattern).
  */
@@ -284,7 +281,7 @@ function generateDocumentLexicon(
     if (propName === "title" && isInlineArray(prop)) {
       recordProperties["title"] = {
         type: "ref",
-        ref: "pub.oxa.document.defs#richText",
+        ref: "pub.oxa.blocks.defs#richText",
       };
       continue;
     }
@@ -295,7 +292,7 @@ function generateDocumentLexicon(
         type: "array",
         items: {
           type: "ref",
-          ref: "pub.oxa.document.defs#block",
+          ref: "pub.oxa.blocks.defs#block",
         },
       };
       if (schemaRequired.has(propName)) {
@@ -331,7 +328,7 @@ function generateDocumentLexicon(
 
   return {
     lexicon: 1,
-    id: "pub.oxa.document.document",
+    id: "pub.oxa.document",
     defs: {
       main: {
         type: "record",
@@ -451,8 +448,8 @@ function extractNonStructuralProperties(
  * This is a placeholder for when more types are added to the schema.
  */
 function resolveRefToLexicon(typeName: string): string {
-  // For now, types map to document defs
-  return `pub.oxa.document.defs#${toCamelCase(typeName)}`;
+  // For now, types map to block defs
+  return `pub.oxa.blocks.defs#${toCamelCase(typeName)}`;
 }
 
 function toCamelCase(s: string): string {
