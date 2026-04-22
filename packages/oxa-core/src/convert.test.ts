@@ -31,7 +31,7 @@ const lexiconFiles = {
   },
   document: {
     id: "pub.oxa.document",
-    path: resolve(REPO_ROOT, "lexicon/document/document.json"),
+    path: resolve(REPO_ROOT, "lexicon/document.json"),
   },
 } as const;
 
