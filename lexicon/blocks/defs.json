@@ -109,6 +109,41 @@
         }
       }
     },
+    "reference": {
+      "type": "object",
+      "description": "A block-level bibliographic record.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "type": "unknown"
+        },
+        "text": {
+          "type": "string"
+        },
+        "facets": {
+          "type": "array",
+          "items": {
+            "type": "ref",
+            "ref": "pub.oxa.richtext.facet"
+          }
+        },
+        "csl": {
+          "type": "unknown"
+        }
+      },
+      "required": [
+        "id",
+        "csl"
+      ]
+    },
     "thematicBreak": {
       "type": "object",
       "description": "A thematic or structural division between sections of content.",
@@ -134,6 +169,7 @@
         "#code",
         "#heading",
         "#paragraph",
+        "#reference",
         "#thematicBreak"
       ]
     }

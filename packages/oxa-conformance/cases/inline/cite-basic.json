@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic citation",
+  "description": "A citation to a reference by id with prefix and locator metadata",
+  "category": "inline",
+  "formats": {
+    "oxa": {
+      "type": "Cite",
+      "xref": "jones2022",
+      "prefix": [{ "type": "Text", "value": "see " }],
+      "locator": "fig. 3",
+      "intent": "extends"
+    },
+    "markdown": "[@jones2022]",
+    "html": "<a href=\"#jones2022\" role=\"doc-biblioref\">see Jones, 2022, fig. 3</a>",
+    "jats": "<xref ref-type=\"bibr\" rid=\"jones2022\">see Jones, 2022, fig. 3</xref>"
+  },
+  "notes": {
+    "markdown": "Markdown citation syntax does not preserve all OXA citation metadata without extensions"
+  }
+}

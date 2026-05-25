@@ -10,11 +10,17 @@ import { StrongRenderer } from "./Strong";
 import { InlineCodeRenderer } from "./InlineCode";
 import { SubscriptRenderer } from "./Subscript";
 import { SuperscriptRenderer } from "./Superscript";
+import { CiteRenderer } from "./Cite";
+import { CiteGroupRenderer } from "./CiteGroup";
+import { ReferenceRenderer } from "./Reference";
 
 export const defaultRenderers: NodeRenderers = {
+  Cite: CiteRenderer,
+  CiteGroup: CiteGroupRenderer,
   Document: DocumentRenderer,
   Heading: HeadingRenderer,
   Paragraph: ParagraphRenderer,
+  Reference: ReferenceRenderer,
   Code: CodeRenderer,
   ThematicBreak: ThematicBreakRenderer,
   Text: TextRenderer,

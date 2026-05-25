@@ -6,6 +6,90 @@
  */
 
 /**
+ * An inline citation to a bibliographic reference.
+ */
+export interface Cite {
+  /**
+   * The type discriminator for Cite nodes.
+   */
+  type: "Cite";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * Reference to the id of a Reference node in the containing document.
+   */
+  xref: string;
+  /**
+   * Optional inline content that overrides generated citation display text.
+   */
+  children?: Inline[];
+  /**
+   * Inline content preceding the citation within its group.
+   */
+  prefix?: Inline[];
+  /**
+   * Inline content following the citation within its group.
+   */
+  suffix?: Inline[];
+  /**
+   * Controls which part of the referenced bibliographic record is rendered.
+   */
+  display?: "author" | "date" | "full";
+  /**
+   * A human-readable locator within the referenced work.
+   */
+  locator?: string;
+  /**
+   * A deep link to a specific location in the referenced work.
+   */
+  url?: string;
+  /**
+   * The citation intent, typically using a CiTO vocabulary value.
+   */
+  intent?: string;
+}
+
+/**
+ * An inline container that groups citations with shared display semantics.
+ */
+export interface CiteGroup {
+  /**
+   * The type discriminator for CiteGroup nodes.
+   */
+  type: "CiteGroup";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The citation display style shared by the group.
+   */
+  kind: "narrative" | "parenthetical";
+  /**
+   * The citations in the group.
+   */
+  children: Cite[];
+}
+
+/**
  * A block of preformatted text, typically source code.
  */
 export interface Code {
@@ -182,6 +266,36 @@ export interface Paragraph {
 }
 
 /**
+ * A block-level bibliographic record.
+ */
+export interface Reference {
+  /**
+   * The type discriminator for Reference nodes.
+   */
+  type: "Reference";
+  /**
+   * A unique identifier for the node, used by Cite xref values.
+   */
+  id: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * Optional inline content for the rendered display of this reference.
+   */
+  children?: Inline[];
+  /**
+   * A CSL-JSON item object for the bibliographic record.
+   */
+  csl: Record<string, unknown>;
+}
+
+/**
  * Strongly emphasized content (typically bold).
  */
 export interface Strong {
@@ -310,12 +424,14 @@ export interface ThematicBreak {
 /**
  * Union of all block content types.
  */
-export type Block = Code | Heading | Paragraph | ThematicBreak;
+export type Block = Code | Heading | Paragraph | Reference | ThematicBreak;
 
 /**
  * Union of all inline content types.
  */
 export type Inline =
+  | Cite
+  | CiteGroup
   | Text
   | Emphasis
   | InlineCode

@@ -93,7 +93,7 @@ function extractTypes(node: unknown): Set<string> {
   function walk(n: unknown): void {
     if (n && typeof n === "object" && !Array.isArray(n)) {
       const obj = n as Record<string, unknown>;
-      if (typeof obj.type === "string") {
+      if (typeof obj.type === "string" && /^[A-Z]/.test(obj.type)) {
         types.add(obj.type);
       }
       for (const value of Object.values(obj)) {

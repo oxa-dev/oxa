@@ -19,9 +19,122 @@
           "$ref": "#/definitions/Paragraph"
         },
         {
+          "$ref": "#/definitions/Reference"
+        },
+        {
           "$ref": "#/definitions/ThematicBreak"
         }
       ]
+    },
+    "Cite": {
+      "title": "Cite",
+      "description": "An inline citation to a bibliographic reference.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Cite nodes.",
+          "enum": ["Cite"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "xref": {
+          "description": "Reference to the id of a Reference node in the containing document.",
+          "type": "string"
+        },
+        "children": {
+          "description": "Optional inline content that overrides generated citation display text.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        },
+        "prefix": {
+          "description": "Inline content preceding the citation within its group.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        },
+        "suffix": {
+          "description": "Inline content following the citation within its group.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        },
+        "display": {
+          "description": "Controls which part of the referenced bibliographic record is rendered.",
+          "enum": ["author", "date", "full"]
+        },
+        "locator": {
+          "description": "A human-readable locator within the referenced work.",
+          "type": "string"
+        },
+        "url": {
+          "description": "A deep link to a specific location in the referenced work.",
+          "type": "string",
+          "format": "uri"
+        },
+        "intent": {
+          "description": "The citation intent, typically using a CiTO vocabulary value.",
+          "type": "string"
+        }
+      },
+      "required": ["type", "xref"]
+    },
+    "CiteGroup": {
+      "title": "CiteGroup",
+      "description": "An inline container that groups citations with shared display semantics.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for CiteGroup nodes.",
+          "enum": ["CiteGroup"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "kind": {
+          "description": "The citation display style shared by the group.",
+          "enum": ["narrative", "parenthetical"]
+        },
+        "children": {
+          "description": "The citations in the group.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Cite"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["type", "kind", "children"]
     },
     "Code": {
       "title": "Code",
@@ -187,6 +300,12 @@
       "description": "Union of all inline content types.",
       "anyOf": [
         {
+          "$ref": "#/definitions/Cite"
+        },
+        {
+          "$ref": "#/definitions/CiteGroup"
+        },
+        {
           "$ref": "#/definitions/Text"
         },
         {
@@ -276,6 +395,46 @@
         }
       },
       "required": ["type", "children"]
+    },
+    "Reference": {
+      "title": "Reference",
+      "description": "A block-level bibliographic record.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for Reference nodes.",
+          "enum": ["Reference"]
+        },
+        "id": {
+          "description": "A unique identifier for the node, used by Cite xref values.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "children": {
+          "description": "Optional inline content for the rendered display of this reference.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Inline"
+          }
+        },
+        "csl": {
+          "description": "A CSL-JSON item object for the bibliographic record.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": ["type", "id", "csl"]
     },
     "Strong": {
       "title": "Strong",

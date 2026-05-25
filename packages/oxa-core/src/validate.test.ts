@@ -26,6 +26,54 @@ const validDocumentWithContent = {
   ],
 };
 
+const validDocumentWithCitations = {
+  type: "Document",
+  children: [
+    {
+      type: "Paragraph",
+      children: [
+        { type: "Text", value: "Prior work " },
+        {
+          type: "CiteGroup",
+          kind: "parenthetical",
+          children: [
+            {
+              type: "Cite",
+              xref: "jones2022",
+              prefix: [{ type: "Text", value: "see " }],
+              locator: "fig. 3",
+              intent: "extends",
+            },
+            { type: "Cite", xref: "smith2021", display: "author" },
+          ],
+        },
+        { type: "Text", value: " is relevant." },
+      ],
+    },
+    {
+      type: "Reference",
+      id: "jones2022",
+      children: [{ type: "Text", value: "Jones and Chen (2022)." }],
+      csl: {
+        id: "jones2022",
+        "citation-key": "jones2022",
+        type: "article-journal",
+        title: "A Framework for Open Science",
+      },
+    },
+    {
+      type: "Reference",
+      id: "smith2021",
+      csl: {
+        id: "smith2021",
+        "citation-key": "smith2021",
+        type: "article-journal",
+        title: "Related Work",
+      },
+    },
+  ],
+};
+
 describe("validate", () => {
   it("returns valid for correct Document", () => {
     const result = validate(validDocument);
@@ -37,6 +85,133 @@ describe("validate", () => {
     const result = validate(validDocumentWithContent);
     expect(result.valid).toBe(true);
     expect(result.errors).toHaveLength(0);
+  });
+
+  it("returns valid for Document with citations and references", () => {
+    const result = validate(validDocumentWithCitations);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it("validates Cite against its specific type", () => {
+    const result = validate(
+      {
+        type: "Cite",
+        xref: "jones2022",
+        display: "date",
+      },
+      { type: "Cite" },
+    );
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects invalid Cite display values", () => {
+    const result = validate(
+      {
+        type: "Cite",
+        xref: "jones2022",
+        display: "invalid",
+      },
+      { type: "Cite" },
+    );
+    expect(result.valid).toBe(false);
+  });
+
+  it("rejects empty CiteGroup children", () => {
+    const result = validate(
+      {
+        type: "CiteGroup",
+        kind: "parenthetical",
+        children: [],
+      },
+      { type: "CiteGroup" },
+    );
+    expect(result.valid).toBe(false);
+  });
+
+  it("requires Reference csl data and id", () => {
+    const result = validate(
+      {
+        type: "Reference",
+        csl: {
+          id: "jones2022",
+          type: "article-journal",
+        },
+      },
+      { type: "Reference" },
+    );
+    expect(result.valid).toBe(false);
+  });
+
+  it("rejects Cite xrefs without a matching Reference id", () => {
+    const result = validate({
+      type: "Document",
+      children: [
+        {
+          type: "Paragraph",
+          children: [{ type: "Cite", xref: "missing2024" }],
+        },
+        {
+          type: "Reference",
+          id: "jones2022",
+          csl: {
+            id: "jones2022",
+            "citation-key": "jones2022",
+            type: "article-journal",
+          },
+        },
+      ],
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors[0].message).toContain("missing2024");
+  });
+
+  it("rejects Reference ids that do not match csl citation keys", () => {
+    const result = validate(
+      {
+        type: "Reference",
+        id: "jones2022",
+        csl: {
+          id: "jones2022",
+          "citation-key": "smith2021",
+          type: "article-journal",
+        },
+      },
+      { type: "Reference" },
+    );
+
+    expect(result.valid).toBe(false);
+    expect(result.errors[0].path).toBe("/csl/citation-key");
+  });
+
+  it("rejects duplicate Reference ids in documents", () => {
+    const result = validate({
+      type: "Document",
+      children: [
+        {
+          type: "Reference",
+          id: "jones2022",
+          csl: {
+            id: "jones2022",
+            "citation-key": "jones2022",
+            type: "article-journal",
+          },
+        },
+        {
+          type: "Reference",
+          id: "jones2022",
+          csl: {
+            id: "jones2022",
+            "citation-key": "jones2022",
+            type: "article-journal",
+          },
+        },
+      ],
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors[0].message).toContain("Duplicate Reference id");
   });
 
   it("returns errors for missing required fields", () => {
@@ -146,9 +321,12 @@ describe("getSchema", () => {
 describe("getTypeNames", () => {
   it("returns available type names", () => {
     const types = getTypeNames();
+    expect(types).toContain("Cite");
+    expect(types).toContain("CiteGroup");
     expect(types).toContain("Document");
     expect(types).toContain("Heading");
     expect(types).toContain("Paragraph");
+    expect(types).toContain("Reference");
     expect(types).toContain("Text");
   });
 });

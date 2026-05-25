@@ -15,6 +15,18 @@
   ],
   "cases": [
     {
+      "id": "cite-basic",
+      "path": "cases/inline/cite-basic.json",
+      "category": "inline",
+      "nodeTypes": ["Cite", "Text"]
+    },
+    {
+      "id": "citegroup-basic",
+      "path": "cases/inline/citegroup-basic.json",
+      "category": "inline",
+      "nodeTypes": ["CiteGroup", "Cite"]
+    },
+    {
       "id": "emphasis-basic",
       "path": "cases/inline/emphasis-basic.json",
       "category": "inline",
@@ -43,6 +55,12 @@
       "path": "cases/block/paragraph-basic.json",
       "category": "block",
       "nodeTypes": ["Paragraph", "Text"]
+    },
+    {
+      "id": "reference-basic",
+      "path": "cases/block/reference-basic.json",
+      "category": "block",
+      "nodeTypes": ["Reference", "Text"]
     }
   ]
 }

@@ -20,6 +20,8 @@
             "type": "union",
             "closed": false,
             "refs": [
+              "#cite",
+              "#citeGroup",
               "#emphasis",
               "#inlineCode",
               "#strong",
@@ -47,6 +49,51 @@
           "minimum": 0
         }
       }
+    },
+    "cite": {
+      "type": "object",
+      "description": "An inline citation to a bibliographic reference.",
+      "properties": {
+        "xref": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string",
+          "knownValues": [
+            "author",
+            "date",
+            "full"
+          ]
+        },
+        "locator": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "intent": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "xref"
+      ]
+    },
+    "citeGroup": {
+      "type": "object",
+      "description": "An inline container that groups citations with shared display semantics.",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "knownValues": [
+            "narrative",
+            "parenthetical"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ]
     },
     "emphasis": {
       "type": "object",
