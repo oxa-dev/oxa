@@ -346,6 +346,11 @@ function generateDocumentLexicon(
 function convertPropertyToLexicon(
   prop: SchemaProperty,
 ): Record<string, unknown> | null {
+  // Handle string enums
+  if (prop.enum && prop.enum.length > 1) {
+    return { type: "string", knownValues: prop.enum };
+  }
+
   // Handle arrays
   if (prop.type === "array" && prop.items) {
     if (prop.items.type === "string") {
@@ -415,7 +420,7 @@ function extractNonStructuralProperties(
 ): { properties: Record<string, unknown>; required: string[] } | null {
   if (!def.properties) return null;
 
-  const skip = new Set(["type", "children"]);
+  const skip = new Set(["type", "children", "prefix", "suffix"]);
   if (isFacetFeature) {
     // Facet features don't carry id/classes/data — these are node-level
     // concerns that don't translate to byte-range annotations

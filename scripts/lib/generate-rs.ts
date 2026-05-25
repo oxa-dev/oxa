@@ -75,6 +75,18 @@ export async function generateRs(): Promise<void> {
     "",
   ];
 
+  // Generate property enum types first so structs can use them.
+  for (const [name, def] of Object.entries(definitions)) {
+    if (!def.anyOf && def.type === "object") {
+      for (const [propName, prop] of Object.entries(def.properties || {})) {
+        if (prop.enum && prop.enum.length > 1) {
+          lines.push(...generatePropertyEnum(name, propName, prop));
+          lines.push("");
+        }
+      }
+    }
+  }
+
   // Generate struct types first (non-union types)
   for (const [name, def] of Object.entries(definitions)) {
     if (!def.anyOf && def.type === "object") {
@@ -123,7 +135,7 @@ function generateStruct(name: string, def: SchemaDefinition): string[] {
       lines.push(`    /// ${prop.description}`);
     }
 
-    const rustType = getRustType(prop);
+    const rustType = getRustType(name, propName, prop);
     const isRequired = required.has(propName);
 
     // Handle the "type" field which is a reserved keyword in Rust
@@ -146,6 +158,30 @@ function generateStruct(name: string, def: SchemaDefinition): string[] {
       }
       lines.push(`    pub ${fieldName}: Option<${rustType}>,`);
     }
+  }
+
+  lines.push("}");
+  return lines;
+}
+
+function generatePropertyEnum(
+  ownerName: string,
+  propName: string,
+  prop: SchemaProperty,
+): string[] {
+  const lines: string[] = [];
+  const enumName = getPropertyEnumName(ownerName, propName);
+
+  if (prop.description) {
+    lines.push(`/// ${prop.description}`);
+  }
+
+  lines.push("#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]");
+  lines.push(`pub enum ${enumName} {`);
+
+  for (const value of prop.enum || []) {
+    lines.push(`    #[serde(rename = "${value}")]`);
+    lines.push(`    ${toPascalCase(value)},`);
   }
 
   lines.push("}");
@@ -180,7 +216,11 @@ function generateEnum(name: string, def: SchemaDefinition): string[] {
   return lines;
 }
 
-function getRustType(prop: SchemaProperty): string {
+function getRustType(
+  ownerName: string,
+  propName: string,
+  prop: SchemaProperty,
+): string {
   // Handle const values (type discriminator) - use MustBe!
   if (prop.const) {
     return `MustBe!("${prop.const}")`;
@@ -189,6 +229,11 @@ function getRustType(prop: SchemaProperty): string {
   // Handle single-element enum as MustBe! (same as const)
   if (prop.enum && prop.enum.length === 1) {
     return `MustBe!("${prop.enum[0]}")`;
+  }
+
+  // Handle multi-value enums as named Rust enums
+  if (prop.enum && prop.enum.length > 1) {
+    return getPropertyEnumName(ownerName, propName);
   }
 
   // Handle $ref
@@ -227,6 +272,28 @@ function getRustType(prop: SchemaProperty): string {
     default:
       return "serde_json::Value";
   }
+}
+
+function getPropertyEnumName(ownerName: string, propName: string): string {
+  return `${ownerName}${toPascalCase(propName)}`;
+}
+
+function toPascalCase(s: string): string {
+  const result = s
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join("");
+
+  if (result.length === 0) {
+    return "Value";
+  }
+
+  if (/^[0-9]/.test(result)) {
+    return `Value${result}`;
+  }
+
+  return result;
 }
 
 function toSnakeCase(s: string): string {
