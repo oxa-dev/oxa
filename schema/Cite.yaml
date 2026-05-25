@@ -1,0 +1,55 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: Cite
+title: Cite
+description: An inline citation to a bibliographic reference.
+type: object
+properties:
+  type:
+    description: The type discriminator for Cite nodes.
+    enum: [Cite]
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+  xref:
+    description: Reference to the id of a Reference node in the containing document.
+    type: string
+  children:
+    description: Optional inline content that overrides generated citation display text.
+    type: array
+    items:
+      $ref: "./Inline.yaml"
+  prefix:
+    description: Inline content preceding the citation within its group.
+    type: array
+    items:
+      $ref: "./Inline.yaml"
+  suffix:
+    description: Inline content following the citation within its group.
+    type: array
+    items:
+      $ref: "./Inline.yaml"
+  display:
+    description: Controls which part of the referenced bibliographic record is rendered.
+    enum: [author, date, full]
+  locator:
+    description: A human-readable locator within the referenced work.
+    type: string
+  url:
+    description: A deep link to a specific location in the referenced work.
+    type: string
+    format: uri
+  intent:
+    description: The citation intent, typically using a CiTO vocabulary value.
+    type: string
+required:
+  - type
+  - xref

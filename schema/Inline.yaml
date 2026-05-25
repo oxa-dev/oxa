@@ -3,6 +3,8 @@ $id: Inline
 title: Inline
 description: Union of all inline content types.
 anyOf:
+  - $ref: "./Cite.yaml"
+  - $ref: "./CiteGroup.yaml"
   - $ref: "./Text.yaml"
   - $ref: "./Emphasis.yaml"
   - $ref: "./InlineCode.yaml"
