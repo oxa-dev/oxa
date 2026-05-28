@@ -101,6 +101,55 @@ class Code(BaseModel):
     value: str = Field(description="The code content.")
 
 
+class CodeCell(BaseModel):
+    """An executable block of code that can produce outputs."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["CodeCell"] = "CodeCell"
+    id: str | None = Field(
+        default=None, description="A unique identifier for the node."
+    )
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
+    )
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
+    )
+    code: str = Field(description="The source code to execute.")
+    language: str | None = Field(
+        default=None, description="The programming language identifier for the code."
+    )
+    isEchoed: bool | None = Field(
+        default=None, description="Whether the source code is displayed to readers."
+    )
+    isHidden: bool | None = Field(
+        default=None, description="Whether outputs are hidden from readers."
+    )
+
+
+class CodeExpr(BaseModel):
+    """An executable expression embedded within prose."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["CodeExpr"] = "CodeExpr"
+    id: str | None = Field(
+        default=None, description="A unique identifier for the node."
+    )
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
+    )
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
+    )
+    code: str = Field(description="The expression to evaluate.")
+    language: str | None = Field(
+        default=None,
+        description="The programming language identifier for the expression.",
+    )
+
+
 class Document(BaseModel):
     """A document with metadata, title, and block content."""
 
@@ -320,14 +369,24 @@ class ThematicBreak(BaseModel):
 
 # Union of all block content types.
 Block = Annotated[
-    Union[Code, Heading, Paragraph, Reference, ThematicBreak],
+    Union[Code, CodeCell, Heading, Paragraph, Reference, ThematicBreak],
     Field(discriminator="type"),
 ]
 
 
 # Union of all inline content types.
 Inline = Annotated[
-    Union[Cite, CiteGroup, Text, Emphasis, InlineCode, Strong, Subscript, Superscript],
+    Union[
+        Cite,
+        CiteGroup,
+        Text,
+        Emphasis,
+        CodeExpr,
+        InlineCode,
+        Strong,
+        Subscript,
+        Superscript,
+    ],
     Field(discriminator="type"),
 ]
 
@@ -336,6 +395,8 @@ Inline = Annotated[
 Cite.model_rebuild()
 CiteGroup.model_rebuild()
 Code.model_rebuild()
+CodeCell.model_rebuild()
+CodeExpr.model_rebuild()
 Document.model_rebuild()
 Emphasis.model_rebuild()
 Heading.model_rebuild()
@@ -354,6 +415,8 @@ __all__ = [
     "Cite",
     "CiteGroup",
     "Code",
+    "CodeCell",
+    "CodeExpr",
     "Document",
     "Emphasis",
     "Heading",

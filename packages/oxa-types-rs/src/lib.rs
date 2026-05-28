@@ -109,6 +109,56 @@ pub struct Code {
     pub value: String,
 }
 
+/// An executable block of code that can produce outputs.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CodeCell {
+    /// The type discriminator for CodeCell nodes.
+    pub r#type: MustBe!("CodeCell"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The source code to execute.
+    pub code: String,
+    /// The programming language identifier for the code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
+    /// Whether the source code is displayed to readers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "isEchoed")]
+    pub is_echoed: Option<bool>,
+    /// Whether outputs are hidden from readers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "isHidden")]
+    pub is_hidden: Option<bool>,
+}
+
+/// An executable expression embedded within prose.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CodeExpr {
+    /// The type discriminator for CodeExpr nodes.
+    pub r#type: MustBe!("CodeExpr"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The expression to evaluate.
+    pub code: String,
+    /// The programming language identifier for the expression.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
+}
+
 /// A document with metadata, title, and block content.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Document {
@@ -323,6 +373,7 @@ pub struct ThematicBreak {
 #[serde(untagged)]
 pub enum Block {
     Code(Code),
+    CodeCell(CodeCell),
     Heading(Heading),
     Paragraph(Paragraph),
     Reference(Reference),
@@ -337,6 +388,7 @@ pub enum Inline {
     CiteGroup(CiteGroup),
     Text(Text),
     Emphasis(Emphasis),
+    CodeExpr(CodeExpr),
     InlineCode(InlineCode),
     Strong(Strong),
     Subscript(Subscript),

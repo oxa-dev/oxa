@@ -74,6 +74,26 @@ const validDocumentWithCitations = {
   ],
 };
 
+const validDocumentWithExecutableCode = {
+  type: "Document",
+  children: [
+    {
+      type: "CodeCell",
+      language: "python",
+      code: "x = 1\nx",
+      isEchoed: true,
+      isHidden: false,
+    },
+    {
+      type: "Paragraph",
+      children: [
+        { type: "Text", value: "Rows: " },
+        { type: "CodeExpr", language: "python", code: "len(df)" },
+      ],
+    },
+  ],
+};
+
 describe("validate", () => {
   it("returns valid for correct Document", () => {
     const result = validate(validDocument);
@@ -91,6 +111,57 @@ describe("validate", () => {
     const result = validate(validDocumentWithCitations);
     expect(result.valid).toBe(true);
     expect(result.errors).toHaveLength(0);
+  });
+
+  it("returns valid for Document with executable code nodes", () => {
+    const result = validate(validDocumentWithExecutableCode);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it("validates CodeCell against its specific type", () => {
+    const result = validate(
+      {
+        type: "CodeCell",
+        language: "python",
+        code: "x = 1\nx",
+        isEchoed: false,
+        isHidden: true,
+      },
+      { type: "CodeCell" },
+    );
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects CodeCell without required code", () => {
+    const result = validate(
+      {
+        type: "CodeCell",
+        language: "python",
+      },
+      { type: "CodeCell" },
+    );
+    expect(result.valid).toBe(false);
+  });
+
+  it("validates CodeExpr against its specific type", () => {
+    const result = validate(
+      {
+        type: "CodeExpr",
+        language: "python",
+        code: "len(df)",
+      },
+      { type: "CodeExpr" },
+    );
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects CodeExpr as a block child", () => {
+    const result = validate({
+      type: "Document",
+      children: [{ type: "CodeExpr", code: "len(df)" }],
+    });
+    expect(result.valid).toBe(false);
   });
 
   it("validates Cite against its specific type", () => {
@@ -323,6 +394,8 @@ describe("getTypeNames", () => {
     const types = getTypeNames();
     expect(types).toContain("Cite");
     expect(types).toContain("CiteGroup");
+    expect(types).toContain("CodeCell");
+    expect(types).toContain("CodeExpr");
     expect(types).toContain("Document");
     expect(types).toContain("Heading");
     expect(types).toContain("Paragraph");

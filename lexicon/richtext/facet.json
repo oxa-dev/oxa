@@ -23,6 +23,7 @@
               "#cite",
               "#citeGroup",
               "#emphasis",
+              "#codeExpr",
               "#inlineCode",
               "#strong",
               "#subscript",
@@ -98,6 +99,21 @@
     "emphasis": {
       "type": "object",
       "description": "Emphasized content (typically italicized)."
+    },
+    "codeExpr": {
+      "type": "object",
+      "description": "An executable expression embedded within prose.",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code"
+      ]
     },
     "inlineCode": {
       "type": "object",

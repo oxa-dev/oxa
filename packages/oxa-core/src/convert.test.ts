@@ -39,6 +39,7 @@ const facetFragments = [
   "cite",
   "citeGroup",
   "emphasis",
+  "codeExpr",
   "inlineCode",
   "strong",
   "subscript",
@@ -47,6 +48,7 @@ const facetFragments = [
 
 const documentBlockRefs = [
   "#code",
+  "#codeCell",
   "#heading",
   "#paragraph",
   "#reference",
@@ -56,6 +58,7 @@ const documentBlockRefs = [
 const requiredDocumentDefs = [
   "richText",
   "code",
+  "codeCell",
   "paragraph",
   "heading",
   "reference",
@@ -75,6 +78,18 @@ type TestTextNode = {
   value: string;
 };
 
+type TestInlineCodeNode = {
+  type: "InlineCode";
+  value: string;
+  language?: string;
+};
+
+type TestCodeExprNode = {
+  type: "CodeExpr";
+  code: string;
+  language?: string;
+};
+
 type TestFormattingNode = {
   type: "Strong" | "Emphasis";
   children: TestInlineNode[];
@@ -83,7 +98,11 @@ type TestFormattingNode = {
   data?: Record<string, unknown>;
 };
 
-type TestInlineNode = TestTextNode | TestFormattingNode;
+type TestInlineNode =
+  | TestTextNode
+  | TestInlineCodeNode
+  | TestCodeExprNode
+  | TestFormattingNode;
 
 type TestParagraphNode = {
   type: "Paragraph";
@@ -472,6 +491,30 @@ describe("mapBlock", () => {
       facets: [],
     });
   });
+
+  it("maps a CodeCell block preserving source fields and visibility flags", async () => {
+    await expect(
+      map({
+        type: "CodeCell",
+        id: "cell-1",
+        classes: ["analysis"],
+        data: { kernel: "python3" },
+        language: "python",
+        code: "x = 1\nx",
+        isEchoed: false,
+        isHidden: true,
+      }),
+    ).resolves.toEqual({
+      $type: "pub.oxa.blocks.defs#codeCell",
+      id: "cell-1",
+      classes: ["analysis"],
+      data: { kernel: "python3" },
+      language: "python",
+      code: "x = 1\nx",
+      isEchoed: false,
+      isHidden: true,
+    });
+  });
 });
 
 describe("oxaToAtproto", () => {
@@ -713,6 +756,55 @@ describe("flattenInlines", () => {
     await expect(flatten([])).resolves.toEqual({
       text: "",
       facets: [],
+    });
+  });
+
+  it("emits an InlineCode facet with source value and language", async () => {
+    const richText = await flatten([
+      text("Run "),
+      { type: "InlineCode", value: "npm test", language: "bash" },
+      text("."),
+    ]);
+
+    expect(richText).toEqual({
+      text: "Run npm test.",
+      facets: [
+        {
+          index: { byteStart: 4, byteEnd: 12 },
+          features: [
+            {
+              $type: "pub.oxa.richtext.facet#inlineCode",
+              value: "npm test",
+              language: "bash",
+            },
+            { $type: "pub.leaflet.richtext.facet#code" },
+          ],
+        },
+      ],
+    });
+  });
+
+  it("flattens CodeExpr source and emits a CodeExpr facet", async () => {
+    const richText = await flatten([
+      text("Rows: "),
+      { type: "CodeExpr", code: "len(df)", language: "python" },
+      text("."),
+    ]);
+
+    expect(richText).toEqual({
+      text: "Rows: len(df).",
+      facets: [
+        {
+          index: { byteStart: 6, byteEnd: 13 },
+          features: [
+            {
+              $type: "pub.oxa.richtext.facet#codeExpr",
+              code: "len(df)",
+              language: "python",
+            },
+          ],
+        },
+      ],
     });
   });
 

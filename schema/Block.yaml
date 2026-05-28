@@ -4,6 +4,7 @@ title: Block
 description: Union of all block content types.
 anyOf:
   - $ref: "./Code.yaml"
+  - $ref: "./CodeCell.yaml"
   - $ref: "./Heading.yaml"
   - $ref: "./Paragraph.yaml"
   - $ref: "./Reference.yaml"

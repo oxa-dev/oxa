@@ -1,0 +1,14 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic code cell",
+  "description": "An executable code block with source code and language",
+  "category": "block",
+  "formats": {
+    "oxa": {
+      "type": "CodeCell",
+      "language": "python",
+      "code": "x = 1\nx",
+      "isEchoed": true
+    }
+  }
+}

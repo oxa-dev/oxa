@@ -27,6 +27,12 @@
       "nodeTypes": ["CiteGroup", "Cite"]
     },
     {
+      "id": "codeexpr-basic",
+      "path": "cases/inline/codeexpr-basic.json",
+      "category": "inline",
+      "nodeTypes": ["CodeExpr"]
+    },
+    {
       "id": "emphasis-basic",
       "path": "cases/inline/emphasis-basic.json",
       "category": "inline",
@@ -43,6 +49,12 @@
       "path": "cases/inline/text-basic.json",
       "category": "inline",
       "nodeTypes": ["Text"]
+    },
+    {
+      "id": "codecell-basic",
+      "path": "cases/block/codecell-basic.json",
+      "category": "block",
+      "nodeTypes": ["CodeCell"]
     },
     {
       "id": "heading-basic",
