@@ -12,6 +12,74 @@ from typing import Annotated, Any, Literal, Union
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class Cite(BaseModel):
+    """An inline citation to a bibliographic reference."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["Cite"] = "Cite"
+    id: str | None = Field(
+        default=None, description="A unique identifier for the node."
+    )
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
+    )
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
+    )
+    xref: str = Field(
+        description="Reference to the id of a Reference node in the containing document."
+    )
+    children: list["Inline"] | None = Field(
+        default=None,
+        description="Optional inline content that overrides generated citation display text.",
+    )
+    prefix: list["Inline"] | None = Field(
+        default=None,
+        description="Inline content preceding the citation within its group.",
+    )
+    suffix: list["Inline"] | None = Field(
+        default=None,
+        description="Inline content following the citation within its group.",
+    )
+    display: Literal["author", "date", "full"] | None = Field(
+        default=None,
+        description="Controls which part of the referenced bibliographic record is rendered.",
+    )
+    locator: str | None = Field(
+        default=None, description="A human-readable locator within the referenced work."
+    )
+    url: str | None = Field(
+        default=None,
+        description="A deep link to a specific location in the referenced work.",
+    )
+    intent: str | None = Field(
+        default=None,
+        description="The citation intent, typically using a CiTO vocabulary value.",
+    )
+
+
+class CiteGroup(BaseModel):
+    """An inline container that groups citations with shared display semantics."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["CiteGroup"] = "CiteGroup"
+    id: str | None = Field(
+        default=None, description="A unique identifier for the node."
+    )
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
+    )
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
+    )
+    kind: Literal["narrative", "parenthetical"] = Field(
+        description="The citation display style shared by the group."
+    )
+    children: list["Cite"] = Field(description="The citations in the group.")
+
+
 class Code(BaseModel):
     """A block of preformatted text, typically source code."""
 
@@ -133,6 +201,30 @@ class Paragraph(BaseModel):
     children: list["Inline"] = Field(description="The inline content of the paragraph.")
 
 
+class Reference(BaseModel):
+    """A block-level bibliographic record."""
+
+    model_config = ConfigDict(strict=True)
+
+    type: Literal["Reference"] = "Reference"
+    id: str = Field(
+        description="A unique identifier for the node, used by Cite xref values."
+    )
+    classes: list[str] | None = Field(
+        default=None, description="A list of class names for styling or semantics."
+    )
+    data: dict[str, Any] | None = Field(
+        default=None, description="Arbitrary key-value data attached to the node."
+    )
+    children: list["Inline"] | None = Field(
+        default=None,
+        description="Optional inline content for the rendered display of this reference.",
+    )
+    csl: dict[str, Any] = Field(
+        description="A CSL-JSON item object for the bibliographic record."
+    )
+
+
 class Strong(BaseModel):
     """Strongly emphasized content (typically bold)."""
 
@@ -228,24 +320,28 @@ class ThematicBreak(BaseModel):
 
 # Union of all block content types.
 Block = Annotated[
-    Union[Code, Heading, Paragraph, ThematicBreak], Field(discriminator="type")
+    Union[Code, Heading, Paragraph, Reference, ThematicBreak],
+    Field(discriminator="type"),
 ]
 
 
 # Union of all inline content types.
 Inline = Annotated[
-    Union[Text, Emphasis, InlineCode, Strong, Subscript, Superscript],
+    Union[Cite, CiteGroup, Text, Emphasis, InlineCode, Strong, Subscript, Superscript],
     Field(discriminator="type"),
 ]
 
 
 # Rebuild models to resolve forward references
+Cite.model_rebuild()
+CiteGroup.model_rebuild()
 Code.model_rebuild()
 Document.model_rebuild()
 Emphasis.model_rebuild()
 Heading.model_rebuild()
 InlineCode.model_rebuild()
 Paragraph.model_rebuild()
+Reference.model_rebuild()
 Strong.model_rebuild()
 Subscript.model_rebuild()
 Superscript.model_rebuild()
@@ -255,6 +351,8 @@ ThematicBreak.model_rebuild()
 
 __all__ = [
     "Block",
+    "Cite",
+    "CiteGroup",
     "Code",
     "Document",
     "Emphasis",
@@ -262,6 +360,7 @@ __all__ = [
     "Inline",
     "InlineCode",
     "Paragraph",
+    "Reference",
     "Strong",
     "Subscript",
     "Superscript",

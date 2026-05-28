@@ -1,0 +1,19 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic citation group",
+  "description": "A parenthetical group containing multiple citations",
+  "category": "inline",
+  "formats": {
+    "oxa": {
+      "type": "CiteGroup",
+      "kind": "parenthetical",
+      "children": [
+        { "type": "Cite", "xref": "jones2022" },
+        { "type": "Cite", "xref": "smith2021" }
+      ]
+    },
+    "markdown": "[@jones2022; @smith2021]",
+    "html": "<span role=\"doc-biblioref\">(Jones, 2022; Smith, 2021)</span>",
+    "jats": "<xref ref-type=\"bibr\" rid=\"jones2022\">Jones, 2022</xref>; <xref ref-type=\"bibr\" rid=\"smith2021\">Smith, 2021</xref>"
+  }
+}

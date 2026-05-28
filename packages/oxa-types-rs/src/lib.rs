@@ -9,6 +9,85 @@
 use monostate::MustBe;
 use serde::{Deserialize, Serialize};
 
+/// Controls which part of the referenced bibliographic record is rendered.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum CiteDisplay {
+    #[serde(rename = "author")]
+    Author,
+    #[serde(rename = "date")]
+    Date,
+    #[serde(rename = "full")]
+    Full,
+}
+
+/// The citation display style shared by the group.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum CiteGroupKind {
+    #[serde(rename = "narrative")]
+    Narrative,
+    #[serde(rename = "parenthetical")]
+    Parenthetical,
+}
+
+/// An inline citation to a bibliographic reference.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Cite {
+    /// The type discriminator for Cite nodes.
+    pub r#type: MustBe!("Cite"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// Reference to the id of a Reference node in the containing document.
+    pub xref: String,
+    /// Optional inline content that overrides generated citation display text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub children: Option<Vec<Inline>>,
+    /// Inline content preceding the citation within its group.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<Vec<Inline>>,
+    /// Inline content following the citation within its group.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<Vec<Inline>>,
+    /// Controls which part of the referenced bibliographic record is rendered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display: Option<CiteDisplay>,
+    /// A human-readable locator within the referenced work.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub locator: Option<String>,
+    /// A deep link to a specific location in the referenced work.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    /// The citation intent, typically using a CiTO vocabulary value.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub intent: Option<String>,
+}
+
+/// An inline container that groups citations with shared display semantics.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CiteGroup {
+    /// The type discriminator for CiteGroup nodes.
+    pub r#type: MustBe!("CiteGroup"),
+    /// A unique identifier for the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// The citation display style shared by the group.
+    pub kind: CiteGroupKind,
+    /// The citations in the group.
+    pub children: Vec<Cite>,
+}
+
 /// A block of preformatted text, typically source code.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Code {
@@ -131,6 +210,26 @@ pub struct Paragraph {
     pub children: Vec<Inline>,
 }
 
+/// A block-level bibliographic record.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Reference {
+    /// The type discriminator for Reference nodes.
+    pub r#type: MustBe!("Reference"),
+    /// A unique identifier for the node, used by Cite xref values.
+    pub id: String,
+    /// A list of class names for styling or semantics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub classes: Option<Vec<String>>,
+    /// Arbitrary key-value data attached to the node.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<serde_json::Value>,
+    /// Optional inline content for the rendered display of this reference.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub children: Option<Vec<Inline>>,
+    /// A CSL-JSON item object for the bibliographic record.
+    pub csl: serde_json::Value,
+}
+
 /// Strongly emphasized content (typically bold).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Strong {
@@ -226,6 +325,7 @@ pub enum Block {
     Code(Code),
     Heading(Heading),
     Paragraph(Paragraph),
+    Reference(Reference),
     ThematicBreak(ThematicBreak),
 }
 
@@ -233,6 +333,8 @@ pub enum Block {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Inline {
+    Cite(Cite),
+    CiteGroup(CiteGroup),
     Text(Text),
     Emphasis(Emphasis),
     InlineCode(InlineCode),

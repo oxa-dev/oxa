@@ -236,6 +236,11 @@ function getPythonType(
     return `Literal["${prop.enum[0]}"]`;
   }
 
+  // Handle multi-value enums as Literal unions
+  if (prop.enum && prop.enum.length > 1) {
+    return `Literal[${prop.enum.map((value) => `"${value}"`).join(", ")}]`;
+  }
+
   // Handle $ref
   if (prop.$ref) {
     const typeName = prop.$ref.replace("#/definitions/", "");

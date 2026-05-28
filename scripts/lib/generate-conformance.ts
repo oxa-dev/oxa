@@ -50,7 +50,9 @@ function extractNodeTypes(oxa: Record<string, unknown>): string[] {
   function walk(node: unknown): void {
     if (node && typeof node === "object" && !Array.isArray(node)) {
       const obj = node as Record<string, unknown>;
-      if (typeof obj.type === "string") {
+      // Only OXA node discriminators are capitalized; nested payload fields such
+      // as CSL's `type: "article-journal"` are not conformance node types.
+      if (typeof obj.type === "string" && /^[A-Z]/.test(obj.type)) {
         types.add(obj.type);
       }
       for (const value of Object.values(obj)) {
@@ -64,7 +66,18 @@ function extractNodeTypes(oxa: Record<string, unknown>): string[] {
   }
 
   walk(oxa);
-  return Array.from(types).sort();
+
+  const rootType = typeof oxa.type === "string" ? oxa.type : undefined;
+  const sortedTypes = Array.from(types).sort();
+
+  if (rootType && types.has(rootType)) {
+    // The first node type is treated as the primary type for docs examples.
+    // Keep nested node types deterministic, but do not let them sort ahead of
+    // the root node (for example, Cite inside CiteGroup).
+    return [rootType, ...sortedTypes.filter((type) => type !== rootType)];
+  }
+
+  return sortedTypes;
 }
 
 /**

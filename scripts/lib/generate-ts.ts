@@ -156,6 +156,11 @@ function getTypeScriptType(prop: SchemaProperty): string {
     return `"${prop.enum[0]}"`;
   }
 
+  // Handle multi-value enums as literal unions
+  if (prop.enum && prop.enum.length > 1) {
+    return prop.enum.map((value) => `"${value}"`).join(" | ");
+  }
+
   // Handle $ref
   if (prop.$ref) {
     return prop.$ref.replace("#/definitions/", "");

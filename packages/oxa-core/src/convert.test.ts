@@ -36,6 +36,8 @@ const lexiconFiles = {
 } as const;
 
 const facetFragments = [
+  "cite",
+  "citeGroup",
   "emphasis",
   "inlineCode",
   "strong",
@@ -47,6 +49,7 @@ const documentBlockRefs = [
   "#code",
   "#heading",
   "#paragraph",
+  "#reference",
   "#thematicBreak",
 ] as const;
 
@@ -55,6 +58,7 @@ const requiredDocumentDefs = [
   "code",
   "paragraph",
   "heading",
+  "reference",
   "thematicBreak",
   "block",
 ] as const;
@@ -444,6 +448,30 @@ describe("mapBlock", () => {
     expect(warning).toContain("unknown block type");
     expect(warning).toContain("Callout");
   });
+
+  it("maps a Reference block preserving CSL data and optional display children", async () => {
+    const csl = {
+      id: "jones2022",
+      "citation-key": "jones2022",
+      type: "article-journal",
+      title: "A Framework for Open Science",
+    };
+
+    await expect(
+      map({
+        type: "Reference",
+        id: "jones2022",
+        csl,
+        children: [text("Jones and Chen (2022).")],
+      }),
+    ).resolves.toEqual({
+      $type: "pub.oxa.blocks.defs#reference",
+      id: "jones2022",
+      csl,
+      text: "Jones and Chen (2022).",
+      facets: [],
+    });
+  });
 });
 
 describe("oxaToAtproto", () => {
@@ -685,6 +713,93 @@ describe("flattenInlines", () => {
     await expect(flatten([])).resolves.toEqual({
       text: "",
       facets: [],
+    });
+  });
+
+  it("flattens Cite nodes to deterministic fallback text", async () => {
+    const richText = await flatten([
+      {
+        type: "Cite",
+        xref: "jones2022",
+        prefix: [text("see ")],
+        locator: "fig. 3",
+        intent: "extends",
+        suffix: [text(" and references therein")],
+      },
+    ]);
+
+    expect(richText).toEqual({
+      text: "see @jones2022, fig. 3 and references therein",
+      facets: [
+        {
+          index: { byteStart: 0, byteEnd: richText.text.length },
+          features: [
+            {
+              $type: "pub.oxa.richtext.facet#cite",
+              xref: "jones2022",
+              locator: "fig. 3",
+              intent: "extends",
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it("flattens CiteGroup nodes with citation facets", async () => {
+    const richText = await flatten([
+      text("Prior work "),
+      {
+        type: "CiteGroup",
+        kind: "parenthetical",
+        children: [
+          { type: "Cite", xref: "jones2022" },
+          { type: "Cite", xref: "smith2021" },
+        ],
+      },
+      text("."),
+    ]);
+
+    expect(richText).toEqual({
+      text: "Prior work (@jones2022; @smith2021).",
+      facets: [
+        {
+          index: {
+            byteStart: richText.text.indexOf("@jones2022"),
+            byteEnd: richText.text.indexOf("@jones2022") + "@jones2022".length,
+          },
+          features: [
+            {
+              $type: "pub.oxa.richtext.facet#cite",
+              xref: "jones2022",
+            },
+          ],
+        },
+        {
+          index: {
+            byteStart: richText.text.indexOf("@smith2021"),
+            byteEnd: richText.text.indexOf("@smith2021") + "@smith2021".length,
+          },
+          features: [
+            {
+              $type: "pub.oxa.richtext.facet#cite",
+              xref: "smith2021",
+            },
+          ],
+        },
+        {
+          index: {
+            byteStart: richText.text.indexOf("("),
+            byteEnd: richText.text.indexOf(")") + 1,
+          },
+          features: [
+            {
+              $type: "pub.oxa.richtext.facet#citeGroup",
+              kind: "parenthetical",
+            },
+          ],
+        },
+      ],
     });
   });
 

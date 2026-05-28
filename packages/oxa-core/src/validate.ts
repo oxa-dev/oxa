@@ -120,6 +120,133 @@ interface BetterError {
   end?: SourceLocation;
 }
 
+type JsonRecord = Record<string, unknown>;
+
+interface CiteReference {
+  xref: string;
+  path: string;
+}
+
+interface CitationValidationState {
+  references: Map<string, string>;
+  cites: CiteReference[];
+  errors: ValidationError[];
+}
+
+function isRecord(value: unknown): value is JsonRecord {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function toPathSegment(value: string): string {
+  return value.replace(/~/g, "~0").replace(/\//g, "~1");
+}
+
+function joinPath(base: string, segment: string): string {
+  return `${base === "/" ? "" : base}/${toPathSegment(segment)}`;
+}
+
+function validateReferenceIdentity(
+  node: JsonRecord,
+  path: string,
+): ValidationError[] {
+  const errors: ValidationError[] = [];
+  const id = typeof node.id === "string" ? node.id : undefined;
+  const csl = isRecord(node.csl) ? node.csl : undefined;
+  if (id && csl && csl["citation-key"] !== id) {
+    errors.push({
+      path: joinPath(joinPath(path, "csl"), "citation-key"),
+      message: `Reference id "${id}" must match csl["citation-key"].`,
+    });
+  }
+
+  return errors;
+}
+
+function collectCitationState(
+  value: unknown,
+  path: string,
+  state: CitationValidationState,
+): void {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) =>
+      collectCitationState(item, joinPath(path, String(index)), state),
+    );
+    return;
+  }
+
+  if (!isRecord(value)) {
+    return;
+  }
+
+  if (value.type === "Reference") {
+    state.errors.push(...validateReferenceIdentity(value, path));
+
+    if (typeof value.id === "string") {
+      const existingPath = state.references.get(value.id);
+      if (existingPath) {
+        state.errors.push({
+          path: joinPath(path, "id"),
+          message: `Duplicate Reference id "${value.id}" also appears at ${existingPath}.`,
+        });
+      } else {
+        state.references.set(value.id, path);
+      }
+    }
+  }
+
+  if (value.type === "Cite" && typeof value.xref === "string") {
+    state.cites.push({
+      xref: value.xref,
+      path: joinPath(path, "xref"),
+    });
+  }
+
+  for (const [key, nested] of Object.entries(value)) {
+    if (key === "csl") continue;
+    collectCitationState(nested, joinPath(path, key), state);
+  }
+}
+
+function validateDocumentCitations(data: unknown): ValidationError[] {
+  if (!isRecord(data) || data.type !== "Document") {
+    return [];
+  }
+
+  const state: CitationValidationState = {
+    references: new Map(),
+    cites: [],
+    errors: [],
+  };
+
+  collectCitationState(data, "/", state);
+
+  for (const cite of state.cites) {
+    if (!state.references.has(cite.xref)) {
+      state.errors.push({
+        path: cite.path,
+        message: `Cite xref "${cite.xref}" does not match any Reference id in the document.`,
+      });
+    }
+  }
+
+  return state.errors;
+}
+
+function getSemanticErrors(
+  data: unknown,
+  type: string | undefined,
+): ValidationError[] {
+  if (type === "Reference" && isRecord(data) && data.type === "Reference") {
+    return validateReferenceIdentity(data, "/");
+  }
+
+  if ((type === undefined || type === "Document") && isRecord(data)) {
+    return validateDocumentCitations(data);
+  }
+
+  return [];
+}
+
 /**
  * Convert AJV errors to ValidationError format using better-ajv-errors.
  * Returns both structured errors and optionally pretty CLI output.
@@ -191,10 +318,11 @@ export function validate(
     options.json,
     options.format,
   );
+  const semanticErrors = valid ? getSemanticErrors(data, options.type) : [];
 
   return {
-    valid: valid as boolean,
-    errors,
+    valid: (valid as boolean) && semanticErrors.length === 0,
+    errors: [...errors, ...semanticErrors],
     prettyOutput,
   };
 }

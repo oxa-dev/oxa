@@ -6,4 +6,5 @@ anyOf:
   - $ref: "./Code.yaml"
   - $ref: "./Heading.yaml"
   - $ref: "./Paragraph.yaml"
+  - $ref: "./Reference.yaml"
   - $ref: "./ThematicBreak.yaml"

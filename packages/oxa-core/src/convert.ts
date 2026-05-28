@@ -28,7 +28,36 @@ type FormattingNode = {
   data?: Record<string, unknown>;
 };
 
-type InlineNode = TextNode | InlineCodeNode | FormattingNode;
+type CiteNode = {
+  type: "Cite";
+  xref: string;
+  children?: InlineNode[];
+  prefix?: InlineNode[];
+  suffix?: InlineNode[];
+  display?: "author" | "date" | "full";
+  locator?: string;
+  url?: string;
+  intent?: string;
+  id?: string;
+  classes?: string[];
+  data?: Record<string, unknown>;
+};
+
+type CiteGroupNode = {
+  type: "CiteGroup";
+  kind: "narrative" | "parenthetical";
+  children: CiteNode[];
+  id?: string;
+  classes?: string[];
+  data?: Record<string, unknown>;
+};
+
+type InlineNode =
+  | TextNode
+  | InlineCodeNode
+  | FormattingNode
+  | CiteNode
+  | CiteGroupNode;
 
 type BlockNodeBase = {
   id?: string;
@@ -57,6 +86,12 @@ type ThematicBreakNode = BlockNodeBase & {
   type: "ThematicBreak";
 };
 
+type ReferenceNode = BlockNodeBase & {
+  type: "Reference";
+  children?: InlineNode[];
+  csl: Record<string, unknown>;
+};
+
 type UnknownBlockNode = BlockNodeBase & {
   type: string;
   children?: InlineNode[];
@@ -67,6 +102,7 @@ type BlockNode =
   | HeadingNode
   | CodeNode
   | ThematicBreakNode
+  | ReferenceNode
   | UnknownBlockNode;
 
 export type DocumentNode = {
@@ -115,11 +151,19 @@ type AtprotoThematicBreak = BlockNodeBase & {
   $type: "pub.oxa.blocks.defs#thematicBreak";
 };
 
+type AtprotoReference = BlockNodeBase & {
+  $type: "pub.oxa.blocks.defs#reference";
+  csl: Record<string, unknown>;
+  text?: string;
+  facets?: Facet[];
+};
+
 type AtprotoBlock =
   | AtprotoParagraph
   | AtprotoHeading
   | AtprotoCode
-  | AtprotoThematicBreak;
+  | AtprotoThematicBreak
+  | AtprotoReference;
 
 type AtprotoDocument = {
   $type: "pub.oxa.document";
@@ -139,9 +183,12 @@ type KnownBlockNode =
   | ParagraphNode
   | HeadingNode
   | CodeNode
-  | ThematicBreakNode;
+  | ThematicBreakNode
+  | ReferenceNode;
 
 const facetFeatureTypes = {
+  Cite: "pub.oxa.richtext.facet#cite",
+  CiteGroup: "pub.oxa.richtext.facet#citeGroup",
   Strong: "pub.oxa.richtext.facet#strong",
   Emphasis: "pub.oxa.richtext.facet#emphasis",
   Superscript: "pub.oxa.richtext.facet#superscript",
@@ -184,10 +231,18 @@ export const compatibleFeatures: Record<
 
 const formattingPropertyNames = ["id", "classes", "data"] as const;
 const blockPropertyNames = ["id", "classes", "data"] as const;
+const citeFeaturePropertyNames = [
+  "xref",
+  "display",
+  "locator",
+  "url",
+  "intent",
+] as const;
 const paragraphType = "pub.oxa.blocks.defs#paragraph" as const;
 const headingType = "pub.oxa.blocks.defs#heading" as const;
 const codeType = "pub.oxa.blocks.defs#code" as const;
 const thematicBreakType = "pub.oxa.blocks.defs#thematicBreak" as const;
+const referenceType = "pub.oxa.blocks.defs#reference" as const;
 
 const encoder = new TextEncoder();
 
@@ -220,6 +275,38 @@ function createFacet(
   return {
     index: { byteStart, byteEnd },
     features,
+  };
+}
+
+function createCiteFacet(
+  node: CiteNode,
+  byteStart: number,
+  byteEnd: number,
+): Facet {
+  return {
+    index: { byteStart, byteEnd },
+    features: [
+      {
+        $type: facetFeatureTypes.Cite,
+        ...copyDefinedProperties(node, citeFeaturePropertyNames),
+      },
+    ],
+  };
+}
+
+function createCiteGroupFacet(
+  node: CiteGroupNode,
+  byteStart: number,
+  byteEnd: number,
+): Facet {
+  return {
+    index: { byteStart, byteEnd },
+    features: [
+      {
+        $type: facetFeatureTypes.CiteGroup,
+        kind: node.kind,
+      },
+    ],
   };
 }
 
@@ -279,6 +366,16 @@ function flattenNode(
     return;
   }
 
+  if (node.type === "Cite") {
+    flattenCite(session, node, richText);
+    return;
+  }
+
+  if (node.type === "CiteGroup") {
+    flattenCiteGroup(session, node, richText);
+    return;
+  }
+
   warnDroppedProperties(session, node);
 
   const byteStart = getCurrentByteOffset(richText);
@@ -290,6 +387,71 @@ function flattenNode(
   const byteEnd = getCurrentByteOffset(richText);
 
   richText.facets.push(createFacet(node, byteStart, byteEnd));
+}
+
+function flattenOptionalInlines(
+  session: Session,
+  inlines: InlineNode[] | undefined,
+  richText: RichText,
+): void {
+  for (const inline of inlines ?? []) {
+    flattenNode(session, inline, richText);
+  }
+}
+
+function appendText(richText: RichText, text: string): void {
+  richText.text += text;
+}
+
+function flattenCite(
+  session: Session,
+  node: CiteNode,
+  richText: RichText,
+): void {
+  const byteStart = getCurrentByteOffset(richText);
+
+  flattenOptionalInlines(session, node.prefix, richText);
+
+  if (node.children && node.children.length > 0) {
+    flattenOptionalInlines(session, node.children, richText);
+  } else {
+    appendText(richText, `@${node.xref}`);
+  }
+
+  if (node.locator) {
+    appendText(richText, `, ${node.locator}`);
+  }
+
+  flattenOptionalInlines(session, node.suffix, richText);
+
+  const byteEnd = getCurrentByteOffset(richText);
+  richText.facets.push(createCiteFacet(node, byteStart, byteEnd));
+}
+
+function flattenCiteGroup(
+  session: Session,
+  node: CiteGroupNode,
+  richText: RichText,
+): void {
+  const byteStart = getCurrentByteOffset(richText);
+
+  if (node.kind === "parenthetical") {
+    appendText(richText, "(");
+  }
+
+  node.children.forEach((cite, index) => {
+    if (index > 0) {
+      appendText(richText, "; ");
+    }
+    flattenCite(session, cite, richText);
+  });
+
+  if (node.kind === "parenthetical") {
+    appendText(richText, ")");
+  }
+
+  const byteEnd = getCurrentByteOffset(richText);
+  richText.facets.push(createCiteGroupFacet(node, byteStart, byteEnd));
 }
 
 export function flattenInlines(
@@ -344,7 +506,8 @@ function isKnownBlock(block: BlockNode): block is KnownBlockNode {
     block.type === "Paragraph" ||
     block.type === "Heading" ||
     block.type === "Code" ||
-    block.type === "ThematicBreak"
+    block.type === "ThematicBreak" ||
+    block.type === "Reference"
   );
 }
 
@@ -371,6 +534,20 @@ function mapThematicBreak(block: ThematicBreakNode): AtprotoThematicBreak {
   };
 }
 
+function mapReference(
+  session: Session,
+  block: ReferenceNode,
+): AtprotoReference {
+  return {
+    $type: referenceType,
+    ...copyBlockProps(block),
+    ...(block.children !== undefined
+      ? flattenInlines(session, block.children)
+      : {}),
+    csl: block.csl,
+  };
+}
+
 function mapKnownBlock(session: Session, block: KnownBlockNode): AtprotoBlock {
   if (block.type === "Code") {
     return mapCodeBlock(block);
@@ -378,6 +555,10 @@ function mapKnownBlock(session: Session, block: KnownBlockNode): AtprotoBlock {
 
   if (block.type === "ThematicBreak") {
     return mapThematicBreak(block);
+  }
+
+  if (block.type === "Reference") {
+    return mapReference(session, block);
   }
 
   const richTextBlock = mapBlockRichText(session, block);
