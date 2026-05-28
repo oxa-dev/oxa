@@ -20,6 +20,15 @@ type InlineCodeNode = {
   data?: Record<string, unknown>;
 };
 
+type CodeExprNode = {
+  type: "CodeExpr";
+  code: string;
+  language?: string;
+  id?: string;
+  classes?: string[];
+  data?: Record<string, unknown>;
+};
+
 type FormattingNode = {
   type: "Strong" | "Emphasis" | "Superscript" | "Subscript";
   children: InlineNode[];
@@ -55,6 +64,7 @@ type CiteGroupNode = {
 type InlineNode =
   | TextNode
   | InlineCodeNode
+  | CodeExprNode
   | FormattingNode
   | CiteNode
   | CiteGroupNode;
@@ -82,6 +92,14 @@ type CodeNode = BlockNodeBase & {
   language?: string;
 };
 
+type CodeCellNode = BlockNodeBase & {
+  type: "CodeCell";
+  code: string;
+  language?: string;
+  isEchoed?: boolean;
+  isHidden?: boolean;
+};
+
 type ThematicBreakNode = BlockNodeBase & {
   type: "ThematicBreak";
 };
@@ -101,6 +119,7 @@ type BlockNode =
   | ParagraphNode
   | HeadingNode
   | CodeNode
+  | CodeCellNode
   | ThematicBreakNode
   | ReferenceNode
   | UnknownBlockNode;
@@ -147,6 +166,14 @@ type AtprotoCode = BlockNodeBase & {
   language?: string;
 };
 
+type AtprotoCodeCell = BlockNodeBase & {
+  $type: "pub.oxa.blocks.defs#codeCell";
+  code: string;
+  language?: string;
+  isEchoed?: boolean;
+  isHidden?: boolean;
+};
+
 type AtprotoThematicBreak = BlockNodeBase & {
   $type: "pub.oxa.blocks.defs#thematicBreak";
 };
@@ -162,6 +189,7 @@ type AtprotoBlock =
   | AtprotoParagraph
   | AtprotoHeading
   | AtprotoCode
+  | AtprotoCodeCell
   | AtprotoThematicBreak
   | AtprotoReference;
 
@@ -179,16 +207,24 @@ type OxaToAtprotoOptions = {
 
 type FormattingPropertyName = "id" | "classes" | "data";
 type BlockPropertyName = keyof BlockNodeBase;
+type InlineMetadataNode = {
+  type: string;
+  id?: string;
+  classes?: string[];
+  data?: Record<string, unknown>;
+};
 type KnownBlockNode =
   | ParagraphNode
   | HeadingNode
   | CodeNode
+  | CodeCellNode
   | ThematicBreakNode
   | ReferenceNode;
 
 const facetFeatureTypes = {
   Cite: "pub.oxa.richtext.facet#cite",
   CiteGroup: "pub.oxa.richtext.facet#citeGroup",
+  CodeExpr: "pub.oxa.richtext.facet#codeExpr",
   Strong: "pub.oxa.richtext.facet#strong",
   Emphasis: "pub.oxa.richtext.facet#emphasis",
   Superscript: "pub.oxa.richtext.facet#superscript",
@@ -241,6 +277,7 @@ const citeFeaturePropertyNames = [
 const paragraphType = "pub.oxa.blocks.defs#paragraph" as const;
 const headingType = "pub.oxa.blocks.defs#heading" as const;
 const codeType = "pub.oxa.blocks.defs#code" as const;
+const codeCellType = "pub.oxa.blocks.defs#codeCell" as const;
 const thematicBreakType = "pub.oxa.blocks.defs#thematicBreak" as const;
 const referenceType = "pub.oxa.blocks.defs#reference" as const;
 
@@ -254,13 +291,35 @@ function getCurrentByteOffset(richText: RichText): number {
   return byteLength(richText.text);
 }
 
+function createInlineFeature(
+  node: FormattingNode | InlineCodeNode | CodeExprNode,
+): FacetFeature {
+  const oxaType = facetFeatureTypes[node.type];
+
+  if (node.type === "InlineCode") {
+    return {
+      $type: oxaType,
+      ...copyDefinedProperties(node, ["value", "language"] as const),
+    };
+  }
+
+  if (node.type === "CodeExpr") {
+    return {
+      $type: oxaType,
+      ...copyDefinedProperties(node, ["code", "language"] as const),
+    };
+  }
+
+  return { $type: oxaType };
+}
+
 function createFacet(
-  node: FormattingNode | InlineCodeNode,
+  node: FormattingNode | InlineCodeNode | CodeExprNode,
   byteStart: number,
   byteEnd: number,
 ): Facet {
   const oxaType = facetFeatureTypes[node.type];
-  const features: FacetFeature[] = [{ $type: oxaType }];
+  const features: FacetFeature[] = [createInlineFeature(node)];
 
   const compat = compatibleFeatures[oxaType];
   if (compat) {
@@ -311,7 +370,7 @@ function createCiteGroupFacet(
 }
 
 function getDroppedFormattingProperties(
-  node: FormattingNode,
+  node: InlineMetadataNode,
 ): FormattingPropertyName[] {
   return formattingPropertyNames.filter(
     (propertyName) => node[propertyName] !== undefined,
@@ -335,7 +394,10 @@ function copyDefinedProperties<T extends object, K extends keyof T>(
   return props;
 }
 
-function warnDroppedProperties(session: Session, node: FormattingNode): void {
+function warnDroppedProperties(
+  session: Session,
+  node: InlineMetadataNode,
+): void {
   const dropped = getDroppedFormattingProperties(node);
 
   if (dropped.length === 0) {
@@ -358,9 +420,18 @@ function flattenNode(
   }
 
   if (node.type === "InlineCode") {
-    warnDroppedProperties(session, node as unknown as FormattingNode);
+    warnDroppedProperties(session, node);
     const byteStart = getCurrentByteOffset(richText);
     richText.text += node.value;
+    const byteEnd = getCurrentByteOffset(richText);
+    richText.facets.push(createFacet(node, byteStart, byteEnd));
+    return;
+  }
+
+  if (node.type === "CodeExpr") {
+    warnDroppedProperties(session, node);
+    const byteStart = getCurrentByteOffset(richText);
+    richText.text += node.code;
     const byteEnd = getCurrentByteOffset(richText);
     richText.facets.push(createFacet(node, byteStart, byteEnd));
     return;
@@ -506,6 +577,7 @@ function isKnownBlock(block: BlockNode): block is KnownBlockNode {
     block.type === "Paragraph" ||
     block.type === "Heading" ||
     block.type === "Code" ||
+    block.type === "CodeCell" ||
     block.type === "ThematicBreak" ||
     block.type === "Reference"
   );
@@ -525,6 +597,17 @@ function mapCodeBlock(block: CodeNode): AtprotoCode {
     result.language = block.language;
   }
   return result;
+}
+
+function mapCodeCell(block: CodeCellNode): AtprotoCodeCell {
+  return {
+    $type: codeCellType,
+    ...copyBlockProps(block),
+    code: block.code,
+    ...(block.language !== undefined ? { language: block.language } : {}),
+    ...(block.isEchoed !== undefined ? { isEchoed: block.isEchoed } : {}),
+    ...(block.isHidden !== undefined ? { isHidden: block.isHidden } : {}),
+  };
 }
 
 function mapThematicBreak(block: ThematicBreakNode): AtprotoThematicBreak {
@@ -551,6 +634,10 @@ function mapReference(
 function mapKnownBlock(session: Session, block: KnownBlockNode): AtprotoBlock {
   if (block.type === "Code") {
     return mapCodeBlock(block);
+  }
+
+  if (block.type === "CodeCell") {
+    return mapCodeCell(block);
   }
 
   if (block.type === "ThematicBreak") {

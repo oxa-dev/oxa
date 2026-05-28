@@ -1,0 +1,13 @@
+{
+  "$schema": "../../schemas/test-case.schema.json",
+  "title": "Basic code expression",
+  "description": "An executable inline expression with source code and language",
+  "category": "inline",
+  "formats": {
+    "oxa": {
+      "type": "CodeExpr",
+      "language": "python",
+      "code": "len(df)"
+    }
+  }
+}

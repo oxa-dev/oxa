@@ -1,0 +1,30 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: CodeExpr
+title: CodeExpr
+description: An executable expression embedded within prose.
+type: object
+properties:
+  type:
+    description: The type discriminator for CodeExpr nodes.
+    enum: [CodeExpr]
+  id:
+    description: A unique identifier for the node.
+    type: string
+  classes:
+    description: A list of class names for styling or semantics.
+    type: array
+    items:
+      type: string
+  data:
+    description: Arbitrary key-value data attached to the node.
+    type: object
+    additionalProperties: true
+  code:
+    description: The expression to evaluate.
+    type: string
+  language:
+    description: The programming language identifier for the expression.
+    type: string
+required:
+  - type
+  - code

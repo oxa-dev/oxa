@@ -13,6 +13,9 @@
           "$ref": "#/definitions/Code"
         },
         {
+          "$ref": "#/definitions/CodeCell"
+        },
+        {
           "$ref": "#/definitions/Heading"
         },
         {
@@ -172,6 +175,88 @@
       },
       "required": ["type", "value"]
     },
+    "CodeCell": {
+      "title": "CodeCell",
+      "description": "An executable block of code that can produce outputs.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for CodeCell nodes.",
+          "enum": ["CodeCell"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "code": {
+          "description": "The source code to execute.",
+          "type": "string"
+        },
+        "language": {
+          "description": "The programming language identifier for the code.",
+          "type": "string"
+        },
+        "isEchoed": {
+          "description": "Whether the source code is displayed to readers.",
+          "type": "boolean",
+          "default": false
+        },
+        "isHidden": {
+          "description": "Whether outputs are hidden from readers.",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["type", "code"]
+    },
+    "CodeExpr": {
+      "title": "CodeExpr",
+      "description": "An executable expression embedded within prose.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The type discriminator for CodeExpr nodes.",
+          "enum": ["CodeExpr"]
+        },
+        "id": {
+          "description": "A unique identifier for the node.",
+          "type": "string"
+        },
+        "classes": {
+          "description": "A list of class names for styling or semantics.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "description": "Arbitrary key-value data attached to the node.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "code": {
+          "description": "The expression to evaluate.",
+          "type": "string"
+        },
+        "language": {
+          "description": "The programming language identifier for the expression.",
+          "type": "string"
+        }
+      },
+      "required": ["type", "code"]
+    },
     "Document": {
       "title": "Document",
       "description": "A document with metadata, title, and block content.",
@@ -310,6 +395,9 @@
         },
         {
           "$ref": "#/definitions/Emphasis"
+        },
+        {
+          "$ref": "#/definitions/CodeExpr"
         },
         {
           "$ref": "#/definitions/InlineCode"

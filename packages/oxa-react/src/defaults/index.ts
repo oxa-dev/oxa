@@ -3,6 +3,8 @@ import { DocumentRenderer } from "./Document";
 import { HeadingRenderer } from "./Heading";
 import { ParagraphRenderer } from "./Paragraph";
 import { CodeRenderer } from "./Code";
+import { CodeCellRenderer } from "./CodeCell";
+import { CodeExprRenderer } from "./CodeExpr";
 import { ThematicBreakRenderer } from "./ThematicBreak";
 import { TextRenderer } from "./Text";
 import { EmphasisRenderer } from "./Emphasis";
@@ -22,6 +24,8 @@ export const defaultRenderers: NodeRenderers = {
   Paragraph: ParagraphRenderer,
   Reference: ReferenceRenderer,
   Code: CodeRenderer,
+  CodeCell: CodeCellRenderer,
+  CodeExpr: CodeExprRenderer,
   ThematicBreak: ThematicBreakRenderer,
   Text: TextRenderer,
   Emphasis: EmphasisRenderer,

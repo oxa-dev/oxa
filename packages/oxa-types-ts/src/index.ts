@@ -120,6 +120,74 @@ export interface Code {
 }
 
 /**
+ * An executable block of code that can produce outputs.
+ */
+export interface CodeCell {
+  /**
+   * The type discriminator for CodeCell nodes.
+   */
+  type: "CodeCell";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The source code to execute.
+   */
+  code: string;
+  /**
+   * The programming language identifier for the code.
+   */
+  language?: string;
+  /**
+   * Whether the source code is displayed to readers.
+   */
+  isEchoed?: boolean;
+  /**
+   * Whether outputs are hidden from readers.
+   */
+  isHidden?: boolean;
+}
+
+/**
+ * An executable expression embedded within prose.
+ */
+export interface CodeExpr {
+  /**
+   * The type discriminator for CodeExpr nodes.
+   */
+  type: "CodeExpr";
+  /**
+   * A unique identifier for the node.
+   */
+  id?: string;
+  /**
+   * A list of class names for styling or semantics.
+   */
+  classes?: string[];
+  /**
+   * Arbitrary key-value data attached to the node.
+   */
+  data?: Record<string, unknown>;
+  /**
+   * The expression to evaluate.
+   */
+  code: string;
+  /**
+   * The programming language identifier for the expression.
+   */
+  language?: string;
+}
+
+/**
  * A document with metadata, title, and block content.
  */
 export interface Document {
@@ -424,7 +492,13 @@ export interface ThematicBreak {
 /**
  * Union of all block content types.
  */
-export type Block = Code | Heading | Paragraph | Reference | ThematicBreak;
+export type Block =
+  | Code
+  | CodeCell
+  | Heading
+  | Paragraph
+  | Reference
+  | ThematicBreak;
 
 /**
  * Union of all inline content types.
@@ -434,6 +508,7 @@ export type Inline =
   | CiteGroup
   | Text
   | Emphasis
+  | CodeExpr
   | InlineCode
   | Strong
   | Subscript
